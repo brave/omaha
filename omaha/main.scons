@@ -65,10 +65,10 @@ _is_google_update_build = False
 # These values must be changed when customizing open source Omaha.
 # You may also wish to replace the language-neutral constants in the individual
 # *generated_resources_*.rc files with localized strings.
-_FULL_COMPANY_NAME = 'OmahaCompanyName Inc.'
-_SHORT_COMPANY_NAME = 'OmahaCompanyName'
+_FULL_COMPANY_NAME = 'Brave Inc.'
+_SHORT_COMPANY_NAME = 'Brave'
 _PRODUCT_NAME = 'Update'
-_COMPANY_DOMAIN_BASE = 'google'
+_COMPANY_DOMAIN_BASE = 'brave'
 _COMPANY_DOMAIN = _COMPANY_DOMAIN_BASE + '.com'
 _MAIN_EXE_BASE_NAME = 'GoogleUpdate'
 # TODO(omaha): Use this throughout the build files where goopdate and
