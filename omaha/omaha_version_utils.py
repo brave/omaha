@@ -17,9 +17,9 @@
 
 """Constants and utilities related to Omaha and tools versions"""
 
-_ONECLICK_PLUGIN_NAME = 'npGoogleOneClick'
-_UPDATE_PLUGIN_NAME = 'npGoogleUpdate'
-_CRASH_HANDLER_NAME = 'GoogleCrashHandler'
+_ONECLICK_PLUGIN_NAME = 'npBraveOneClick'
+_UPDATE_PLUGIN_NAME = 'npBraveUpdate'
+_CRASH_HANDLER_NAME = 'BraveCrashHandler'
 
 # List of languages that are fully supported in the current build.
 _OMAHA_LANGUAGES = [
@@ -123,15 +123,15 @@ def _GetMetainstallerPayloadFilenames(prefix,
   # files (googleupdate.exe, goopdateres_*.dll, etc.) are hardcoded all over
   # the place, and require a ton of point fixes to customize.
   payload_files = [
-      'GoogleUpdate.exe',
+      'BraveUpdate.exe',
       '%s.exe' % _CRASH_HANDLER_NAME,
       '%sgoopdate.dll' % (prefix),
       plugin_dll_name,
-      'GoogleUpdateHelper.msi',
-      'GoogleUpdateBroker.exe',
-      'GoogleUpdateOnDemand.exe',
-      'GoogleUpdateComRegisterShell64.exe',
-      'GoogleUpdateWebPlugin.exe',
+      'BraveUpdateHelper.msi',
+      'BraveUpdateBroker.exe',
+      'BraveUpdateOnDemand.exe',
+      'BraveUpdateComRegisterShell64.exe',
+      'BraveUpdateWebPlugin.exe',
       '%spsmachine.dll' % (prefix),
       '%spsmachine_64.dll' % (prefix),
       '%spsuser.dll' % (prefix),
@@ -140,9 +140,9 @@ def _GetMetainstallerPayloadFilenames(prefix,
 
   if _IsSupportedOmaha2Version(omaha_version):
     payload_files.remove(plugin_dll_name)
-    payload_files.remove('GoogleUpdateBroker.exe')
-    payload_files.remove('GoogleUpdateOnDemand.exe')
-    payload_files.remove('GoogleUpdateComRegisterShell64.exe')
+    payload_files.remove('BraveUpdateBroker.exe')
+    payload_files.remove('BraveUpdateOnDemand.exe')
+    payload_files.remove('BraveUpdateComRegisterShell64.exe')
     payload_files.remove('psmachine.dll')
     payload_files.remove('psmachine_64.dll')
     payload_files.remove('psuser.dll')
@@ -164,7 +164,7 @@ def _GetMetainstallerPayloadFilenames(prefix,
       omaha_version[1] >= 3 and
       (omaha_version[2] >= 32)):
     # added with 1.3.32.1 and later
-    payload_files.append('GoogleUpdateCore.exe')
+    payload_files.append('BraveUpdateCore.exe')
 
   for language in languages:
     payload_files += ['%sgoopdateres_%s.dll' % (prefix, language)]

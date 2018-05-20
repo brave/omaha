@@ -65,7 +65,7 @@ namespace ClickOnceBootstrap {
         query_string = unescape_safe_chars.ToString();
 
         string setup_path = Path.Combine(Application.StartupPath,
-                                          "GoogleUpdateSetup.exe");
+                                          "BraveUpdateSetup.exe");
 
         ProcessStartInfo psi = new ProcessStartInfo();
         psi.FileName = setup_path;
