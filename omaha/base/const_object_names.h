@@ -24,7 +24,7 @@
 namespace omaha {
 
 // The prefix to use for global names in the win32 API's.
-const TCHAR* const kGlobalPrefix = _T("Global\\Omaha");
+const TCHAR* const kGlobalPrefix = _T("Global\\Brave");
 
 const TCHAR* const kObjectName64Suffix = _T("-x64");
 
