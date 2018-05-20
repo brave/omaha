@@ -517,7 +517,7 @@ win_env.AppendUnique(
     # Defines for windows environment.
     CPPDEFINES = [
         'PSAPI_VERSION=1',
-        'WINVER=0X0500',
+        'WINVER=0X0501',
         'WIN32', '_WINDOWS',
         'UNICODE', '_UNICODE',
         'WIN32_LEAN_AND_MEAN',
