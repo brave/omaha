@@ -111,7 +111,7 @@ google_core_inputs = [
 if core_env['msc_ver'] >= 1400:
   core_env['CCFLAGS'] += ['/GS-']
 
-exe_name = 'GoogleUpdateCore'
+exe_name = 'BraveUpdateCore'
 
 unsigned_core = core_env.ComponentProgram(
     prog_name='%s_unsigned.exe' % exe_name,

@@ -117,7 +117,7 @@ def _BuildSampleForTest():
             prefix + msi_base_name + '_' + combo[0],
             '$MAIN_DIR/enterprise/installer',
             msi_custom_action_dll,
-            '$STAGING_DIR/%sGoogleUpdateSetup.exe' % prefix,
+            '$STAGING_DIR/%sBraveUpdateSetup.exe' % prefix,
             output_dir = '$TARGET_ROOT/Test_Installers'
         )
 
