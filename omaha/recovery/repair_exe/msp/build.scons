@@ -58,7 +58,7 @@ def CreateMsiInstallerFiles(env, wxs_file, suffix=''):
   )
 
   old_unsigned_output = old_unsigned_env.WiX(
-      'GoogleUpdateHelper%s_unsigned.msi' % suffix,
+      'BraveUpdateHelper%s_unsigned.msi' % suffix,
       wxs_file)
 
   env.Depends(old_unsigned_output, [_custom_actions_path, _required_file])
@@ -170,7 +170,7 @@ msp_output_for_legacy = CreateMsiPatchFile(
 # Sign the old MSI and MSP files
 #
 signed_msi = env.SignedBinary(
-    target='GoogleUpdateHelper.msi',
+    target='BraveUpdateHelper.msi',
     source=old_msi,
 )
 

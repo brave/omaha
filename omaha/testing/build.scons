@@ -636,7 +636,7 @@ omaha_unittest_env.Depends(test, unittest_support)
 
 # extractor_unittest.cc uses GoogleUpdateSetup_repair.exe as a zero-length tag
 # cert-tagged exe.
-omaha_unittest_env.Depends(test, '$STAGING_DIR/GoogleUpdateSetup_repair.exe')
+omaha_unittest_env.Depends(test, '$STAGING_DIR/BraveUpdateSetup_repair.exe')
 
 # Customization/UI tests depend on goopdate.dll (for TypeLib/resources)
 omaha_unittest_env.Depends(test, '$TESTS_DIR/goopdate.dll')

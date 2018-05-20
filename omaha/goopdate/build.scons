@@ -74,8 +74,8 @@ def BuildCOMForwarder(cmd_line_switch,
 
 
 # Build the broker/legacy on-demand/WebPlugin forwarders.
-BuildCOMForwarder('/broker', 'GoogleUpdateBroker', False)
-BuildCOMForwarder('/ondemand', 'GoogleUpdateOnDemand', False)
+BuildCOMForwarder('/broker', 'BraveUpdateBroker', False)
+BuildCOMForwarder('/ondemand', 'BraveUpdateOnDemand', False)
 
 def BuildCOMRegisterShell64():
   com_register_shell_env = env.CloneAndMake64Bit()
@@ -119,13 +119,13 @@ def BuildCOMRegisterShell64():
     )
 
   unsigned_exe = com_register_shell_env.ComponentProgram(
-      prog_name='GoogleUpdateComRegisterShell64_unsigned',
+      prog_name='BraveUpdateComRegisterShell64_unsigned',
       source= [
           'com_register_shell.cc',
           ]
   )
   signed_exe = com_register_shell_env.DualSignedBinary(
-      target='GoogleUpdateComRegisterShell64.exe',
+      target='BraveUpdateComRegisterShell64.exe',
       source=unsigned_exe,
   )
   env.Replicate('$STAGING_DIR', signed_exe)
