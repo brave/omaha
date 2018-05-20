@@ -70,7 +70,7 @@ _SHORT_COMPANY_NAME = 'Brave'
 _PRODUCT_NAME = 'Update'
 _COMPANY_DOMAIN_BASE = 'brave'
 _COMPANY_DOMAIN = _COMPANY_DOMAIN_BASE + '.com'
-_MAIN_EXE_BASE_NAME = 'GoogleUpdate'
+_MAIN_EXE_BASE_NAME = 'BraveUpdate'
 # TODO(omaha): Use this throughout the build files where goopdate and
 # goopdateres are referenced.
 _MAIN_DLL_BASE_NAME = 'goopdate'
