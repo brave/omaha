@@ -65,8 +65,8 @@ _is_google_update_build = False
 # These values must be changed when customizing open source Omaha.
 # You may also wish to replace the language-neutral constants in the individual
 # *generated_resources_*.rc files with localized strings.
-_FULL_COMPANY_NAME = 'Brave Inc.'
-_SHORT_COMPANY_NAME = 'Brave'
+_FULL_COMPANY_NAME = 'BraveSoftware Inc.'
+_SHORT_COMPANY_NAME = 'BraveSoftware'
 _PRODUCT_NAME = 'Update'
 _COMPANY_DOMAIN_BASE = 'brave'
 _COMPANY_DOMAIN = _COMPANY_DOMAIN_BASE + '.com'
