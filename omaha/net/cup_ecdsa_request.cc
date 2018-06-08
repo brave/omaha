@@ -42,7 +42,8 @@ namespace omaha {
 namespace internal {
 
 const uint8 CupEcdsaRequestImpl::kCupProductionPublicKey[] =
-#include "omaha/net/cup_ecdsa_pubkey.11.h"
+// TODO: mplesa see if this needs to be .11
+#include "omaha/net/cup_ecdsa_pubkey.1.h"
 ;   // NOLINT
 
 const uint8 CupEcdsaRequestImpl::kCupTestPublicKey[] =
