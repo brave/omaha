@@ -58,30 +58,30 @@ const TCHAR* const kGoopdateServer = _T("tools.") COMPANY_DOMAIN;
 // The channel for update checks is secured by using CUP to sign the messages.
 // It does not depend solely on https security in any case.
 const TCHAR* const kUrlUpdateCheck =
-    _T("https://updates-test.ryanjarv.com/service/update2");
+    _T("https://updates-test.ryanjarv.com:9090/service/update2");
 
 // Pings.
 const TCHAR* const kUrlPing =
-    _T("https://updates-test.ryanjarv.com/service/update2");
+    _T("https://updates-test.ryanjarv.com:9090/service/update2");
 
 // The urls below never fall back to http.
 //
 // Crash reports.
 const TCHAR* const kUrlCrashReport =
-    _T("https://updates-test.ryanjarv.com/cr/report");
+    _T("https://updates-test.ryanjarv.com:9090/cr/report");
 
 // More information url.
 // Must allow query parameters to be appended to it.
 const TCHAR* const kUrlMoreInfo =
-    _T("https://updates-test.ryanjarv.com/support/installer/?");
+    _T("https://updates-test.ryanjarv.com:9090/support/installer/?");
 
 // Code Red check url.
 const TCHAR* const kUrlCodeRedCheck =
-    _T("https://updates-test.ryanjarv.com/service/check2");
+    _T("https://updates-test.ryanjarv.com:9090/service/check2");
 
 // Usage stats url.
 const TCHAR* const kUrlUsageStatsReport =
-    _T("https://updates-test.ryanjarv.com/tbproxy/usagestats");
+    _T("https://updates-test.ryanjarv.com:9090/tbproxy/usagestats");
 
 }  // namespace omaha
 
