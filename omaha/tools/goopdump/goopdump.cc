@@ -122,7 +122,7 @@ HRESULT Goopdump::Main(const TCHAR* cmd_line, int argc, TCHAR** argv) {
     ProcessMonitor process_monitor;
     GoopdateProcessMonitorCallback callback(dump_log_);
     std::vector<CString> patterns;
-    patterns.push_back(CString(_T("googleupdate.exe")));
+    patterns.push_back(CString(_T("braveupdate.exe")));
     patterns.push_back(CString(_T("notepad.exe")));
     process_monitor.StartWithPatterns(&callback, patterns);
     getchar();

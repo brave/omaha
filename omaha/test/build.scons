@@ -105,7 +105,7 @@ def BuildMSI(version, namespace, exe_name, wxs_template, msi_base_name,
 
     # The metainstaller change does not get passed through even though the
     # .wixobj file is rebuilt because the hash of the .wixobj does not change.
-    metainstaller_path = '$STAGING_DIR/%sGoogleUpdateSetup.exe' % (prefix)
+    metainstaller_path = '$STAGING_DIR/%sBraveUpdateSetup.exe' % (prefix)
     google_update_wixobj = build_enterprise_installer.BuildGoogleUpdateFragment(
             env,
             metainstaller_path,
