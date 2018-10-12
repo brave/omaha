@@ -635,6 +635,49 @@ HRESULT HandleError(HRESULT result) {
   return result;
 }
 
+HRESULT StorePathToRegForPromoCode(LPSTR lpCmdLine) {
+  // This stub installer can be executed twice by internally when user allowed
+  // to run installer in admin mode. In this case, copied with changed filename
+  // |kOmahaMetainstallerFileName| at tempdir is used.
+  // In that case, command line is not empty.
+  // So, we can only get original file name when this run is user initiated.
+  if (!CString(lpCmdLine).IsEmpty())
+    return S_OK;
+
+  TCHAR module_file_name[MAX_PATH] = {};
+  DWORD len = ::GetModuleFileName(NULL,
+                                  module_file_name,
+                                  arraysize(module_file_name));
+  if (len == 0 || len >= arraysize(module_file_name)) {
+    _ASSERTE(false);
+    return NULL;
+  }
+
+  HKEY key;
+  DWORD dw;;
+  if (RegCreateKeyEx(HKEY_CURRENT_USER,
+                     _T("Software\\BraveSoftware\\Promo"),
+                     0,
+                     NULL,
+                     REG_OPTION_NON_VOLATILE,
+                     KEY_WRITE,
+                     NULL, &key, &dw) != S_OK) {
+    return S_OK;
+  }
+
+  if (RegSetValueEx(key,
+                    _T("StubInstallerPath"),
+                    NULL,
+                    REG_SZ,
+                    reinterpret_cast<const byte *>(module_file_name),
+                    (lstrlen(module_file_name) + 1) * sizeof(TCHAR)) != S_OK) {
+    return S_OK;
+  }
+
+  RegCloseKey(key);
+  return S_OK;
+}
+
 }  // namespace
 
 }  // namespace omaha
@@ -652,6 +695,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int) {
   if (FAILED(hr)) {
     return omaha::HandleError(hr);
   }
+
+  omaha::StorePathToRegForPromoCode(lpCmdLine);
 
   omaha::MetaInstaller mi(hInstance, lpCmdLine);
   int result = mi.ExtractAndRun();
