@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response protocol="3.0">
+  <app appid="{CB2150F2-595F-4633-891A-E39720CE0531}" status="ok">
+    <updatecheck status="ok">
+      <urls>
+        <url codebase="http://dl.google.com/foo/${INSTALLER_VERSION}/"/>
+      </urls>
+      <manifest>
+        <packages>
+          <package name="BraveBrowserDevSetup.exe" hash_sha256="${INSTALLER_HASH_SHA256}" size="${INSTALLER_SIZE}" required="true"/>
+        </packages>
+        <actions>
+          <action event="install" run="BraveBrowserDevSetup.exe" arguments="--chrome-dev" needsadmin="true"/>
+        </actions>
+       </manifest>
+    </updatecheck>
+  </app>
+</response>

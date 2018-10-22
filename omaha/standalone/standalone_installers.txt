@@ -23,3 +23,4 @@
 # Not a real installer.
 ('Save Arguments', 'SaveArgumentsStandaloneInstaller', [('0.1.2.0', '$STAGING_DIR/unittest_support/SaveArguments.exe', '{7DD1EF7B-D075-47c0-BD51-F624ED87CCF0}')], 'SaveArgumentsStandaloneEnterprise', '', '/silentuninstall', True, '', '')
 ('Bundle_Foo_Argument', 'Bundle_Foo_Argument_StandaloneInstaller', [('0.1.2.0', '$STAGING_DIR/unittest_support/SaveArguments.exe', '{7DD1EF7B-D075-47c0-BD51-F624ED87CCF0}'), ('1.0.101.0', '$STAGING_DIR/unittest_support/test_foo_v1.0.101.0.msi', '{D6B08267-B440-4C85-9F79-E195E80D9937}')], None, None, None, False, '', '')
+('Brave Browser Dev', 'BraveBrowserDevSetup', [('69.0.54.0', '$STAGING_DIR/brave_installer_69_0_54_0.exe', '{CB2150F2-595F-4633-891A-E39720CE0531}')], None, None, None, False, '', '')
