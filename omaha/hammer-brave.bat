@@ -4,6 +4,9 @@
 :: tests do.
 set OMAHA_PSEXEC_DIR=%ProgramFiles(x86)%\pstools
 
+:: Set VS environment variables.
+call "%VS140COMNTOOLS%..\..\VC\vcvarsall.bat"
+
 setlocal
 
 rem -- Set all environment variables used by Hammer and Omaha. --
