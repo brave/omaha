@@ -1,0 +1,58 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this file,
+# You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import("//brave/build/config.gni")
+
+assert(is_win)
+
+group("omaha") {
+  deps = [ ":build_omaha_installer" ]
+}
+
+action("build_omaha_installer") {
+  script="build_omaha.py"
+
+  inputs = [ "build_omaha.py" ]
+
+  sources = [ "$root_out_dir/$brave_installer_exe" ]
+
+  _install_switch = ""
+  _tag_app_name = "Brave-Release"
+  if (brave_channel == "beta") {
+    _install_switch = "--chrome-beta"
+    _tag_app_name = "Brave-Browser-Beta"
+  } else if (brave_channel == "dev") {
+    _install_switch = "--chrome-dev"
+    _tag_app_name = "Brave-Browser-Dev"
+  } else if (brave_channel == "nightly") {
+    _install_switch = "--chrome-sxs"
+    _tag_app_name = "Brave-Browser-Nightly"
+  } else {
+    assert(brave_channel == "", "Unknown channel name")
+  }
+
+  out_dir = rebase_path(root_out_dir)
+
+  args = [
+    "--root_out_dir=$out_dir",
+    "--brave_installer_exe=$brave_installer_exe",
+    "--stub_installer_exe=$brave_stub_installer_exe",
+    "--standalone_installer_exe=$brave_standalone_installer_exe",
+    "--guid=$brave_app_guid",
+    "--install_switch=$_install_switch",
+    "--tag_ap=$tag_ap",
+    "--tag_app_name=$_tag_app_name",
+    "--brave_full_version=$chrome_version_major.$brave_version_major.$brave_version_minor.$brave_version_build",
+  ]
+
+  outputs = [
+    "$root_out_dir/$brave_stub_installer_exe",
+    "$root_out_dir/$brave_standalone_installer_exe",
+  ]
+
+  deps = [
+    "//brave/build/win:create_signed_installer",
+  ]
+}
+
