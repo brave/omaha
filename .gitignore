@@ -19,6 +19,7 @@ omaha/common/omaha_customization_proxy_clsid.h
 omaha/proxy_clsids.txt
 omaha/*.idb
 omaha/scons-out/**
+omaha/standalone/*
 
 # Ignore compiled Python files.
 *.pyc
