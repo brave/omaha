@@ -34,7 +34,7 @@ def PrepareStandalone(args, omaha_dir):
 
   newdata = filedata.replace("APP_GUID", args.guid[0])
   newdata = newdata.replace("BRAVE_INSTALLER_EXE", args.brave_installer_exe[0])
-  newdata = newdata.replace("INSTALL_SWITCH", args.install_switch[0])
+  newdata = newdata.replace("INSTALL_SWITCH", '--do-not-launch-chrome ' + args.install_switch[0])
 
   target_manifest_file = args.guid[0] + '.gup'
   target_manifest_path = os.path.join(omaha_dir, 'omaha', 'standalone', 'manifests', target_manifest_file)
