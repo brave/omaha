@@ -20,6 +20,17 @@ def Build(args, omaha_dir):
   # move to omaha/omaha and start build.
   os.chdir(os.path.join(omaha_dir, 'omaha'))
   command = ['hammer-brave.bat', 'MODE=all', '--all']
+
+  # set signing environment variables
+  key_pfx_path = os.environ.get('KEY_PFX_PATH', '')
+  key_cer_path = os.environ.get('KEY_CER_PATH', '')
+  authenticode_password = os.environ.get('AUTHENTICODE_PASSWORD', '')
+
+  command = ['hammer-brave.bat', 'MODE=all', '--all', '--sha2_authenticode_file=' + key_pfx_path,
+    '--sha2_authenticode_password=' + authenticode_password, '--sha1_authenticode_file=' + key_pfx_path,
+    '--sha1_authenticode_password=' + authenticode_password, '--patching_certificate=' + key_cer_path,
+    '--authenticode_file=' + key_pfx_path, '--authenticode_password=' + authenticode_password]
+
   sp.check_call(command, stderr=sp.STDOUT)
 
 def PrepareStandalone(args, omaha_dir):
@@ -61,7 +72,9 @@ def Tagging(args, omaha_dir, debug):
   omaha_out_dir = os.path.join(omaha_dir, 'omaha', 'scons-out', last_win_dir)
   apply_tag_exe = os.path.join(omaha_out_dir, 'obj', 'tools', 'ApplyTag', 'ApplyTag.exe')
 
-  tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&needsadmin=prefers&lang=en&ap=TAG_AP'
+  # right now the needsadmin flag is hardcoded, but should be configurable with an env var or command line flag
+  tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&needsadmin=False&lang=en&ap=TAG_AP'
+  # tag = tag.replace("TAG_ADMIN", args.tag_admin[0])
   tag = tag.replace("APP_GUID", args.guid[0])
   tag = tag.replace("TAG_APP_NAME", args.tag_app_name[0])
   tag = tag.replace("TAG_AP", args.tag_ap[0])
@@ -99,6 +112,8 @@ def ParseArgs():
                       nargs=1)
   parser.add_argument('--tag_ap',
                       nargs=1)
+  # parser.add_argument('--tag_admin',
+  #                     nargs=1)
   parser.add_argument('--tag_app_name',
                       nargs=1)
   parser.add_argument('--brave_full_version',
