@@ -772,7 +772,7 @@ _official_installers_dirs = [
     ]
 
 _extra_dirs = [
-    'enterprise',
+    #'enterprise',
     'standalone',
     ]
 
