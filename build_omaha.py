@@ -9,36 +9,14 @@ import shutil
 import subprocess as sp
 import sys
 
-# https://stackoverflow.com/a/33856172
-import ctypes
 
-def run_as_admin(argv=None, debug=False):
-    shell32 = ctypes.windll.shell32
-    if argv is None and shell32.IsUserAnAdmin():
-        return True
-
-    if argv is None:
-        argv = sys.argv
-    if hasattr(sys, '_MEIPASS'):
-        # Support pyinstaller wrapped program.
-        arguments = map(unicode, argv[1:])
-    else:
-        arguments = map(unicode, argv)
-    argument_line = u' '.join(arguments)
-    executable = unicode(sys.executable)
-    if debug:
-        print 'Command line: ', executable, argument_line
-    ret = shell32.ShellExecuteW(None, u"runas", executable, argument_line, None, 1)
-    if int(ret) <= 32:
-        return False
-    return None
-
-def Build(args, omaha_dir):
+def FetchThirdParties(args, omaha_dir):
   os.chdir(omaha_dir)
 
   command = ['git', 'submodule', 'update', '--init']
   sp.check_call(command, stderr=sp.STDOUT)
 
+def Build(args, omaha_dir):
   # move to omaha/omaha and start build.
   os.chdir(os.path.join(omaha_dir, 'omaha'))
   command = ['hammer-brave.bat', 'MODE=all', '--all']
@@ -47,8 +25,7 @@ def Build(args, omaha_dir):
 def PrepareStandalone(args, omaha_dir):
   # copy brave installer to staing folder to create standalond installer.
   installer_file = os.path.join(args.root_out_dir[0], args.brave_installer_exe[0])
-  shutil.copyfile(installer_file, os.path.join(omaha_dir, 'omaha', 'scons-out', 'opt-win', 'staging', args.brave_installer_exe[0]))
-  shutil.copyfile(installer_file, os.path.join(omaha_dir, 'omaha', 'scons-out', 'dbg-win', 'staging', args.brave_installer_exe[0]))
+  shutil.copyfile(installer_file, os.path.join(omaha_dir, 'omaha', 'standalone', args.brave_installer_exe[0]))
 
   # prepare manifset file.
   f = open(os.path.join(omaha_dir, 'manifest_template.gup'),'r')
@@ -66,7 +43,7 @@ def PrepareStandalone(args, omaha_dir):
   f.close()
 
   # update standalone_installers.txt.
-  installer_text = "('STANDALONE_FILE_NAME', 'STANDALONE_FILE_NAME', [('BRAVE_VERSION', '$STAGING_DIR/BRAVE_INSTALLER_EXE', 'APP_GUID')], None, None, None, False, '', '')"
+  installer_text = "('STANDALONE_FILE_NAME', 'STANDALONE_FILE_NAME', [('BRAVE_VERSION', '$MAIN_DIR/standalone/BRAVE_INSTALLER_EXE', 'APP_GUID')], None, None, None, False, '', '')"
   installer_text = installer_text.replace("APP_GUID", args.guid[0])
   installer_text = installer_text.replace("STANDALONE_FILE_NAME", os.path.splitext(args.standalone_installer_exe[0])[0])
   installer_text = installer_text.replace("BRAVE_INSTALLER_EXE", args.brave_installer_exe[0])
@@ -128,33 +105,16 @@ def ParseArgs():
                       nargs=1)
   return parser.parse_args()
 
-# Wait to see ths compile logs. If not, elevated python program will quit w/o
-# any notice.
-def WaitFromUser():
-  raw_input('\nPress ENTER to exit.')
-
 def Main(args):
-  ret = run_as_admin()
-  if ret is True:
-      print 'I have admin privilege.'
-      args = ParseArgs()
-      omaha_dir = os.path.join(args.root_out_dir[0], '..', '..', 'brave', 'vendor', 'omaha')
+  args = ParseArgs()
+  omaha_dir = os.path.join(args.root_out_dir[0], '..', '..', 'brave', 'vendor', 'omaha')
 
-      # To build standalone installer, brave_installer should be copied into
-      # scons-out/. However, this folder is created during the build.
-      # Because of this scons-out folder isn't existed at first.
-      # So, Build all except brave stub/standalone installer first, then copy
-      # them. And build again finally to make standalone installer.
-      # Second build only makes standalone. So, this isn't same build with first
-      # build.
-      Build(args, omaha_dir)
-      PrepareStandalone(args, omaha_dir)
-      Build(args, omaha_dir)
-      # Create both(debug/release) executables
-      Tagging(args, omaha_dir, True)
-      Tagging(args, omaha_dir, False)
-
-      WaitFromUser()
+  FetchThirdParties(args, omaha_dir)
+  PrepareStandalone(args, omaha_dir)
+  Build(args, omaha_dir)
+  # Create both(debug/release) executables
+  Tagging(args, omaha_dir, True)
+  Tagging(args, omaha_dir, False)
 
   return 0
 
