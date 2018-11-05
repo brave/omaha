@@ -19,7 +19,6 @@ def FetchThirdParties(args, omaha_dir):
 def Build(args, omaha_dir):
   # move to omaha/omaha and start build.
   os.chdir(os.path.join(omaha_dir, 'omaha'))
-  command = ['hammer-brave.bat', 'MODE=all', '--all']
 
   # set signing environment variables
   key_pfx_path = os.environ.get('KEY_PFX_PATH', '')
@@ -72,9 +71,11 @@ def Tagging(args, omaha_dir, debug):
   omaha_out_dir = os.path.join(omaha_dir, 'omaha', 'scons-out', last_win_dir)
   apply_tag_exe = os.path.join(omaha_out_dir, 'obj', 'tools', 'ApplyTag', 'ApplyTag.exe')
 
-  # right now the needsadmin flag is hardcoded, but should be configurable with an env var or command line flag
-  tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&needsadmin=False&lang=en&ap=TAG_AP'
-  # tag = tag.replace("TAG_ADMIN", args.tag_admin[0])
+  # the needsadmin flag defaults to 'prefers', which should be used for normal installers,
+  # only the migration installer for browser-laptop to brave-core should use 'False'
+  tag_admin = os.environ.get('TAG_ADMIN', 'prefers')
+  tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&needsadmin=TAG_ADMIN&lang=en&ap=TAG_AP'
+  tag = tag.replace("TAG_ADMIN", tag_admin)
   tag = tag.replace("APP_GUID", args.guid[0])
   tag = tag.replace("TAG_APP_NAME", args.tag_app_name[0])
   tag = tag.replace("TAG_AP", args.tag_ap[0])
