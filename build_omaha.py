@@ -113,8 +113,6 @@ def ParseArgs():
                       nargs=1)
   parser.add_argument('--tag_ap',
                       nargs=1)
-  # parser.add_argument('--tag_admin',
-  #                     nargs=1)
   parser.add_argument('--tag_app_name',
                       nargs=1)
   parser.add_argument('--brave_full_version',
