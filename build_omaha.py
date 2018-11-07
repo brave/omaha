@@ -16,7 +16,7 @@ def FetchThirdParties(args, omaha_dir):
   command = ['git', 'submodule', 'update', '--init']
   sp.check_call(command, stderr=sp.STDOUT)
 
-def Build(args, omaha_dir):
+def Build(args, omaha_dir, build_all):
   # move to omaha/omaha and start build.
   os.chdir(os.path.join(omaha_dir, 'omaha'))
 
@@ -25,7 +25,10 @@ def Build(args, omaha_dir):
   key_cer_path = os.environ.get('KEY_CER_PATH', '')
   authenticode_password = os.environ.get('AUTHENTICODE_PASSWORD', '')
 
-  command = ['hammer-brave.bat', 'MODE=all', '--all', '--sha2_authenticode_file=' + key_pfx_path,
+  mode = 'opt-win'
+  if build_all:
+    mode = 'all'
+  command = ['hammer-brave.bat', 'MODE=' + mode, '--all', '--sha2_authenticode_file=' + key_pfx_path,
     '--sha2_authenticode_password=' + authenticode_password, '--sha1_authenticode_file=' + key_pfx_path,
     '--sha1_authenticode_password=' + authenticode_password, '--patching_certificate=' + key_cer_path,
     '--authenticode_file=' + key_pfx_path, '--authenticode_password=' + authenticode_password]
@@ -33,7 +36,7 @@ def Build(args, omaha_dir):
   sp.check_call(command, stderr=sp.STDOUT)
 
 def PrepareStandalone(args, omaha_dir):
-  # copy brave installer to staing folder to create standalond installer.
+  # copy brave installer to create standalond installer.
   installer_file = os.path.join(args.root_out_dir[0], args.brave_installer_exe[0])
   shutil.copyfile(installer_file, os.path.join(omaha_dir, 'omaha', 'standalone', args.brave_installer_exe[0]))
 
@@ -125,9 +128,7 @@ def Main(args):
 
   FetchThirdParties(args, omaha_dir)
   PrepareStandalone(args, omaha_dir)
-  Build(args, omaha_dir)
-  # Create both(debug/release) executables
-  Tagging(args, omaha_dir, True)
+  Build(args, omaha_dir, False)
   Tagging(args, omaha_dir, False)
 
   return 0
