@@ -121,7 +121,7 @@ def Tagging(args, omaha_dir, debug):
   tag = tag.replace("TAG_APP_NAME", args.tag_app_name[0])
   tag = tag.replace("TAG_AP", args.tag_ap[0])
 
-  silent_tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&needsadmin=TAG_ADMIN&lang=en&ap=TAG_AP'
+  silent_tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&needsadmin=TAG_ADMIN&lang=en&ap=TAG_AP&silent'
   silent_tag = silent_tag.replace("TAG_ADMIN", 'False')
   silent_tag = silent_tag.replace("APP_GUID", args.guid[0])
   silent_tag = silent_tag.replace("TAG_APP_NAME", args.tag_app_name[0])
