@@ -212,10 +212,32 @@ class MetaInstaller {
           HandleError(hr);
           return hr;
         }
-        SafeCStringAppendCmdLine(&command_line, _T(" /%s %s /%s"),
-                                 kCmdLineInstallSource,
-                                 kCmdLineInstallSource_TaggedMetainstaller,
-                                 kCmdLineInstall);
+
+        const CString original_tag(tag.get());
+        CString silent_tag;
+        silent_tag.Format(_T("&%s"), kCmdLineSilent);
+        const int silent_tag_len = silent_tag.GetLength();
+        // If tag has silent tag, append \silent \install to command line.
+        // Also silent tag is removed from tag list and assign it to |tag|
+        // buffer again. silent tag isn't recognized by brave updater.
+        if (original_tag.Right(silent_tag_len).CompareNoCase(silent_tag) == 0) {
+          const CString revised_tag =
+              original_tag.Left(original_tag.GetLength() - silent_tag_len);
+          const int revised_tag_len = revised_tag.GetLength();
+          char *new_tag_buffer = new char[revised_tag_len + 1];
+          strncpy(new_tag_buffer, tag.get(), revised_tag_len);
+          new_tag_buffer[revised_tag_len] = NULL;
+          tag.reset(new_tag_buffer);
+
+          SafeCStringAppendCmdLine(&command_line, _T(" /%s /%s"),
+                                   kCmdLineSilent,
+                                   kCmdLineInstall);
+        } else {
+          SafeCStringAppendCmdLine(&command_line, _T(" /%s %s /%s"),
+                                   kCmdLineInstallSource,
+                                   kCmdLineInstallSource_TaggedMetainstaller,
+                                   kCmdLineInstall);
+        }
       } else {
         SafeCStringAppendCmdLine(&command_line, _T(" %s"), cmd_line_);
 
