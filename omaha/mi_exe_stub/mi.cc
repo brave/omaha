@@ -1,3 +1,4 @@
+
 // Copyright 2006-2009 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -759,7 +760,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int) {
   const CString app_guid = omaha::ReadAppGuidFromTag(hInstance);
   omaha::StoreAppGuidToReg(app_guid);
 
-  hr = omaha::BraveSendStatsPing(_T("startup"), _T(""));
+  hr = omaha::BraveSendStatsPing(_T("startup"), app_guid, _T("0.0.0.0"));
 
   omaha::MetaInstaller mi(hInstance, lpCmdLine);
   int result = mi.ExtractAndRun();

@@ -182,42 +182,10 @@ CString ReadStubInstallerPathFromReg() {
 }
 
 bool IsReferralCodeWhiteListed(const CString& referral_code) {
-  static std::vector<CString> whitelist(
-      {// ISOptOut2
-       CString(_T("CTD238")), CString(_T("OJV851")), CString(_T("DPM796")),
-       CString(_T("BNI512")), CString(_T("FEB604")), CString(_T("YDQ106")),
-       CString(_T("NFF966")), CString(_T("FQW627")), CString(_T("AMV588")),
-       CString(_T("YZR853")), CString(_T("IUX155")), CString(_T("DFQ107")),
-       CString(_T("ZWV410")), CString(_T("ZTT758")), CString(_T("EPH628")),
-       CString(_T("DKD200")), CString(_T("WIR635")), CString(_T("YHC941")),
-       CString(_T("OPV062")), CString(_T("MTS962")), CString(_T("PSN487")),
-       CString(_T("MZJ289")), CString(_T("EBC998")), CString(_T("KWZ833")),
-       CString(_T("YQI537")), CString(_T("BUE553")), CString(_T("UGO473")),
-       CString(_T("CFT923")), CString(_T("WKG906")), CString(_T("OXU789")),
-       CString(_T("VGT997")), CString(_T("MOU235")), CString(_T("WLJ467")),
-       CString(_T("YXG330")), CString(_T("RNH069")), CString(_T("LRT088")),
-       CString(_T("BEM856")), CString(_T("DSL157")), CString(_T("ZGL739")),
-       CString(_T("MZX864")), CString(_T("GTW616")), CString(_T("YBX790")),
-       CString(_T("LJT611")), CString(_T("FST304")), CString(_T("TVJ301")),
-       CString(_T("RMB962")), CString(_T("NKZ324")),
-
-       // STTier1
-       CString(_T("FBI093")), CString(_T("VNI569")), CString(_T("GMM900")),
-       CString(_T("NOQ491")), CString(_T("IOB292")), CString(_T("JJE625")),
-       CString(_T("FUX638")), CString(_T("MPO928")), CString(_T("LYD303")),
-       CString(_T("TJF413")), CString(_T("MQP631")), CString(_T("ILY758")),
-       CString(_T("VBQ225")), CString(_T("UQS362")),
-
-       // GS
-       CString(_T("PJJ948")), CString(_T("UIH408")), CString(_T("KXC376")),
-       CString(_T("OZD582")), CString(_T("JDT909")), CString(_T("IJZ122")),
-       CString(_T("OIE359")), CString(_T("DLQ981")), CString(_T("WIX525")),
-       CString(_T("PZH825")), CString(_T("NGY511")), CString(_T("QXS120")),
-       CString(_T("XTA152")), CString(_T("EZM037")),
-
-       // JAc
-       CString(_T("DHU083")), CString(_T("UGI415")), CString(_T("RQH046")),
-       CString(_T("MEB961"))});
+  static std::vector<CString> whitelist({
+      CString(_T("ABC123")),
+      CString(_T("XYZ123")),
+  });
   return std::any_of(whitelist.begin(), whitelist.end(),
                      [&referral_code](CString candidate) {
                        return candidate == referral_code;
@@ -246,7 +214,7 @@ CString GetBraveVersion(const CString& version) {
   int pos = version.Find(_T('.'));
   if (pos != -1)
     return version.Right(version.GetLength() - pos - 1);
-  return _T("0.0.0");
+  return version;
 }
 
 CString GetReferralCode() {
@@ -263,7 +231,8 @@ CString GetReferralCode() {
 
 }  // namespace
 
-HRESULT BraveSendStatsPing(const CString& event, const CString& version) {
+HRESULT BraveSendStatsPing(const CString& event, const CString& app_guid,
+                           const CString& version) {
   // Retrieve the update server name.
   CString update_server =
       omaha::GetEnvironmentVariableAsString(_T("BRAVE_UPDATE_SERVER"));
@@ -274,7 +243,6 @@ HRESULT BraveSendStatsPing(const CString& event, const CString& version) {
   ::GetNativeSystemInfo(&system_info);
 
   // Ensure that channel is valid/supported.
-  CString app_guid = ReadAppGuidFromReg();
   CString channel_name = GetChannelName(app_guid);
   if (channel_name.IsEmpty())
     return E_INVALIDARG;
@@ -283,12 +251,12 @@ HRESULT BraveSendStatsPing(const CString& event, const CString& version) {
   CString url;
   omaha::SafeCStringAppendFormat(
       &url,
-      _T("https://%s/1/")
-      _T("installerEvent?platform=%s&version=%s&channel=%s&ref=%s&event=%s"),
+      _T("https://%s/api/1/")
+      _T("installEvents?platform=%s&version=%s&channel=%s&ref=%s&event=%s"),
       update_server,
       system_info.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL
-          ? _T("winia32-bc")
-          : _T("winx64-bc"),
+          ? _T("winia32")
+          : _T("winx64"),
       GetBraveVersion(version), channel_name, GetReferralCode(), event);
 
   omaha::NetworkConfig* network_config = NULL;

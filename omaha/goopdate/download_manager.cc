@@ -277,7 +277,7 @@ HRESULT DownloadManager::DownloadApp(App* app) {
   }
 
   if (SUCCEEDED(hr)) {
-    omaha::BraveSendStatsPing(_T("download-complete"),
+    omaha::BraveSendStatsPing(_T("download-complete"), _T(""),
                               app_version->app()->next_version()->version());
     app->DownloadComplete();
     app->MarkReadyToInstall();

@@ -7,7 +7,8 @@
 
 namespace omaha {
 
-HRESULT BraveSendStatsPing(const CString& event, const CString& version);
+HRESULT BraveSendStatsPing(const CString& event, const CString& app_guid,
+                           const CString& version);
 
 } // namespace omaha
 
