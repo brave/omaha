@@ -20,6 +20,7 @@ def BuildCommonLib(env):
 
   inputs = [
       'app_registry_utils.cc',
+      'brave_stats_updater.cc',
       'command_line.cc',
       'command_line_builder.cc',
       'config_manager.cc',
