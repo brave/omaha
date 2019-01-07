@@ -56,6 +56,7 @@
 #include "omaha/base/scoped_any.h"
 #include "omaha/base/system_info.h"
 #include "omaha/base/utils.h"
+#include "omaha/common/brave_stats_updater.h"
 #include "omaha/common/const_cmd_line.h"
 #include "omaha/mi_exe_stub/process.h"
 #include "omaha/mi_exe_stub/mi.grh"
@@ -150,6 +151,20 @@ char* ExtractTag(const TCHAR* module_file_name) {
   return ret;
 }
 
+char* GetTag(HINSTANCE instance) {
+  // Get this module file name.
+  TCHAR module_file_name[MAX_PATH] = {};
+  DWORD len = ::GetModuleFileName(instance,
+                                  module_file_name,
+                                  arraysize(module_file_name));
+  if (len == 0 || len >= arraysize(module_file_name)) {
+    _ASSERTE(false);
+    return NULL;
+  }
+
+  return ExtractTag(module_file_name);
+}
+
 class MetaInstaller {
  public:
   MetaInstaller(HINSTANCE instance, LPCSTR cmd_line)
@@ -203,7 +218,7 @@ class MetaInstaller {
       CString command_line(exe_path_);
       ::PathQuoteSpaces(CStrBuf(command_line, MAX_PATH));
 
-      scoped_array<char> tag(GetTag());
+      scoped_array<char> tag(GetTag(instance_));
       if (cmd_line_.IsEmpty()) {
         // Run-by-user case.
         if (!tag.get()) {
@@ -464,20 +479,6 @@ class MetaInstaller {
     return true;
   }
 
-  char* GetTag() const {
-    // Get this module file name.
-    TCHAR module_file_name[MAX_PATH] = {};
-    DWORD len = ::GetModuleFileName(instance_,
-                                    module_file_name,
-                                    arraysize(module_file_name));
-    if (len == 0 || len >= arraysize(module_file_name)) {
-      _ASSERTE(false);
-      return NULL;
-    }
-
-    return ExtractTag(module_file_name);
-  }
-
   static CString GetFilespec(const CString& path) {
     int pos = path.ReverseFind('\\');
     if (pos >= 0) {
@@ -655,6 +656,24 @@ HRESULT HandleError(HRESULT result) {
   return result;
 }
 
+CString ReadAppGuidFromTag(HINSTANCE hInstance) {
+  scoped_array<char> tag(omaha::GetTag(hInstance));
+  const CString original_tag(tag.get());
+
+  CString app_guid;
+  const CString app_guid_prefix = _T("appguid=");
+  int appguid_start = original_tag.Find(app_guid_prefix);
+  if (appguid_start != -1) {
+    appguid_start += app_guid_prefix.GetLength();
+    int appguid_end = original_tag.Find(_T("&"), appguid_start);
+    if (appguid_end != -1) {
+      app_guid = original_tag.Mid(appguid_start, appguid_end - appguid_start);
+    }
+  }
+
+  return app_guid;
+}
+
 HRESULT StorePathToRegForPromoCode(LPSTR lpCmdLine) {
   // This stub installer can be executed twice by internally when user allowed
   // to run installer in admin mode. In this case, copied with changed filename
@@ -674,7 +693,7 @@ HRESULT StorePathToRegForPromoCode(LPSTR lpCmdLine) {
   }
 
   HKEY key;
-  DWORD dw;;
+  DWORD dw;
   if (RegCreateKeyEx(HKEY_CURRENT_USER,
                      _T("Software\\BraveSoftware\\Promo"),
                      0,
@@ -691,6 +710,25 @@ HRESULT StorePathToRegForPromoCode(LPSTR lpCmdLine) {
                     REG_SZ,
                     reinterpret_cast<const byte *>(module_file_name),
                     (lstrlen(module_file_name) + 1) * sizeof(TCHAR)) != S_OK) {
+    return S_OK;
+  }
+
+  RegCloseKey(key);
+  return S_OK;
+}
+
+HRESULT StoreAppGuidToReg(const TCHAR* app_guid) {
+  HKEY key;
+  DWORD dw;
+  if (RegCreateKeyEx(
+          HKEY_CURRENT_USER, _T("Software\\BraveSoftware\\Installer"), 0, NULL,
+          REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &key, &dw) != S_OK) {
+    return S_OK;
+  }
+
+  if (RegSetValueEx(key, _T("AppGuid"), NULL, REG_SZ,
+                    reinterpret_cast<const byte *>(app_guid),
+                    (lstrlen(app_guid) + 1) * sizeof(TCHAR)) != S_OK) {
     return S_OK;
   }
 
@@ -717,6 +755,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int) {
   }
 
   omaha::StorePathToRegForPromoCode(lpCmdLine);
+
+  const CString app_guid = omaha::ReadAppGuidFromTag(hInstance);
+  omaha::StoreAppGuidToReg(app_guid);
+
+  hr = omaha::BraveSendStatsPing(_T("startup"), _T(""));
 
   omaha::MetaInstaller mi(hInstance, lpCmdLine);
   int result = mi.ExtractAndRun();
