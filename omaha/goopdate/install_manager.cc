@@ -120,8 +120,8 @@ void InstallManager::InstallApp(App* app,  const CString& dir) {
 
   HANDLE primary_token(app->app_bundle()->primary_token());
 
-  omaha::BraveSendStatsPing(_T("installer-run"), _T(""),
-                            app->next_version()->version());
+  omaha::BraveSendStatsPing(_T("installer-run"), app->app_guid_string(),
+                            app->referral_id(), next_version->version());
 
   HRESULT hr = InstallApp(is_machine_,
                           primary_token,
