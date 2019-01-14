@@ -56,6 +56,7 @@
 #include "omaha/base/scoped_any.h"
 #include "omaha/base/system_info.h"
 #include "omaha/base/utils.h"
+#include "omaha/common/brave_referral_code_utils.h"
 #include "omaha/common/brave_stats_updater.h"
 #include "omaha/common/const_cmd_line.h"
 #include "omaha/mi_exe_stub/process.h"
@@ -167,9 +168,10 @@ char* GetTag(HINSTANCE instance) {
 
 class MetaInstaller {
  public:
-  MetaInstaller(HINSTANCE instance, LPCSTR cmd_line)
+  MetaInstaller(HINSTANCE instance, LPCSTR cmd_line, LPCTSTR referral_code)
       : instance_(instance),
         cmd_line_(cmd_line),
+        referral_code_(referral_code),
         exit_code_(0) {
   }
 
@@ -261,8 +263,9 @@ class MetaInstaller {
 
       const bool should_append_tag = !RemoveIgnoreTagSwitch(&command_line);
       if (should_append_tag && tag.get()) {
-        SafeCStringAppendCmdLine(&command_line, _T(" \"%s\""),
-                                 CString(tag.get()));
+        CString tag_with_referral_code(tag.get());
+        tag_with_referral_code.AppendFormat(_T("&referral=%s"), referral_code_);
+        SafeCStringAppendCmdLine(&command_line, _T(" \"%s\""), tag_with_referral_code);
       }
 
       RunAndWait(command_line, &exit_code_);
@@ -611,6 +614,7 @@ class MetaInstaller {
   HINSTANCE instance_;
   CString cmd_line_;
   CString exe_path_;
+  CString referral_code_;
   DWORD exit_code_;
   CSimpleArray<CString> files_to_delete_;
   CString temp_dir_;
@@ -717,23 +721,16 @@ HRESULT StorePathToRegForPromoCode(LPSTR lpCmdLine) {
   return S_OK;
 }
 
-HRESULT StoreAppGuidToReg(const TCHAR* app_guid) {
-  HKEY key;
-  DWORD dw;
-  if (RegCreateKeyEx(
-          HKEY_CURRENT_USER, _T("Software\\BraveSoftware\\Installer"), 0, NULL,
-          REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &key, &dw) != S_OK) {
-    return S_OK;
+CString GetReferralCodeFromModuleFileName() {
+  TCHAR module_file_name[MAX_PATH] = {};
+  DWORD len =
+      ::GetModuleFileName(NULL, module_file_name, arraysize(module_file_name));
+  if (len == 0 || len >= arraysize(module_file_name)) {
+    _ASSERTE(false);
+    return _T("none");
   }
 
-  if (RegSetValueEx(key, _T("AppGuid"), NULL, REG_SZ,
-                    reinterpret_cast<const byte *>(app_guid),
-                    (lstrlen(app_guid) + 1) * sizeof(TCHAR)) != S_OK) {
-    return S_OK;
-  }
-
-  RegCloseKey(key);
-  return S_OK;
+  return omaha::GetReferralCode(module_file_name);
 }
 
 }  // namespace
@@ -756,13 +753,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int) {
 
   omaha::StorePathToRegForPromoCode(lpCmdLine);
 
-  const CString app_guid = omaha::ReadAppGuidFromTag(hInstance);
-  omaha::StoreAppGuidToReg(app_guid);
+  const CString referral_code = omaha::GetReferralCodeFromModuleFileName();
+  if (CString(lpCmdLine).IsEmpty()) {
+    const CString app_guid = omaha::ReadAppGuidFromTag(hInstance);
+    hr = omaha::BraveSendStatsPing(_T("startup"), app_guid, referral_code,
+                                   _T(""));
+  }
 
-  hr = omaha::BraveSendStatsPing(_T("startup"), _T(""));
-
-  omaha::MetaInstaller mi(hInstance, lpCmdLine);
+  omaha::MetaInstaller mi(hInstance, lpCmdLine, referral_code);
   int result = mi.ExtractAndRun();
   return result;
 }
-
