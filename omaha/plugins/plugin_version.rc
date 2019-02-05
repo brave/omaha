@@ -57,7 +57,6 @@ BEGIN
             VALUE "FileDescription", OMAHA_APP_NAME_ANSI
             VALUE "FileVersion", VERSION_NUMBER_STRING
             VALUE "InternalName", OMAHA_APP_NAME_ANSI
-            VALUE "LegalCopyright", OMAHA_COPYRIGHT_STRING_ENGLISH
             VALUE "OriginalFilename", PLUGIN_FILENAME
             VALUE "ProductName", OMAHA_APP_NAME_ANSI
             VALUE "ProductVersion", VERSION_NUMBER_STRING

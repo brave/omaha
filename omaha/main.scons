@@ -77,7 +77,7 @@ _MAIN_DLL_BASE_NAME = 'goopdate'
 # "Google LLC" must not be removed from the copyright string. This literal also
 # appears as LegalCopyright in the VERSIONINFO section of .rc files.
 # TODO(omaha): Use this variable in .wxs files, etc.
-_OMAHA_COPYRIGHT_STRING_ENGLISH = 'Copyright 2018 Google LLC'
+_OMAHA_COPYRIGHT_STRING_ENGLISH = ''
 
 
 # TODO(omaha): Allow open source Omaha to be built without the Recovery MSI,
