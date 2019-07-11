@@ -35,7 +35,7 @@ goto set_env_variables
 :set_env_variables
 
 :: Set signtool arguments
-set SIGNTOOL_ARGS="sign /t  http://timestamp.verisign.com/scripts/timstamp.dll  /fd sha256 /sm"
+set SIGNTOOL_ARGS="sign /t  http://timestamp.digicert.com  /fd sha256 /sm"
 
 :: Change these variables to match the local build environment.
 
