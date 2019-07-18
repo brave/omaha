@@ -4,6 +4,9 @@
 
 #include "omaha/common/brave_referral_code_utils.h"
 
+#include <algorithm>
+#include <vector>
+
 namespace omaha {
 
 namespace {
