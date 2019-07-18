@@ -5,6 +5,8 @@
 #ifndef OMAHA_COMMON_BRAVE_STATS_UPDATER_H__
 #define OMAHA_COMMON_BRAVE_STATS_UPDATER_H__
 
+#include <atlstr.h>
+
 namespace omaha {
 
 HRESULT BraveSendStatsPing(const CString& event, const CString& app_guid,

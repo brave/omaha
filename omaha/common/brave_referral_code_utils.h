@@ -5,6 +5,8 @@
 #ifndef OMAHA_COMMON_BRAVE_REFERRAL_CODE_UTILS_H__
 #define OMAHA_COMMON_BRAVE_REFERRAL_CODE_UTILS_H__
 
+#include <atlstr.h>
+
 namespace omaha {
 
 CString GetReferralCode(const CString& module_file_name);
