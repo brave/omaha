@@ -5,7 +5,7 @@
 set OMAHA_PSEXEC_DIR=%ProgramFiles(x86)%\pstools
 
 :: Set VS environment variables.
-call "%VS140COMNTOOLS%..\..\VC\vcvarsall.bat"
+call "%VS140COMNTOOLS%..\..\VC\vcvarsall.bat" x86 10.0.10586.0
 
 setlocal
 
