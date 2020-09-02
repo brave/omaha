@@ -10,12 +10,6 @@ import subprocess as sp
 import sys
 
 
-def FetchThirdParties(args, omaha_dir):
-  os.chdir(omaha_dir)
-
-  command = ['git', 'submodule', 'update', '--init']
-  sp.check_call(command, stderr=sp.STDOUT)
-
 def Build(args, omaha_dir, build_all):
   # move to omaha/omaha and start build.
   os.chdir(os.path.join(omaha_dir, 'omaha'))
@@ -194,7 +188,6 @@ def Main(args):
   args = ParseArgs()
   omaha_dir = os.path.join(args.root_out_dir[0], '..', '..', 'brave', 'vendor', 'omaha')
 
-  FetchThirdParties(args, omaha_dir)
   PrepareStandalone(args, omaha_dir)
   Build(args, omaha_dir, False)
   Tagging(args, omaha_dir, False)
