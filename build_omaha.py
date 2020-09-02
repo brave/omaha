@@ -28,7 +28,7 @@ def Build(args, omaha_dir, build_all):
   mode = 'opt-win'
   if build_all:
     mode = 'all'
-  command = ['hammer-brave.bat', 'MODE=' + mode, '--all', '--sha2_authenticode_file=' + key_pfx_path,
+  command = ['hammer.bat', 'MODE=' + mode, '--all', '--sha2_authenticode_file=' + key_pfx_path,
     '--sha2_authenticode_password=' + authenticode_password, '--sha1_authenticode_file=' + key_pfx_path,
     '--sha1_authenticode_password=' + authenticode_password, '--patching_certificate=' + key_cer_path,
     '--authenticode_file=' + key_pfx_path, '--authenticode_password=' + authenticode_password]
