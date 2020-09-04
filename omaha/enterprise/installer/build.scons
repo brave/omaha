@@ -32,7 +32,7 @@ from enterprise.installer import build_enterprise_installer
 
 # APPTEAMS: Change this value to False.
 # Build the installer using build rules specific to Google Update builds.
-BUILDING_WITH_GOOGLE_UPDATE = True
+BUILDING_WITH_GOOGLE_UPDATE = False
 
 # We need to build the custom_actions dll.
 env.BuildSConscript('custom_actions')
