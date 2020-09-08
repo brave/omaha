@@ -31,7 +31,7 @@
 
 #include "omaha/enterprise/installer/custom_actions/msi_custom_action.h"
 
-#define SOFTWARE_GOOGLE_UPDATE L"Software\\Google\\Update"
+#define SOFTWARE_GOOGLE_UPDATE L"Software\\BraveSoftware\\Update"
 #define SOFTWARE_GOOGLE_UPDATE_CLIENTSTATE \
     SOFTWARE_GOOGLE_UPDATE L"\\ClientState"
 
