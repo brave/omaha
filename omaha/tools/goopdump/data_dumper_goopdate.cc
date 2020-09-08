@@ -229,7 +229,7 @@ void DataDumperGoopdate::DumpHostsFile(const DumpLog& dump_log) {
 void DataDumperGoopdate::DumpUpdateDevKeys(const DumpLog& dump_log) {
   DumpHeader header(dump_log, _T("UpdateDev Keys"));
 
-  DumpRegistryKeyData(dump_log, _T("HKLM\\Software\\Google\\UpdateDev"));
+  DumpRegistryKeyData(dump_log, _T("HKLM\\Software\\BraveSoftware\\UpdateDev"));
 }
 
 void DataDumperGoopdate::DumpLogFile(const DumpLog& dump_log) {

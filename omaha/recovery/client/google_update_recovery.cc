@@ -456,7 +456,7 @@ HRESULT DownloadRepairFile(const CString& download_target_path,
 
   CString url;
   HRESULT hr = GetRegStringValue(true,
-                                 _T("SOFTWARE\\Google\\UpdateDev"),
+                                 _T("SOFTWARE\\BraveSoftware\\UpdateDev"),
                                  kRegValueNameCodeRedUrl,
                                  &url);
   if (FAILED(hr)) {
