@@ -2,7 +2,7 @@
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
   <?define CompanyFullName = 'Google LLC'?>
   <?define Copyright = '$(var.ProductOriginalVersionString) Copyright $(var.ProductBuildYear) Google LLC'?>
-  <?define UpdateKeyPath = 'SOFTWARE\Google\Update' ?>
+  <?define UpdateKeyPath = 'SOFTWARE\BraveSoftware\Update' ?>
   <?define InstallCommandBase='/silent /install "[ProductTag]" /installsource enterprisemsi[OptOmahaArgs]'?>
 
   <Product
@@ -61,7 +61,7 @@
       <RegistrySearch Id='UninstallCmdSearch'
                       Root='HKLM'
                       Type='raw'
-                      Key='Software\Google\Update\ClientState\$(var.ProductGuid)'
+                      Key='Software\BraveSoftware\Update\ClientState\$(var.ProductGuid)'
                       Name='UninstallString'
                       Win64='no'/>
     </Property>
@@ -69,7 +69,7 @@
       <RegistrySearch Id='UninstallArgSearch'
                       Root='HKLM'
                       Type='raw'
-                      Key='Software\Google\Update\ClientState\$(var.ProductGuid)'
+                      Key='Software\BraveSoftware\Update\ClientState\$(var.ProductGuid)'
                       Name='UninstallArguments'
                       Win64='no'/>
     </Property>

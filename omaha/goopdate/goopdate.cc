@@ -1809,7 +1809,7 @@ bool IsMachineProcess(CommandLineMode mode,
       ASSERT1(goopdate_utils::IsRunningFromOfficialGoopdateDir(false) ||
               goopdate_utils::IsRunningFromOfficialGoopdateDir(true) ||
               _T("omaha_unittest.exe") == app_util::GetCurrentModuleName() ||
-              _T("GoogleUpdate_unsigned.exe") ==
+              _T("BraveUpdate_unsigned.exe") ==
                   app_util::GetModuleName(NULL));  // Running in debugger.
       return is_running_from_official_machine_directory;
 

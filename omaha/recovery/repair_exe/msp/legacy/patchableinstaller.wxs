@@ -32,7 +32,7 @@
               <File Id="RequiredFile" Name="RequiredFile.txt" DiskId="1" Source="$(var.RequiredFile)" Vital="yes"/>
 <?endif?>
               <!-- Cannot have an empty component -->
-              <RegistryValue Id="NonEmptyComponent" Action="write" Root="HKLM" Key="SOFTWARE\Google\Update" Name="MsiStubRun" Type="integer" Value="0" />
+              <RegistryValue Id="NonEmptyComponent" Action="write" Root="HKLM" Key="SOFTWARE\BraveSoftware\Update" Name="MsiStubRun" Type="integer" Value="0" />
             </Component>
 
           </Directory>

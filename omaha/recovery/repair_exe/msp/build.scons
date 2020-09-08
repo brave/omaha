@@ -84,7 +84,7 @@ def CreateMsiInstallerFiles(env, wxs_file, suffix=''):
   new_unsigned_env['WIXOBJPREFIX'] = new_unsigned_env['WIXOBJPREFIX'] + 'new/'
 
   new_unsigned_output = new_unsigned_env.WiX(
-      target='new/GoogleUpdateHelper%s_unsigned.msi' % suffix,
+      target='new/BraveUpdateHelper%s_unsigned.msi' % suffix,
       source=wxs_file
   )
 
@@ -137,6 +137,7 @@ def CreateMsiPatchFile(env, wxs_patch_file, old_msi, new_msi, suffix=''):
     # Remove the temp dir.
     rm_rf(_temp_dir)
 
+  # Should this be BraveUpdateHelperPatch%s_unsigned.msp?
   unsigned_msp_name = 'GoogleUpdateHelperPatch%s_unsigned.msp' % suffix
   unsigned_msp_path = '$OBJ_ROOT/recovery/repair_exe/msp/' + unsigned_msp_name
 
@@ -175,11 +176,13 @@ signed_msi = env.SignedBinary(
 )
 
 signed_msp = env.SignedBinary(
+    # Should this be BraveUpdateHelperPatch.msp?
     target='GoogleUpdateHelperPatch.msp',
     source=msp_output,
 )
 
 signed_msp_for_legacy = env.SignedBinary(
+    # Should this be BraveUpdateHelperPatchWithLegacyID.msp?
     target='GoogleUpdateHelperPatchWithLegacyID.msp',
     source=msp_output_for_legacy,
 )
