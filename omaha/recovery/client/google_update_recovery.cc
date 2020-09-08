@@ -52,9 +52,9 @@ const TCHAR* const kQueryStringFormat =
 // Information about where to obtain Omaha info.
 // This must never change in Omaha.
 const TCHAR* const kRegValueProductVersion  = _T("pv");
-const TCHAR* const kRelativeGoopdateRegPath = _T("Software\\Brave\\Update\\");
+const TCHAR* const kRelativeGoopdateRegPath = _T("Software\\BraveSoftware\\Update\\");
 const TCHAR* const kRelativeClientsGoopdateRegPath =
-    _T("Software\\Brave\\Update\\Clients\\")
+    _T("Software\\BraveSoftware\\Update\\Clients\\")
     _T("{B131C935-9BE6-41DA-9599-1F776BEB8019}");
 
 // The UpdateDev registry value to override the Code Red url.
@@ -436,6 +436,7 @@ HRESULT GetDownloadTargetPath(CPath* download_target_path,
   }
 
   *download_target_path = *parent_dir;
+  // Should this be BraveUpdateSetup.crx3?
   *download_target_path += _T("GoogleUpdateSetup.crx3");
   return S_OK;
 }
@@ -589,7 +590,7 @@ HRESULT ValidateAndUnpackCRX(const CPath& from_crx_path,
   }
 
   CPath exe = unpack_under_path;
-  exe += _T("GoogleUpdateSetup.exe");
+  exe += _T("BraveUpdateSetup.exe");
   if (!exe.FileExists()) {
     return HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND);
   }

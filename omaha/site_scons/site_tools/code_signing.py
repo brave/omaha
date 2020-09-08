@@ -63,6 +63,7 @@ def generate(env):
       # The default timestamp server when dual-signing.
       SHA1_TIMESTAMP_SERVER='http://timestamp.digicert.com',
       # The default timestamp server for sha256 timestamps.
+      # TODO: mplesa see if this still needs ?sha256
       SHA2_TIMESTAMP_SERVER='http://timestamp.digicert.com',
       # The default certificate store.
       CERTIFICATE_STORE='my',
