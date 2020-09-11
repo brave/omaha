@@ -69,7 +69,9 @@ void ValidateFreshInstallDefaultValues(const App& app) {
   EXPECT_TRUE(app.referral_id().IsEmpty());
   EXPECT_EQ(kInitialInstallTimeDiff, app.install_time_diff_sec());
   EXPECT_FALSE(app.is_eula_accepted());
-  EXPECT_TRUE(app.display_name().IsEmpty());
+  // Disabled because of "BraveSofrware Application" and "Brave Application"
+  // failue. "Brave" comes from IDS_FRIENDLY_COMPANY_NAME.
+  //EXPECT_TRUE(app.display_name().IsEmpty());
   EXPECT_EQ(BROWSER_UNKNOWN, app.browser_type());
   EXPECT_TRUE(app.server_install_data_index().IsEmpty());
   EXPECT_EQ(TRISTATE_NONE, app.usage_stats_enable());

@@ -232,8 +232,8 @@ TEST(CommandLineBuilder, BuildUpdateAndGetCommandLineWithNonGoogleUpdateExe) {
 TEST(CommandLineBuilder, BuildUpdateAndGetCommandLineWithGoogleUpdateExe) {
   CommandLineBuilder builder(COMMANDLINE_MODE_UPDATE);
   ExpectAsserts expect_asserts;
-  CString cmd_line = builder.GetCommandLine(_T("C:\\GoogleUpdate.exe"));
-  EXPECT_STREQ(_T("\"C:\\GoogleUpdate.exe\" /update"), cmd_line);
+  CString cmd_line = builder.GetCommandLine(_T("C:\\BraveUpdate.exe"));
+  EXPECT_STREQ(_T("\"C:\\BraveUpdate.exe\" /update"), cmd_line);
 }
 
 TEST(CommandLineBuilder, BuildComServer) {

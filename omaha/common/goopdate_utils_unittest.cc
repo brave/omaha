@@ -1109,7 +1109,7 @@ TEST_F(GoopdateUtilsRegistryProtectedWithMachineFolderPathsTest,
   CString program_files_path;
   EXPECT_SUCCEEDED(GetFolderPath(CSIDL_PROGRAM_FILES, &program_files_path));
   EXPECT_STREQ(program_files_path + _T("\\") + SHORT_COMPANY_NAME +
-               _T("\\") + PRODUCT_NAME + _T("\\GoogleUpdate.exe"),
+               _T("\\") + PRODUCT_NAME + _T("\\BraveUpdate.exe"),
                path);
 }
 
@@ -1120,14 +1120,14 @@ TEST_F(GoopdateUtilsRegistryProtectedWithMachineFolderPathsTest,
   CString program_files_path;
   EXPECT_SUCCEEDED(GetFolderPath(CSIDL_PROGRAM_FILES, &program_files_path));
   EXPECT_STREQ(program_files_path + _T("\\") + SHORT_COMPANY_NAME +
-               _T("\\") + PRODUCT_NAME + _T("\\GoogleUpdate.exe"),
+               _T("\\") + PRODUCT_NAME + _T("\\BraveUpdate.exe"),
                path);
 
   // Test when the key exists but the value doesn't.
   ASSERT_SUCCEEDED(RegKey::CreateKey(MACHINE_REG_CLIENTS_GOOPDATE));
   path = BuildGoogleUpdateExePath(true);
   EXPECT_STREQ(program_files_path + _T("\\") + SHORT_COMPANY_NAME +
-               _T("\\") + PRODUCT_NAME + _T("\\GoogleUpdate.exe"),
+               _T("\\") + PRODUCT_NAME + _T("\\BraveUpdate.exe"),
                path);
 }
 
@@ -1144,7 +1144,7 @@ TEST_F(GoopdateUtilsRegistryProtectedWithUserFolderPathsTest,
   EXPECT_SUCCEEDED(GetFolderPath(CSIDL_LOCAL_APPDATA, &user_appdata));
   CString expected_path;
   expected_path.Format(_T("%s\\") SHORT_COMPANY_NAME _T("\\")
-                       PRODUCT_NAME _T("\\GoogleUpdate.exe"),
+                       PRODUCT_NAME _T("\\BraveUpdate.exe"),
                        user_appdata);
   EXPECT_STREQ(expected_path, path);
 }
@@ -1155,7 +1155,7 @@ TEST_F(GoopdateUtilsRegistryProtectedWithUserFolderPathsTest,
   EXPECT_SUCCEEDED(GetFolderPath(CSIDL_LOCAL_APPDATA, &user_appdata));
   CString expected_path;
   expected_path.Format(_T("%s\\") SHORT_COMPANY_NAME _T("\\")
-                       PRODUCT_NAME _T("\\GoogleUpdate.exe"),
+                       PRODUCT_NAME _T("\\BraveUpdate.exe"),
                        user_appdata);
 
   // Test when the key doesn't exist.
@@ -1227,7 +1227,7 @@ TEST(GoopdateUtilsTest, GetInstalledShellVersion_Machine_ShellExists) {
                               goopdate_exe,
                               true));
 
-  EXPECT_STREQ(_T("1.2.183.21"), GetInstalledShellVersion(true));
+  EXPECT_STREQ(_T("1.3.101.0"), GetInstalledShellVersion(true));
   EXPECT_SUCCEEDED(File::Remove(goopdate_exe));
 }
 
@@ -1246,7 +1246,7 @@ TEST(GoopdateUtilsTest, GetInstalledShellVersion_User_ShellExists) {
                               goopdate_exe,
                               true));
 
-  EXPECT_STREQ(_T("1.2.183.21"), GetInstalledShellVersion(false));
+  EXPECT_STREQ(_T("1.3.101.0"), GetInstalledShellVersion(false));
   EXPECT_SUCCEEDED(File::Remove(goopdate_exe));
 }
 

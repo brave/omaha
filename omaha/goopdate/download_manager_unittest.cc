@@ -1237,7 +1237,7 @@ TEST(DownloadManagerTest, GetMessageForError) {
 
   EXPECT_STREQ(
       _T("Unable to connect to the Internet. If you use a firewall, please ")
-      _T("whitelist GoogleUpdate.exe."),
+      _T("whitelist BraveUpdate.exe."),
       DownloadManager::GetMessageForError(
           ErrorContext(GOOPDATE_E_NO_NETWORK), kEnglish));
 
