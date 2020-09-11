@@ -102,7 +102,7 @@ TEST_F(PingTest, BuildOmahaPing) {
   expected_shell_version_substring.Format(_T(" shell_version=\"%s\" "),
                                           GetShellVersionString());
   CString expected_ping_request_substring;
-  expected_ping_request_substring.Format(_T("<app appid=\"{430FD4D0-B729-4F61-AA34-91526481799D}\" version=\"1.0.0.0\" nextversion=\"2.0.0.0\" lang=\"en\" brand=\"GGLS\" client=\"a client id\" iid=\"{DE06587E-E5AB-4364-A46B-F3AC733007B3}\"><event eventtype=\"2\" eventresult=\"1\" errorcode=\"10\" extracode1=\"20\"/><event eventtype=\"2\" eventresult=\"1\" errorcode=\"30\" extracode1=\"40\"/></app>"));  // NOLINT
+  expected_ping_request_substring.Format(_T("<app appid=\"{B131C935-9BE6-41DA-9599-1F776BEB8019}\" version=\"1.0.0.0\" nextversion=\"2.0.0.0\" lang=\"en\" brand=\"GGLS\" client=\"a client id\" iid=\"{DE06587E-E5AB-4364-A46B-F3AC733007B3}\"><event eventtype=\"2\" eventresult=\"1\" errorcode=\"10\" extracode1=\"20\"/><event eventtype=\"2\" eventresult=\"1\" errorcode=\"30\" extracode1=\"40\"/></app>"));  // NOLINT
 
   CString actual_ping_request;
   install_ping_no_shell.BuildRequestString(&actual_ping_request);
@@ -199,7 +199,7 @@ TEST_F(PingTest, BuildAppsPing) {
   apps_ping.BuildAppsPing(ping_event);
 
   CString expected_ping_request_substring;
-  expected_ping_request_substring.Format(_T("<app appid=\"{430FD4D0-B729-4F61-AA34-91526481799D}\" version=\"1.3.99.0\" nextversion=\"\" lang=\"en\" brand=\"GGLS\" client=\"someclientid\" experiments=\"a=a\" installage=\"2\" installdate=\"9086\" iid=\"{7C0B6E56-B24B-436b-A960-A6EA201E886F}\"><event eventtype=\"2\" eventresult=\"1\" errorcode=\"34\" extracode1=\"6\"/></app>"));  // NOLINT
+  expected_ping_request_substring.Format(_T("<app appid=\"{B131C935-9BE6-41DA-9599-1F776BEB8019}\" version=\"1.3.99.0\" nextversion=\"\" lang=\"en\" brand=\"GGLS\" client=\"someclientid\" experiments=\"a=a\" installage=\"2\" installdate=\"9086\" iid=\"{7C0B6E56-B24B-436b-A960-A6EA201E886F}\"><event eventtype=\"2\" eventresult=\"1\" errorcode=\"34\" extracode1=\"6\"/></app>"));  // NOLINT
 
   CString actual_ping_request;
   apps_ping.BuildRequestString(&actual_ping_request);
@@ -354,7 +354,7 @@ TEST_F(PingTest, PersistAndSendPersistedPings) {
                                             Ping::kRegValuePersistedPingString,
                                             &persisted_ping));
   EXPECT_NE(-1, persisted_ping.Find(_T("sessionid=\"unittest\"")));
-  EXPECT_NE(-1, persisted_ping.Find(_T("<app appid=\"{430FD4D0-B729-4F61-AA34-91526481799D}\" version=\"1.0.0.0\" nextversion=\"2.0.0.0\" lang=\"en\" brand=\"GGLS\" client=\"a client id\" iid=\"{DE06587E-E5AB-4364-A46B-F3AC733007B3}\"><event eventtype=\"2\" eventresult=\"1\" errorcode=\"0\" extracode1=\"0\"/></app>")));  // NOLINT
+  EXPECT_NE(-1, persisted_ping.Find(_T("<app appid=\"{B131C935-9BE6-41DA-9599-1F776BEB8019}\" version=\"1.0.0.0\" nextversion=\"2.0.0.0\" lang=\"en\" brand=\"GGLS\" client=\"a client id\" iid=\"{DE06587E-E5AB-4364-A46B-F3AC733007B3}\"><event eventtype=\"2\" eventresult=\"1\" errorcode=\"0\" extracode1=\"0\"/></app>")));  // NOLINT
 
   EXPECT_HRESULT_SUCCEEDED(Ping::SendPersistedPings(false));
 

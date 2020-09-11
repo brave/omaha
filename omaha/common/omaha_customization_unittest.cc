@@ -66,8 +66,8 @@ TEST(OmahaCustomizationTest, Constants_BuildFiles) {
                             kActualProxyClsidIsUserGuid));
 
   // Primary omaha_version_utils values.
-  EXPECT_STREQ(_T("npGoogleOneClick"), ONECLICK_PLUGIN_NAME);
-  EXPECT_STREQ(_T("npGoogleUpdate"), UPDATE_PLUGIN_NAME);
+  EXPECT_STREQ(_T("npBraveOneClick"), ONECLICK_PLUGIN_NAME);
+  EXPECT_STREQ(_T("npBraveUpdate"), UPDATE_PLUGIN_NAME);
 }
 
 TEST(OmahaCustomizationTest, Constants_Names) {
@@ -98,21 +98,21 @@ TEST(OmahaCustomizationTest, Constants_Names) {
 #endif  // GOOGLE_UPDATE_BUILD
 
   // Filename bases
-  EXPECT_STREQ(_T("GoogleUpdate"), MAIN_EXE_BASE_NAME);
+  EXPECT_STREQ(_T("BraveUpdate"), MAIN_EXE_BASE_NAME);
   EXPECT_STREQ(_T("goopdate"), MAIN_DLL_BASE_NAME);
 }
 
 TEST(OmahaCustomizationTest, Constants_Filenames) {
-  EXPECT_STREQ(_T("GoogleUpdate.exe"), kOmahaShellFileName);
-  EXPECT_STREQ(_T("GoogleCrashHandler.exe"), kCrashHandlerFileName);
-  EXPECT_STREQ(_T("GoogleCrashHandler64.exe"), kCrashHandler64FileName);
+  EXPECT_STREQ(_T("BraveUpdate.exe"), kOmahaShellFileName);
+  EXPECT_STREQ(_T("BraveCrashHandler.exe"), kCrashHandlerFileName);
+  EXPECT_STREQ(_T("BraveCrashHandler64.exe"), kCrashHandler64FileName);
   EXPECT_STREQ(_T("goopdate.dll"), kOmahaDllName);
   EXPECT_STREQ(_T("goopdateres_%s.dll"), kOmahaResourceDllNameFormat);
-  EXPECT_STREQ(_T("GoogleUpdateBroker.exe"), kOmahaBrokerFileName);
-  EXPECT_STREQ(_T("GoogleUpdateCore.exe"), kOmahaCoreFileName);
-  EXPECT_STREQ(_T("GoogleUpdateOnDemand.exe"), kOmahaOnDemandFileName);
-  EXPECT_STREQ(_T("GoogleUpdateSetup.exe"), kOmahaMetainstallerFileName);
-  EXPECT_STREQ(_T("GoogleUpdateComRegisterShell64.exe"),
+  EXPECT_STREQ(_T("BraveUpdateBroker.exe"), kOmahaBrokerFileName);
+  EXPECT_STREQ(_T("BraveUpdateCore.exe"), kOmahaCoreFileName);
+  EXPECT_STREQ(_T("BraveUpdateOnDemand.exe"), kOmahaOnDemandFileName);
+  EXPECT_STREQ(_T("BraveUpdateSetup.exe"), kOmahaMetainstallerFileName);
+  EXPECT_STREQ(_T("BraveUpdateComRegisterShell64.exe"),
                kOmahaCOMRegisterShell64);
   EXPECT_STREQ(_T("psmachine.dll"), kPSFileNameMachine);
   EXPECT_STREQ(_T("psmachine_64.dll"), kPSFileNameMachine64);
@@ -126,17 +126,17 @@ TEST(OmahaCustomizationTest, Constants_Certificate) {
 }
 
 TEST(OmahaCustomizationTest, Constants_OmahaAppId_String) {
-  EXPECT_STREQ(_T("{430FD4D0-B729-4F61-AA34-91526481799D}"), GOOPDATE_APP_ID);
-  EXPECT_STREQ(_T("{430FD4D0-B729-4F61-AA34-91526481799D}"),
+  EXPECT_STREQ(_T("{B131C935-9BE6-41DA-9599-1F776BEB8019}"), GOOPDATE_APP_ID);
+  EXPECT_STREQ(_T("{B131C935-9BE6-41DA-9599-1F776BEB8019}"),
                kGoogleUpdateAppId);
 }
 
 TEST(OmahaCustomizationTest, Constants_OmahaAppId_GUID) {
   const GUID kExpectedGoogleUpdateGuid =
-      {0x430FD4D0, 0xB729, 0x4F61,
-       {0xAA, 0x34, 0x91, 0x52, 0x64, 0x81, 0x79, 0x9D}};
+      {0xB131C935, 0x9BE6, 0x41DA,
+       {0x95, 0x99, 0x1F, 0x77, 0x6B, 0xEB, 0x80, 0x19}};
   EXPECT_TRUE(::IsEqualGUID(kExpectedGoogleUpdateGuid, kGoopdateGuid));
-  EXPECT_STREQ(_T("{430FD4D0-B729-4F61-AA34-91526481799D}"),
+  EXPECT_STREQ(_T("{B131C935-9BE6-41DA-9599-1F776BEB8019}"),
                GuidToString(kGoopdateGuid));
 }
 
@@ -202,9 +202,17 @@ TEST(OmahaCustomizationTest, Constants_RegistryValues) {
   EXPECT_GU_STREQ(_T("Google Update"), kRunValueName);
 }
 
+// TODO: mplesa this can go maybe
 TEST(OmahaCustomizationTest, Constants_LegacyMsi) {
   EXPECT_STREQ(_T("{A92DAB39-4E2C-4304-9AB6-BC44E68B55E2}"),
                kLegacyHelperInstallerGuid);
+
+TEST(OmahaCustomizationTest, Constants_MsiMsp) {
+  EXPECT_STREQ(_T("BraveUpdateHelper.msi"), kHelperInstallerName);
+  EXPECT_STREQ(_T("{A92DAB39-4E2C-4304-9AB6-BC44E68B55E2}"),
+               kHelperInstallerProductGuid);
+  EXPECT_STREQ(_T("BraveUpdateHelperPatch.msp"), kHelperPatchName);
+  EXPECT_STREQ(_T("{E0D0D2C9-5836-4023-AB1D-54EC3B90AD03}"), kHelperPatchGuid);
 }
 
 TEST(OmahaCustomizationTest, Constants_CompatibleMinimumOlderShellVersion) {
@@ -216,16 +224,16 @@ TEST(OmahaCustomizationTest, Constants_BrandCode) {
 }
 
 TEST(OmahaCustomizationTest, Constants_Addresses) {
-  EXPECT_STREQ(_T("www.google.com"), kGoogleHttpServer);
-  EXPECT_STREQ(_T("tools.google.com"), kGoopdateServer);
-  EXPECT_STREQ(_T("https://update.googleapis.com/service/update2"),
+  EXPECT_STREQ(_T("www.brave.com"), kGoogleHttpServer);
+  EXPECT_STREQ(_T("tools.brave.com"), kGoopdateServer);
+  EXPECT_STREQ(_T("https://updates.bravesoftware.com/service/update2"),
                kUrlUpdateCheck);
-  EXPECT_STREQ(_T("https://update.googleapis.com/service/update2"), kUrlPing);
-  EXPECT_STREQ(_T("https://clients2.google.com/cr/report"), kUrlCrashReport);
-  EXPECT_STREQ(_T("https://www.google.com/support/installer/?"), kUrlMoreInfo);
-  EXPECT_STREQ(_T("https://clients2.google.com/service/check2?crx3=true"),
+  EXPECT_STREQ(_T("https://updates.bravesoftware.com/service/update2"), kUrlPing);
+  EXPECT_STREQ(_T("https://updates.bravesoftware.com/cr/report"), kUrlCrashReport);
+  EXPECT_STREQ(_T("https://updates.bravesoftware.com/support/installer/?"), kUrlMoreInfo);
+  EXPECT_STREQ(_T("https://updates.bravesoftware.com/service/check2"),
                kUrlCodeRedCheck);
-  EXPECT_STREQ(_T("https://clients5.google.com/tbproxy/usagestats"),
+  EXPECT_STREQ(_T("https://updates.bravesoftware.com/tbproxy/usagestats"),
                kUrlUsageStatsReport);
 }
 
@@ -238,8 +246,8 @@ TEST(OmahaCustomizationTest, Constants_Debug) {
 }
 
 TEST(OmahaCustomizationTest, Constants_Logging) {
-  EXPECT_STREQ(_T("GoogleUpdate.ini"), kLogConfigFileName);
-  EXPECT_STREQ(_T("GoogleUpdate.log"), kDefaultLogFileName);
+  EXPECT_STREQ(_T("BraveUpdate.ini"), kLogConfigFileName);
+  EXPECT_STREQ(_T("BraveUpdate.log"), kDefaultLogFileName);
 }
 
 // These should not change during customization.
@@ -252,21 +260,21 @@ TEST(OmahaCustomizationTest, Constants_ObjectNames_Pipes) {
 }
 
 TEST(OmahaCustomizationTest, Constants_ObjectNames_MutexesAndEvents) {
-  EXPECT_STREQ(_T("{A9A86B93-B54E-4570-BE89-42418507707B}"), kSetupMutex);
-  EXPECT_STREQ(_T("{A0C1F415-D2CE-4ddc-9B48-14E56FD55162}"), kShutdownEvent);
-  EXPECT_STREQ(_T("{B5665124-2B19-40e2-A7BC-B44321E72C4B}"),
+  EXPECT_STREQ(_T("{C50974A0-5616-4DC6-AC6D-D4EFF6F5FAC3}"), kSetupMutex);
+  EXPECT_STREQ(_T("{4613C8D6-D26E-4F10-B494-72CFF6F0BF0B}"), kShutdownEvent);
+  EXPECT_STREQ(_T("{EC98B00C-9557-4627-ADCF-5832C3B09AA3}"),
                kCoreSingleInstance);
-  EXPECT_STREQ(_T("{C4F406E5-F024-4e3f-89A7-D5AB7663C3CD}"),
+  EXPECT_STREQ(_T("{08DA086F-9FC4-4B2E-954C-6D7D5ACD5167}"),
                kCrashHandlerSingleInstance);
-  EXPECT_STREQ(_T("{D0BB2EF1-C183-4cdb-B218-040922092869}"),
+  EXPECT_STREQ(_T("{0EADE80E-E9B8-4A5D-AF64-6D2A918F597C}"),
                kUpdateAppsSingleInstance);
-  EXPECT_STREQ(_T("%s-{F707E94F-D66B-4525-AD84-B1DA87D6A971}"),
+  EXPECT_STREQ(_T("%s-{0684C3E2-4EFA-4D1C-AE8D-A61945B94687}"),
                kInstallAppSingleInstance);
-  EXPECT_STREQ(_T("{0A175FBE-AEEC-4fea-855A-2AA549A88846}"),
+  EXPECT_STREQ(_T("{FE0E7F6B-B8BD-4EEE-A8F1-8CE625AEF520}"),
                kInstallManagerSerializer);
-  EXPECT_STREQ(_T("{C68009EA-1163-4498-8E93-D5C4E317D8CE}"),
+  EXPECT_STREQ(_T("{D6025E95-A77B-4ADB-B46F-65CC31BB40E7}"),
                kMetricsSerializer);
-  EXPECT_STREQ(_T("{66CC0160-ABB3-4066-AE47-1CA6AD5065C8}"),
+  EXPECT_STREQ(_T("{4E15433F-5E08-47A1-AA4F-B1D1657EE725}"),
                kRegistryAccessMutex);
 }
 
@@ -286,7 +294,7 @@ TEST(OmahaCustomizationTest, Constants_Services) {
   EXPECT_GU_STREQ(_T("gupdate"), kServicePrefix);
   EXPECT_GU_STREQ(_T("gupdatem"), kMediumServicePrefix);
 
-  EXPECT_STREQ(_T("GoogleUpdate.exe"), kServiceFileName);
+  EXPECT_STREQ(_T("BraveUpdate.exe"), kServiceFileName);
 }
 
 TEST(OmahaCustomizationTest, Constants_ScheduledTasks) {
@@ -334,7 +342,8 @@ TEST(OmahaCustomizationTest, ConfigManager_RegistryKeys) {
   EXPECT_GU_STREQ(_T("HKLM\\Software\\Google\\"), cm.registry_google(true));
 }
 
-TEST(OmahaCustomizationTest, IsInternalUser) {
+// Internal means google internal. Disabled.
+TEST(OmahaCustomizationTest, DISABLED_IsInternalUser) {
   if (IsBuildSystem()) {
   // The build system is not configured the same.
   // This may or may not be true in non-Google Update builds.
