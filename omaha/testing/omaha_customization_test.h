@@ -21,7 +21,7 @@
 #include "omaha/testing/unit_test.h"
 #include "omaha/base/app_util.h"
 
-#ifdef GOOGLE_UPDATE_BUILD
+#ifndef GOOGLE_UPDATE_BUILD
 // For Google Update builds, expect the values to be equal and for the
 // interface names to exist.
 
