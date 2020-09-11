@@ -73,21 +73,21 @@ namespace omaha {
 // TODO(omaha): We should probably move these to a separate
 // const_com_customization.h in goopdate\.
 TEST(OmahaCustomizationTest, Constants_ComProgIds) {
-  EXPECT_GU_STREQ(_T("GoogleUpdate.OnDemandCOMClassUser"), kProgIDOnDemandUser);
-  EXPECT_GU_STREQ(_T("GoogleUpdate.OnDemandCOMClassMachine"),
+  EXPECT_GU_STREQ(_T("BraveSoftwareUpdate.OnDemandCOMClassUser"), kProgIDOnDemandUser);
+  EXPECT_GU_STREQ(_T("BraveSoftwareUpdate.OnDemandCOMClassMachine"),
                   kProgIDOnDemandMachine);
-  EXPECT_GU_STREQ(_T("GoogleUpdate.OnDemandCOMClassSvc"), kProgIDOnDemandSvc);
+  EXPECT_GU_STREQ(_T("BraveSoftwareUpdate.OnDemandCOMClassSvc"), kProgIDOnDemandSvc);
 
-  EXPECT_GU_STREQ(_T("GoogleUpdate.Update3WebUser"), kProgIDUpdate3WebUser);
-  EXPECT_GU_STREQ(_T("GoogleUpdate.Update3WebMachine"),
+  EXPECT_GU_STREQ(_T("BraveSoftwareUpdate.Update3WebUser"), kProgIDUpdate3WebUser);
+  EXPECT_GU_STREQ(_T("BraveSoftwareUpdate.Update3WebMachine"),
                   kProgIDUpdate3WebMachine);
-  EXPECT_GU_STREQ(_T("GoogleUpdate.Update3WebSvc"), kProgIDUpdate3WebSvc);
+  EXPECT_GU_STREQ(_T("BraveSoftwareUpdate.Update3WebSvc"), kProgIDUpdate3WebSvc);
 
-  EXPECT_GU_STREQ(_T("GoogleUpdate.CoreClass"), kProgIDGoogleUpdateCoreService);
+  EXPECT_GU_STREQ(_T("BraveSoftwareUpdate.CoreClass"), kProgIDGoogleUpdateCoreService);
 
-  EXPECT_GU_STREQ(_T("GoogleUpdate.ProcessLauncher"), kProgIDProcessLauncher);
+  EXPECT_GU_STREQ(_T("BraveSoftwareUpdate.ProcessLauncher"), kProgIDProcessLauncher);
 
-  EXPECT_GU_STREQ(_T("GoogleUpdate.PolicyStatus"), kProgIDPolicyStatus);
+  EXPECT_GU_STREQ(_T("BraveSoftwareUpdate.PolicyStatus"), kProgIDPolicyStatus);
 }
 
 }  // namespace omaha
@@ -158,19 +158,19 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceNoTypeLibTest, PostInstallAction) {
 //
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceTest, TypeLib) {
-  EXPECT_GU_ID_EQ(_T("{655DD85A-3C0D-4674-9C58-AF7168C5861E}"),
+  EXPECT_GU_ID_EQ(_T("{6FF4F468-0B5A-4878-ACEB-86263DAAD877}"),
                   LIBID_GoogleUpdate3Lib);
 
   EXPECT_SUCCEEDED(GetTypeLibDocumentation());
   EXPECT_STREQ(_T("GoogleUpdate3Lib"), item_name_);
-  EXPECT_GU_STREQ(_T("Google Update 3.0 Type Library"), item_doc_string_);
+  EXPECT_GU_STREQ(_T("Omaha 3.0 Type Library"), item_doc_string_);
   EXPECT_EQ(0, help_context_);
   EXPECT_TRUE(!help_file_);
 }
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest, IGoogleUpdate3) {
   // TODO(omaha): Test uuid constants after extracting from IDLs.
-  EXPECT_GU_ID_EQ(_T("{6DB17455-4E85-46e7-9D23-E555E4B005AF}"),
+  EXPECT_GU_ID_EQ(_T("{7CB305B1-4D45-4668-AD91-677F87BED305}"),
                   __uuidof(IGoogleUpdate3));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("IGoogleUpdate3")));
@@ -182,7 +182,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest, IGoogleUpdate3) {
 // The IAppBundle interface name does not change for non-Google builds, but the
 // ID must. The same is true for many of the interfaces.
 TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppBundle) {
-  EXPECT_GU_ID_EQ(_T("{fe908cdd-22bb-472a-9870-1a0390e42f36}"),
+  EXPECT_GU_ID_EQ(_T("{1985533F-9B0F-490A-85C5-24F316E66FB2}"),
                   __uuidof(IAppBundle));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("IAppBundle")));
@@ -200,7 +200,7 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceTest, ULONG_PTR) {
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IApp) {
-  EXPECT_GU_ID_EQ(_T("{76F7B787-A67C-4c73-82C7-31F5E3AABC5C}"),
+  EXPECT_GU_ID_EQ(_T("{A4BCDF52-2179-4C77-8C5F-B8095712B563}"),
                   __uuidof(IApp));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("IApp")));
@@ -210,7 +210,7 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IApp) {
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IApp2) {
-  EXPECT_GU_ID_EQ(_T("{084D78A8-B084-4E14-A629-A2C419B0E3D9}"),
+  EXPECT_GU_ID_EQ(_T("{A147722A-5568-4B84-B401-86D744470CBF}"),
                   __uuidof(IApp2));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("IApp2")));
@@ -220,7 +220,7 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IApp2) {
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppCommand) {
-  EXPECT_GU_ID_EQ(_T("{4DE778FE-F195-4EE3-9DAB-FE446C239221}"),
+  EXPECT_GU_ID_EQ(_T("{4842EC21-0860-45B5-99F0-A1E6E7C11561}"),
                   __uuidof(IAppCommand));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("IAppCommand")));
@@ -230,7 +230,7 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppCommand) {
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppCommand2) {
-  EXPECT_GU_ID_EQ(_T("{3D05F64F-71E3-48A5-BF6B-83315BC8AE1F}"),
+  EXPECT_GU_ID_EQ(_T("{C11C073F-E6D0-4EF7-897B-AAF52498CD2F}"),
                   __uuidof(IAppCommand2));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("IAppCommand2")));
@@ -240,7 +240,7 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppCommand2) {
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppVersion) {
-  EXPECT_GU_ID_EQ(_T("{BCDCB538-01C0-46d1-A6A7-52F4D021C272}"),
+  EXPECT_GU_ID_EQ(_T("{F234546B-DACD-4374-97CF-7BADFAB76766}"),
                   __uuidof(IAppVersion));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("IAppVersion")));
@@ -250,7 +250,7 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppVersion) {
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IPackage) {
-  EXPECT_GU_ID_EQ(_T("{DCAB8386-4F03-4dbd-A366-D90BC9F68DE6}"),
+  EXPECT_GU_ID_EQ(_T("{C663DEBB-F082-4971-9F6E-35DE45C96F4E}"),
                   __uuidof(IPackage));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("IPackage")));
@@ -260,7 +260,7 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IPackage) {
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceTest, ICurrentState) {
-  EXPECT_GU_ID_EQ(_T("{247954F9-9EDC-4E68-8CC3-150C2B89EADF}"),
+  EXPECT_GU_ID_EQ(_T("{E6836CFF-5949-44BC-B6BE-9C8C48DD8D97}"),
                   __uuidof(ICurrentState));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("ICurrentState")));
@@ -272,24 +272,24 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceTest, ICurrentState) {
 // Not in the TypeLib because it derives from IUnknown.
 TEST_F(OmahaCustomizationGoopdateComInterfaceNoTypeLibTest,
        IRegistrationUpdateHook) {
-  EXPECT_GU_ID_EQ(_T("{4E223325-C16B-4eeb-AEDC-19AA99A237FA}"),
+  EXPECT_GU_ID_EQ(_T("{48B5E6B2-9383-4B1E-AAE7-720C4779ABA6}"),
                   __uuidof(IRegistrationUpdateHook));
 }
 
 // Not in the TypeLib because it derives from IUnknown.
 TEST_F(OmahaCustomizationGoopdateComInterfaceNoTypeLibTest, ICoCreateAsync) {
-  EXPECT_GU_ID_EQ(_T("{DAB1D343-1B2A-47f9-B445-93DC50704BFE}"),
+  EXPECT_GU_ID_EQ(_T("{DD84E356-3D21-44C8-83DD-6BEEC22FA427}"),
                   __uuidof(ICoCreateAsync));
 }
 
 // Not in the TypeLib because it derives from IUnknown.
 TEST_F(OmahaCustomizationGoopdateComInterfaceNoTypeLibTest, ICredentialDialog) {
-  EXPECT_GU_ID_EQ(_T("{b3a47570-0a85-4aea-8270-529d47899603}"),
+  EXPECT_GU_ID_EQ(_T("{660130E8-74E4-4821-A6FD-4E9A86E06470}"),
                   __uuidof(ICredentialDialog));
 }
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest, IPolicyStatus) {
-  EXPECT_GU_ID_EQ(_T("{F63F6F8B-ACD5-413C-A44B-0409136D26CB}"),
+  EXPECT_GU_ID_EQ(_T("{BFA9CB0F-987A-4E8A-A3BE-5988F315F35E}"),
                   __uuidof(IPolicyStatus));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("IPolicyStatus")));
@@ -299,7 +299,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest, IPolicyStatus) {
 }
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest, IGoogleUpdate3Web) {
-  EXPECT_GU_ID_EQ(_T("{494B20CF-282E-4BDD-9F5D-B70CB09D351E}"),
+  EXPECT_GU_ID_EQ(_T("{C9190589-ECEC-43F8-8AEC-62496BB87B26}"),
                   __uuidof(IGoogleUpdate3Web));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("IGoogleUpdate3Web")));
@@ -311,12 +311,12 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest, IGoogleUpdate3Web) {
 // Not in the TypeLib because it derives from IUnknown.
 TEST_F(OmahaCustomizationGoopdateComInterfaceNoTypeLibTest,
        IGoogleUpdate3WebSecurity) {
-  EXPECT_GU_ID_EQ(_T("{2D363682-561D-4c3a-81C6-F2F82107562A}"),
+  EXPECT_GU_ID_EQ(_T("{24D704AD-AC42-49F2-BB4F-68BA77C98E91}"),
                   __uuidof(IGoogleUpdate3WebSecurity));
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppBundleWeb) {
-  EXPECT_GU_ID_EQ(_T("{DD42475D-6D46-496a-924E-BD5630B4CBBA}"),
+  EXPECT_GU_ID_EQ(_T("{852A0F87-D117-4B7C-ABA9-2F76D91BCB9D}"),
                   __uuidof(IAppBundleWeb));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("IAppBundleWeb")));
@@ -326,7 +326,7 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppBundleWeb) {
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppWeb) {
-  EXPECT_GU_ID_EQ(_T("{18D0F672-18B4-48e6-AD36-6E6BF01DBBC4}"),
+  EXPECT_GU_ID_EQ(_T("{FB43AAD0-DDBA-4D01-A3E0-FAB100E7926B}"),
                   __uuidof(IAppWeb));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("IAppWeb")));
@@ -336,7 +336,7 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppWeb) {
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppCommandWeb) {
-  EXPECT_GU_ID_EQ(_T("{8476CE12-AE1F-4198-805C-BA0F9B783F57}"),
+  EXPECT_GU_ID_EQ(_T("{19F4616B-B7DD-4B3F-8084-C81C5C77AAA4}"),
                   __uuidof(IAppCommandWeb));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("IAppCommandWeb")));
@@ -346,7 +346,7 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppCommandWeb) {
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppVersionWeb) {
-  EXPECT_GU_ID_EQ(_T("{0CD01D1E-4A1C-489d-93B9-9B6672877C57}"),
+  EXPECT_GU_ID_EQ(_T("{35A4470F-5EEC-4715-A2DC-6AA9F8E21183}"),
                   __uuidof(IAppVersionWeb));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("IAppVersionWeb")));
@@ -356,7 +356,7 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceTest, IAppVersionWeb) {
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceTest, ICoCreateAsyncStatus) {
-  EXPECT_GU_ID_EQ(_T("{2E629606-312A-482f-9B12-2C4ABF6F0B6D}"),
+  EXPECT_GU_ID_EQ(_T("{7A24060E-533F-4962-9E15-34BD82555FA7}"),
                   __uuidof(ICoCreateAsyncStatus));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("ICoCreateAsyncStatus")));
@@ -367,7 +367,7 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceTest, ICoCreateAsyncStatus) {
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               GoogleUpdate3UserClass) {
-  EXPECT_GU_ID_EQ(_T("{022105BD-948A-40c9-AB42-A3300DDF097F}"),
+  EXPECT_GU_ID_EQ(_T("{2CF4A521-EC1E-4075-A20B-5DE3E5B89B1B}"),
                   __uuidof(GoogleUpdate3UserClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("GoogleUpdate3UserClass")));
@@ -379,7 +379,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               GoogleUpdate3ServiceClass) {
-  EXPECT_GU_ID_EQ(_T("{4EB61BAC-A3B6-4760-9581-655041EF4D69}"),
+  EXPECT_GU_ID_EQ(_T("{08F15E98-0442-45D3-82F1-F67495CC51EB}"),
                   __uuidof(GoogleUpdate3ServiceClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("GoogleUpdate3ServiceClass")));
@@ -391,7 +391,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               GoogleUpdate3WebUserClass) {
-  EXPECT_GU_ID_EQ(_T("{22181302-A8A6-4f84-A541-E5CBFC70CC43}"),
+  EXPECT_GU_ID_EQ(_T("{2F78AECB-0A7F-4474-89D5-C325293DE960}"),
                   __uuidof(GoogleUpdate3WebUserClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("GoogleUpdate3WebUserClass")));
@@ -403,7 +403,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               GoogleUpdate3WebMachineClass) {
-  EXPECT_GU_ID_EQ(_T("{8A1D4361-2C08-4700-A351-3EAA9CBFF5E4}"),
+  EXPECT_GU_ID_EQ(_T("{00B16F95-319A-4F01-AC81-CE69B8F4E387}"),
                   __uuidof(GoogleUpdate3WebMachineClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("GoogleUpdate3WebMachineClass")));
@@ -416,7 +416,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               GoogleUpdate3WebServiceClass) {
-  EXPECT_GU_ID_EQ(_T("{534F5323-3569-4f42-919D-1E1CF93E5BF6}"),
+  EXPECT_GU_ID_EQ(_T("{3A9D7221-2278-41DD-930B-C2356B7D3725}"),
                   __uuidof(GoogleUpdate3WebServiceClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("GoogleUpdate3WebServiceClass")));
@@ -427,7 +427,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               GoogleUpdate3WebMachineFallbackClass) {
-  EXPECT_GU_ID_EQ(_T("{598FE0E5-E02D-465d-9A9D-37974A28FD42}"),
+  EXPECT_GU_ID_EQ(_T("{66CE3D6C-0B35-4F78-AC77-39728A75CB75}"),
                   __uuidof(GoogleUpdate3WebMachineFallbackClass));
 
   EXPECT_SUCCEEDED(
@@ -440,7 +440,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               CurrentStateUserClass) {
-  EXPECT_GU_ID_EQ(_T("{E8CF3E55-F919-49d9-ABC0-948E6CB34B9F}"),
+  EXPECT_GU_ID_EQ(_T("{06B74C04-E813-4DD4-A972-172836EFA8D6}"),
                   __uuidof(CurrentStateUserClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("CurrentStateUserClass")));
@@ -451,7 +451,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               CurrentStateMachineClass) {
-  EXPECT_GU_ID_EQ(_T("{9D6AA569-9F30-41ad-885A-346685C74928}"),
+  EXPECT_GU_ID_EQ(_T("{BC03C0E4-1528-4299-89B2-419644FA48AC}"),
                   __uuidof(CurrentStateMachineClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("CurrentStateMachineClass")));
@@ -462,7 +462,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               CoCreateAsyncClass) {
-  EXPECT_GU_ID_EQ(_T("{7DE94008-8AFD-4c70-9728-C6FBFFF6A73E}"),
+  EXPECT_GU_ID_EQ(_T("{8F6D9FE5-6ED3-43A3-80D2-EA8766D65352}"),
                   __uuidof(CoCreateAsyncClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("CoCreateAsyncClass")));
@@ -473,7 +473,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               CredentialDialogUserClass) {
-  EXPECT_GU_ID_EQ(_T("{e67be843-bbbe-4484-95fb-05271ae86750}"),
+  EXPECT_GU_ID_EQ(_T("{4C738ABE-2ED7-4BF6-B668-046DC1A72C00}"),
                   __uuidof(CredentialDialogUserClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("CredentialDialogUserClass")));
@@ -484,7 +484,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               CredentialDialogMachineClass) {
-  EXPECT_GU_ID_EQ(_T("{25461599-633d-42b1-84fb-7cd68d026e53}"),
+  EXPECT_GU_ID_EQ(_T("{B5D1924F-CB80-47AA-8DEC-5E0854A42A73}"),
                   __uuidof(CredentialDialogMachineClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("CredentialDialogMachineClass")));
@@ -495,7 +495,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               PolicyStatusClass) {
-  EXPECT_GU_ID_EQ(_T("{521FDB42-7130-4806-822A-FC5163FAD983}"),
+  EXPECT_GU_ID_EQ(_T("{B9AEB1CC-DF9B-45CB-B70B-084D2E869A1C}"),
                   __uuidof(PolicyStatusClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("PolicyStatusClass")));
@@ -522,7 +522,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               ProcessLauncherClass) {
-  EXPECT_GU_ID_EQ(_T("{ABC01078-F197-4b0b-ADBC-CFE684B39C82}"),
+  EXPECT_GU_ID_EQ(_T("{4C3BA8F3-1264-4BDB-BB2D-CA44734AD00D}"),
                   __uuidof(ProcessLauncherClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("ProcessLauncherClass")));
@@ -533,7 +533,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               OnDemandUserAppsClass) {
-  EXPECT_GU_ID_EQ(_T("{2F0E2680-9FF5-43c0-B76E-114A56E93598}"),
+  EXPECT_GU_ID_EQ(_T("{6DA8171A-7CEC-4E45-BDED-9F287AD7C854}"),
                   __uuidof(OnDemandUserAppsClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("OnDemandUserAppsClass")));
@@ -545,7 +545,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               OnDemandMachineAppsClass) {
-  EXPECT_GU_ID_EQ(_T("{6F8BD55B-E83D-4a47-85BE-81FFA8057A69}"),
+  EXPECT_GU_ID_EQ(_T("{28C83F57-E4C0-4B54-B187-585C51EE8F9C}"),
                   __uuidof(OnDemandMachineAppsClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("OnDemandMachineAppsClass")));
@@ -557,7 +557,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               OnDemandMachineAppsServiceClass) {
-  EXPECT_GU_ID_EQ(_T("{9465B4B4-5216-4042-9A2C-754D3BCDC410}"),
+  EXPECT_GU_ID_EQ(_T("{D7D7525F-5DF4-4C9D-8781-C02F39F973E6}"),
                   __uuidof(OnDemandMachineAppsServiceClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("OnDemandMachineAppsServiceClass")));
@@ -569,7 +569,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               OnDemandMachineAppsFallbackClass) {
-  EXPECT_GU_ID_EQ(_T("{B3D28DBD-0DFA-40e4-8071-520767BADC7E}"),
+  EXPECT_GU_ID_EQ(_T("{3282EB12-D954-4FD2-A2E1-C942C8745C65}"),
                   __uuidof(OnDemandMachineAppsFallbackClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("OnDemandMachineAppsFallbackClass")));
@@ -581,7 +581,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               GoogleUpdateCoreClass) {
-  EXPECT_GU_ID_EQ(_T("{E225E692-4B47-4777-9BED-4FD7FE257F0E}"),
+  EXPECT_GU_ID_EQ(_T("{3AD2D487-D166-4160-8E36-1AE505233A55}"),
                   __uuidof(GoogleUpdateCoreClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("GoogleUpdateCoreClass")));
@@ -592,7 +592,7 @@ TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
 
 TEST_GU_INT_F(OmahaCustomizationGoopdateComInterfaceTest,
               GoogleUpdateCoreMachineClass) {
-  EXPECT_GU_ID_EQ(_T("{9B2340A0-4068-43d6-B404-32E27217859D}"),
+  EXPECT_GU_ID_EQ(_T("{F7FF255A-A593-41BD-A69B-E05D72B72756}"),
                   __uuidof(GoogleUpdateCoreMachineClass));
 
   EXPECT_SUCCEEDED(GetDocumentation(_T("GoogleUpdateCoreMachineClass")));
@@ -616,37 +616,37 @@ TEST_F(OmahaCustomizationGoopdateComInterfaceTest, VerifyNoNewInterfaces) {
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceNoTypeLibTest,
        IBrowserHttpRequest2) {
-  EXPECT_GU_ID_EQ(_T("{5B25A8DC-1780-4178-A629-6BE8B8DEFAA2}"),
+  EXPECT_GU_ID_EQ(_T("{AAE4AD28-500D-43BA-9F54-730CA146C190}"),
                   __uuidof(IBrowserHttpRequest2));
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceNoTypeLibTest,
        IProcessLauncher) {
-  EXPECT_GU_ID_EQ(_T("{128C2DA6-2BC0-44c0-B3F6-4EC22E647964}"),
+  EXPECT_GU_ID_EQ(_T("{70E5ECF5-2CA7-4019-9B23-916789A13C2C}"),
                   __uuidof(IProcessLauncher));
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceNoTypeLibTest,
        IProgressWndEvents) {
-  EXPECT_GU_ID_EQ(_T("{1C642CED-CA3B-4013-A9DF-CA6CE5FF6503}"),
+  EXPECT_GU_ID_EQ(_T("{8504FB26-FC3E-4C1C-9C94-46EC93E6BA63}"),
                   __uuidof(IProgressWndEvents));
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceNoTypeLibTest,
        IJobObserver) {
-  EXPECT_GU_ID_EQ(_T("{49D7563B-2DDB-4831-88C8-768A53833837}"),
+  EXPECT_GU_ID_EQ(_T("{7CFC4E00-1C9D-443D-B5BE-CEEEAC1443AF}"),
                   __uuidof(IJobObserver));
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceNoTypeLibTest,
        IGoogleUpdate) {
-  EXPECT_GU_ID_EQ(_T("{31AC3F11-E5EA-4a85-8A3D-8E095A39C27B}"),
+  EXPECT_GU_ID_EQ(_T("{4C929BFE-4FA4-488D-B1E2-82ECD6F076C8}"),
                   __uuidof(IGoogleUpdate));
 }
 
 TEST_F(OmahaCustomizationGoopdateComInterfaceNoTypeLibTest,
        IGoogleUpdateCore) {
-  EXPECT_GU_ID_EQ(_T("{909489C2-85A6-4322-AA56-D25278649D67}"),
+  EXPECT_GU_ID_EQ(_T("{10479D64-2C5F-46CD-9BC8-FD04FF4D02D8}"),
                   __uuidof(IGoogleUpdateCore));
 }
 
