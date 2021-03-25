@@ -112,38 +112,24 @@ def Tagging(args, omaha_dir, debug):
   silent_tag = silent_tag.replace("TAG_APP_NAME", args.tag_app_name[0])
   silent_tag = silent_tag.replace("TAG_AP", args.tag_ap[0])
 
-  source_standalone_installer = os.path.join(omaha_out_dir, 'Test_Installers', 'UNOFFICIAL_' + args.standalone_installer_exe[0])
-  target_standalone_installer_file = args.standalone_installer_exe[0]
-  if debug:
-    target_standalone_installer_file = 'Debug' + target_standalone_installer_file
-  target_standalone_installer = os.path.join(args.root_out_dir[0], target_standalone_installer_file)
-  command = [apply_tag_exe, source_standalone_installer, target_standalone_installer, tag]
-  sp.check_call(command, stderr=sp.STDOUT)
+  ApplyTag(omaha_dir, debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], tag, args.root_out_dir[0])
+  ApplyTag(omaha_dir, debug, 'Test_Installers/UNOFFICIAL_' + args.silent_installer_exe[0], args.silent_installer_exe[0], silent_tag, args.root_out_dir[0])
+  ApplyTag(omaha_dir, debug, 'staging/BraveUpdateSetup.exe', args.stub_installer_exe[0], tag, args.root_out_dir[0])
+  ApplyTag(omaha_dir, debug, 'staging/BraveUpdateSetup.exe', args.stub_silent_exe[0], silent_tag, args.root_out_dir[0])
 
-  source_silent_installer = os.path.join(omaha_out_dir, 'Test_Installers', 'UNOFFICIAL_' + args.silent_installer_exe[0])
-  target_silent_installer_file = args.silent_installer_exe[0]
+def ApplyTag(omaha_dir, debug, source_installer, target_installer_file, tag, root_out_dir):
+  last_win_dir = 'opt-win'
   if debug:
-    target_silent_installer_file = 'Debug' + target_silent_installer_file
-  target_silent_installer = os.path.join(args.root_out_dir[0], target_silent_installer_file)
-  command = [apply_tag_exe, source_silent_installer, target_silent_installer, silent_tag]
-  sp.check_call(command, stderr=sp.STDOUT)
+    last_win_dir = 'dbg-win'
+  omaha_out_dir = os.path.join(omaha_dir, 'omaha', 'scons-out', last_win_dir)
+  apply_tag_exe = os.path.join(omaha_out_dir, 'obj', 'tools', 'ApplyTag', 'ApplyTag.exe')
 
-  source_stub_installer = os.path.join(omaha_out_dir, 'staging', 'BraveUpdateSetup.exe')
-  target_stub_installer_file = args.stub_installer_exe[0]
+  source_installer_path = os.path.join(omaha_out_dir, *source_installer.split('/'))
   if debug:
-    target_stub_installer_file = 'Debug' + target_stub_installer_file
-  target_stub_installer = os.path.join(args.root_out_dir[0], target_stub_installer_file)
-  command = [apply_tag_exe, source_stub_installer, target_stub_installer, tag]
+    target_installer_file = 'Debug' + target_installer_file
+  target_installer_path = os.path.join(root_out_dir, target_installer_file)
+  command = [apply_tag_exe, source_installer_path, target_installer_path, tag]
   sp.check_call(command, stderr=sp.STDOUT)
-
-  source_silent_stub_installer = os.path.join(omaha_out_dir, 'staging', 'BraveUpdateSetup.exe')
-  target_silent_stub_installer_file = args.stub_silent_exe[0]
-  if debug:
-    target_silent_stub_installer_file = 'Debug' + target_silent_stub_installer_file
-  target_silent_stub_installer = os.path.join(args.root_out_dir[0], target_silent_stub_installer_file)
-  command = [apply_tag_exe, source_silent_stub_installer, target_silent_stub_installer, silent_tag]
-  sp.check_call(command, stderr=sp.STDOUT)
-  return
 
 def ParseArgs():
   parser = argparse.ArgumentParser(description='build omaha installer')
