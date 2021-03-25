@@ -51,23 +51,36 @@ def Copy_Untagged_Installers(args, omaha_dir, debug):
 
   shutil.copyfile(source_untagged_stub_installer, target_untagged_stub_installer)
 
-def PrepareStandalone(args, omaha_dir):
+def PrepareUntaggedInstallers(args, omaha_dir):
+  PrepareUntaggedStandalone(args, omaha_dir)
+  PrepareUntaggedSilent(args, omaha_dir)
+
+def PrepareUntaggedStandalone(args, omaha_dir):
+  PrepareUntagged(omaha_dir, args.root_out_dir[0], args.brave_installer_exe[0], args.guid[0], args.install_switch[0], args.brave_full_version[0],
+    [(args.standalone_installer_exe[0], args.brave_installer_exe[0]),
+     (args.untagged_installer_exe[0], args.untagged_installer_exe[0])]
+  )
+
+def PrepareUntaggedSilent(args, omaha_dir):
+  PrepareUntagged(
+    omaha_dir, args.root_out_dir[0], args.brave_installer_exe[0], args.guid[0], '--do-not-launch-chrome ' + args.install_switch[0], args.brave_full_version[0],
+    [(args.silent_installer_exe[0], args.silent_installer_exe[0])]
+  )
+
+def PrepareUntagged(omaha_dir, root_out_dir, brave_installer_exe, app_guid, install_switch, brave_full_version, details):
   # copy brave installer to create standalone installer.
-  installer_file = os.path.join(args.root_out_dir[0], args.brave_installer_exe[0])
-  shutil.copyfile(installer_file, os.path.join(omaha_dir, 'omaha', 'standalone', args.brave_installer_exe[0]))
-  shutil.copyfile(installer_file, os.path.join(omaha_dir, 'omaha', 'standalone', args.untagged_installer_exe[0]))
-  shutil.copyfile(installer_file, os.path.join(omaha_dir, 'omaha', 'standalone', args.silent_installer_exe[0]))
+  installer_file = os.path.join(root_out_dir, brave_installer_exe)
 
   # prepare manifset file.
   f = open(os.path.join(omaha_dir, 'manifest_template.gup'),'r')
   filedata = f.read()
   f.close()
 
-  newdata = filedata.replace("APP_GUID", args.guid[0])
-  newdata = newdata.replace("BRAVE_INSTALLER_EXE", args.brave_installer_exe[0])
-  newdata = newdata.replace("INSTALL_SWITCH", args.install_switch[0])
+  newdata = filedata.replace("APP_GUID", app_guid)
+  newdata = newdata.replace("BRAVE_INSTALLER_EXE", brave_installer_exe)
+  newdata = newdata.replace("INSTALL_SWITCH", install_switch)
 
-  target_manifest_file = args.guid[0] + '.gup'
+  target_manifest_file = app_guid + '.gup'
   target_manifest_path = os.path.join(omaha_dir, 'omaha', 'standalone', 'manifests', target_manifest_file)
   f = open(target_manifest_path,'w')
   f.write(newdata)
@@ -78,9 +91,9 @@ def PrepareStandalone(args, omaha_dir):
   # Clear the file:
   open(target_installer_text_path,'w').close()
 
-  AddToStandaloneInstallersTxt(target_installer_text_path, args.standalone_installer_exe[0], args.guid[0], args.brave_installer_exe[0], args.brave_full_version[0])
-  AddToStandaloneInstallersTxt(target_installer_text_path, args.untagged_installer_exe[0], args.guid[0], args.untagged_installer_exe[0], args.brave_full_version[0])
-  AddToStandaloneInstallersTxt(target_installer_text_path, args.silent_installer_exe[0], args.guid[0], args.silent_installer_exe[0], args.brave_full_version[0])
+  for file_name, installer_exe in details:
+    AddToStandaloneInstallersTxt(target_installer_text_path, file_name, app_guid, installer_exe, brave_full_version)
+    shutil.copyfile(installer_file, os.path.join(omaha_dir, 'omaha', 'standalone', installer_exe))
 
 def AddToStandaloneInstallersTxt(target_installer_text_path, file_name, app_guid, brave_installer_exe, brave_version):
   installer_text = "('FILE_NAME', 'FILE_NAME', [('BRAVE_VERSION', '$MAIN_DIR/standalone/BRAVE_INSTALLER_EXE', 'APP_GUID')], None, None, None, False, '', '')"
@@ -165,9 +178,14 @@ def Main(args):
   args = ParseArgs()
   omaha_dir = os.path.join(args.root_out_dir[0], '..', '..', 'brave', 'vendor', 'omaha')
 
-  PrepareStandalone(args, omaha_dir)
+  PrepareUntaggedStandalone(args, omaha_dir)
   Build(omaha_dir, False)
-  Tagging(args, omaha_dir, False)
+  TagStandalone(args, omaha_dir, False)
+
+  PrepareUntaggedSilent(args, omaha_dir)
+  Build(omaha_dir, False)
+  TagSilent(args, omaha_dir, False)
+
   Copy_Untagged_Installers(args, omaha_dir, False)
 
   return 0
