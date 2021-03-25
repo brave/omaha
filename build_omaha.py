@@ -73,32 +73,23 @@ def PrepareStandalone(args, omaha_dir):
   f.write(newdata)
   f.close()
 
-  # update standalone_installers.txt.
-  installer_text = "('STANDALONE_FILE_NAME', 'STANDALONE_FILE_NAME', [('BRAVE_VERSION', '$MAIN_DIR/standalone/BRAVE_INSTALLER_EXE', 'APP_GUID')], None, None, None, False, '', '')"
-  installer_text = installer_text.replace("APP_GUID", args.guid[0])
-  installer_text = installer_text.replace("STANDALONE_FILE_NAME", os.path.splitext(args.standalone_installer_exe[0])[0])
-  installer_text = installer_text.replace("BRAVE_INSTALLER_EXE", args.brave_installer_exe[0])
-  installer_text = installer_text.replace("BRAVE_VERSION", args.brave_full_version[0])
-
-  # add untagged installer info to standalone_installers.txt.
-  untagged_installer_text = "('UNTAGGED_FILE_NAME', 'UNTAGGED_FILE_NAME', [('BRAVE_VERSION', '$MAIN_DIR/standalone/UNTAGGED_INSTALLER_EXE', 'APP_GUID')], None, None, None, False, '', '')"
-  untagged_installer_text = untagged_installer_text.replace("APP_GUID", args.guid[0])
-  untagged_installer_text = untagged_installer_text.replace("UNTAGGED_FILE_NAME", os.path.splitext(args.untagged_installer_exe[0])[0])
-  untagged_installer_text = untagged_installer_text.replace("UNTAGGED_INSTALLER_EXE", args.untagged_installer_exe[0])
-  untagged_installer_text = untagged_installer_text.replace("BRAVE_VERSION", args.brave_full_version[0])
-
-  # add silent installer info to standalone_installers.txt.
-  silent_installer_text = "('SILENT_FILE_NAME', 'SILENT_FILE_NAME', [('BRAVE_VERSION', '$MAIN_DIR/standalone/SILENT_INSTALLER_EXE', 'APP_GUID')], None, None, None, False, '', '')"
-  silent_installer_text = silent_installer_text.replace("APP_GUID", args.guid[0])
-  silent_installer_text = silent_installer_text.replace("SILENT_FILE_NAME", os.path.splitext(args.silent_installer_exe[0])[0])
-  silent_installer_text = silent_installer_text.replace("SILENT_INSTALLER_EXE", args.silent_installer_exe[0])
-  silent_installer_text = silent_installer_text.replace("BRAVE_VERSION", args.brave_full_version[0])
-
   target_installer_text_path = os.path.join(omaha_dir, 'omaha', 'standalone', 'standalone_installers.txt')
-  f = open(target_installer_text_path,'w')
+
+  # Clear the file:
+  open(target_installer_text_path,'w').close()
+
+  AddToStandaloneInstallersTxt(target_installer_text_path, args.standalone_installer_exe[0], args.guid[0], args.brave_installer_exe[0], args.brave_full_version[0])
+  AddToStandaloneInstallersTxt(target_installer_text_path, args.untagged_installer_exe[0], args.guid[0], args.untagged_installer_exe[0], args.brave_full_version[0])
+  AddToStandaloneInstallersTxt(target_installer_text_path, args.silent_installer_exe[0], args.guid[0], args.silent_installer_exe[0], args.brave_full_version[0])
+
+def AddToStandaloneInstallersTxt(target_installer_text_path, file_name, app_guid, brave_installer_exe, brave_version):
+  installer_text = "('FILE_NAME', 'FILE_NAME', [('BRAVE_VERSION', '$MAIN_DIR/standalone/BRAVE_INSTALLER_EXE', 'APP_GUID')], None, None, None, False, '', '')"
+  installer_text = installer_text.replace("FILE_NAME", os.path.splitext(file_name)[0])
+  installer_text = installer_text.replace("APP_GUID", app_guid)
+  installer_text = installer_text.replace("BRAVE_INSTALLER_EXE", brave_installer_exe)
+  installer_text = installer_text.replace("BRAVE_VERSION", brave_version)
+  f = open(target_installer_text_path,'a+')
   f.write(installer_text + '\n')
-  f.write(untagged_installer_text + '\n')
-  f.write(silent_installer_text)
   f.close()
 
 def Tagging(args, omaha_dir, debug):
