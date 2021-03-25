@@ -10,7 +10,7 @@ import subprocess as sp
 import sys
 
 
-def Build(args, omaha_dir, build_all):
+def Build(omaha_dir, build_all):
   # move to omaha/omaha and start build.
   os.chdir(os.path.join(omaha_dir, 'omaha'))
 
@@ -189,7 +189,7 @@ def Main(args):
   omaha_dir = os.path.join(args.root_out_dir[0], '..', '..', 'brave', 'vendor', 'omaha')
 
   PrepareStandalone(args, omaha_dir)
-  Build(args, omaha_dir, False)
+  Build(omaha_dir, False)
   Tagging(args, omaha_dir, False)
   Copy_Untagged_Installers(args, omaha_dir, False)
 
