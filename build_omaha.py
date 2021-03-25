@@ -93,12 +93,10 @@ def AddToStandaloneInstallersTxt(target_installer_text_path, file_name, app_guid
   f.close()
 
 def Tagging(args, omaha_dir, debug):
-  last_win_dir = 'opt-win'
-  if debug:
-    last_win_dir = 'dbg-win'
-  omaha_out_dir = os.path.join(omaha_dir, 'omaha', 'scons-out', last_win_dir)
-  apply_tag_exe = os.path.join(omaha_out_dir, 'obj', 'tools', 'ApplyTag', 'ApplyTag.exe')
+  TagStandalone(args, omaha_dir, debug)
+  TagSilent(args, omaha_dir, debug)
 
+def TagStandalone(args, omaha_dir, debug):
   tag_admin = os.environ.get('TAG_ADMIN', 'prefers')
   tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&needsadmin=TAG_ADMIN&ap=TAG_AP'
   tag = tag.replace("TAG_ADMIN", tag_admin)
@@ -106,15 +104,17 @@ def Tagging(args, omaha_dir, debug):
   tag = tag.replace("TAG_APP_NAME", args.tag_app_name[0])
   tag = tag.replace("TAG_AP", args.tag_ap[0])
 
+  ApplyTag(omaha_dir, debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], tag, args.root_out_dir[0])
+  ApplyTag(omaha_dir, debug, 'staging/BraveUpdateSetup.exe', args.stub_installer_exe[0], tag, args.root_out_dir[0])
+
+def TagSilent(args, omaha_dir, debug):
   silent_tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&needsadmin=TAG_ADMIN&ap=TAG_AP&silent'
   silent_tag = silent_tag.replace("TAG_ADMIN", 'False')
   silent_tag = silent_tag.replace("APP_GUID", args.guid[0])
   silent_tag = silent_tag.replace("TAG_APP_NAME", args.tag_app_name[0])
   silent_tag = silent_tag.replace("TAG_AP", args.tag_ap[0])
 
-  ApplyTag(omaha_dir, debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], tag, args.root_out_dir[0])
   ApplyTag(omaha_dir, debug, 'Test_Installers/UNOFFICIAL_' + args.silent_installer_exe[0], args.silent_installer_exe[0], silent_tag, args.root_out_dir[0])
-  ApplyTag(omaha_dir, debug, 'staging/BraveUpdateSetup.exe', args.stub_installer_exe[0], tag, args.root_out_dir[0])
   ApplyTag(omaha_dir, debug, 'staging/BraveUpdateSetup.exe', args.stub_silent_exe[0], silent_tag, args.root_out_dir[0])
 
 def ApplyTag(omaha_dir, debug, source_installer, target_installer_file, tag, root_out_dir):
