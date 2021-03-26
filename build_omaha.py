@@ -51,10 +51,6 @@ def Copy_Untagged_Installers(args, omaha_dir, debug):
 
   shutil.copyfile(source_untagged_stub_installer, target_untagged_stub_installer)
 
-def PrepareUntaggedInstallers(args, omaha_dir):
-  PrepareUntaggedStandalone(args, omaha_dir)
-  PrepareUntaggedSilent(args, omaha_dir)
-
 def PrepareUntaggedStandalone(args, omaha_dir):
   PrepareUntagged(omaha_dir, args.root_out_dir[0], args.brave_installer_exe[0], args.guid[0], args.install_switch[0], args.brave_full_version[0],
     [(args.standalone_installer_exe[0], args.brave_installer_exe[0]),
@@ -104,10 +100,6 @@ def AddToStandaloneInstallersTxt(target_installer_text_path, file_name, app_guid
   f = open(target_installer_text_path,'a+')
   f.write(installer_text + '\n')
   f.close()
-
-def Tagging(args, omaha_dir, debug):
-  TagStandalone(args, omaha_dir, debug)
-  TagSilent(args, omaha_dir, debug)
 
 def TagStandalone(args, omaha_dir, debug):
   tag_admin = os.environ.get('TAG_ADMIN', 'prefers')
