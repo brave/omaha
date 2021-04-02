@@ -10,7 +10,7 @@ import subprocess as sp
 import sys
 
 
-def Build(omaha_dir, build_all):
+def build(omaha_dir, build_all):
   # move to omaha/omaha and start build.
   os.chdir(os.path.join(omaha_dir, 'omaha'))
 
@@ -29,7 +29,7 @@ def Build(omaha_dir, build_all):
 
   sp.check_call(command, stderr=sp.STDOUT)
 
-def Copy_Untagged_Installers(args, omaha_dir, debug):
+def copy_untagged_installers(args, omaha_dir, debug):
   last_win_dir = 'opt-win'
   if debug:
     last_win_dir = 'dbg-win'
@@ -51,19 +51,19 @@ def Copy_Untagged_Installers(args, omaha_dir, debug):
 
   shutil.copyfile(source_untagged_stub_installer, target_untagged_stub_installer)
 
-def PrepareUntaggedStandalone(args, omaha_dir):
-  PrepareUntagged(omaha_dir, args.root_out_dir[0], args.brave_installer_exe[0], args.guid[0], args.install_switch[0], args.brave_full_version[0],
+def prepare_untagged_standalone(args, omaha_dir):
+  prepare_untagged(omaha_dir, args.root_out_dir[0], args.brave_installer_exe[0], args.guid[0], args.install_switch[0], args.brave_full_version[0],
     [(args.standalone_installer_exe[0], args.brave_installer_exe[0]),
      (args.untagged_installer_exe[0], args.untagged_installer_exe[0])]
   )
 
-def PrepareUntaggedSilent(args, omaha_dir):
-  PrepareUntagged(
+def prepare_untagged_silent(args, omaha_dir):
+  prepare_untagged(
     omaha_dir, args.root_out_dir[0], args.brave_installer_exe[0], args.guid[0], '--do-not-launch-chrome ' + args.install_switch[0], args.brave_full_version[0],
     [(args.silent_installer_exe[0], args.silent_installer_exe[0])]
   )
 
-def PrepareUntagged(omaha_dir, root_out_dir, brave_installer_exe, app_guid, install_switch, brave_full_version, details):
+def prepare_untagged(omaha_dir, root_out_dir, brave_installer_exe, app_guid, install_switch, brave_full_version, details):
   # copy brave installer to create standalone installer.
   installer_file = os.path.join(root_out_dir, brave_installer_exe)
 
@@ -88,10 +88,10 @@ def PrepareUntagged(omaha_dir, root_out_dir, brave_installer_exe, app_guid, inst
   open(target_installer_text_path,'w').close()
 
   for file_name, installer_exe in details:
-    AddToStandaloneInstallersTxt(target_installer_text_path, file_name, app_guid, installer_exe, brave_full_version)
+    add_to_standalone_installers_txt(target_installer_text_path, file_name, app_guid, installer_exe, brave_full_version)
     shutil.copyfile(installer_file, os.path.join(omaha_dir, 'omaha', 'standalone', installer_exe))
 
-def AddToStandaloneInstallersTxt(target_installer_text_path, file_name, app_guid, brave_installer_exe, brave_version):
+def add_to_standalone_installers_txt(target_installer_text_path, file_name, app_guid, brave_installer_exe, brave_version):
   installer_text = "('FILE_NAME', 'FILE_NAME', [('BRAVE_VERSION', '$MAIN_DIR/standalone/BRAVE_INSTALLER_EXE', 'APP_GUID')], None, None, None, False, '', '')"
   installer_text = installer_text.replace("FILE_NAME", os.path.splitext(file_name)[0])
   installer_text = installer_text.replace("APP_GUID", app_guid)
@@ -101,7 +101,7 @@ def AddToStandaloneInstallersTxt(target_installer_text_path, file_name, app_guid
   f.write(installer_text + '\n')
   f.close()
 
-def TagStandalone(args, omaha_dir, debug):
+def tag_standalone(args, omaha_dir, debug):
   tag_admin = os.environ.get('TAG_ADMIN', 'prefers')
   tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&needsadmin=TAG_ADMIN&ap=TAG_AP'
   tag = tag.replace("TAG_ADMIN", tag_admin)
@@ -109,19 +109,19 @@ def TagStandalone(args, omaha_dir, debug):
   tag = tag.replace("TAG_APP_NAME", args.tag_app_name[0])
   tag = tag.replace("TAG_AP", args.tag_ap[0])
 
-  ApplyTag(omaha_dir, debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], tag, args.root_out_dir[0])
-  ApplyTag(omaha_dir, debug, 'staging/BraveUpdateSetup.exe', args.stub_installer_exe[0], tag, args.root_out_dir[0])
+  apply_tag(omaha_dir, debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], tag, args.root_out_dir[0])
+  apply_tag(omaha_dir, debug, 'staging/BraveUpdateSetup.exe', args.stub_installer_exe[0], tag, args.root_out_dir[0])
 
-def TagSilent(args, omaha_dir, debug):
+def tag_silent(args, omaha_dir, debug):
   silent_tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&needsadmin=TAG_ADMIN&ap=TAG_AP&silent'
   silent_tag = silent_tag.replace("TAG_ADMIN", 'False')
   silent_tag = silent_tag.replace("APP_GUID", args.guid[0])
   silent_tag = silent_tag.replace("TAG_APP_NAME", args.tag_app_name[0])
   silent_tag = silent_tag.replace("TAG_AP", args.tag_ap[0])
 
-  ApplyTag(omaha_dir, debug, 'Test_Installers/UNOFFICIAL_' + args.silent_installer_exe[0], args.silent_installer_exe[0], silent_tag, args.root_out_dir[0])
+  apply_tag(omaha_dir, debug, 'Test_Installers/UNOFFICIAL_' + args.silent_installer_exe[0], args.silent_installer_exe[0], silent_tag, args.root_out_dir[0])
 
-def ApplyTag(omaha_dir, debug, source_installer, target_installer_file, tag, root_out_dir):
+def apply_tag(omaha_dir, debug, source_installer, target_installer_file, tag, root_out_dir):
   last_win_dir = 'opt-win'
   if debug:
     last_win_dir = 'dbg-win'
@@ -135,7 +135,7 @@ def ApplyTag(omaha_dir, debug, source_installer, target_installer_file, tag, roo
   command = [apply_tag_exe, source_installer_path, target_installer_path, tag]
   sp.check_call(command, stderr=sp.STDOUT)
 
-def ParseArgs():
+def parse_args():
   parser = argparse.ArgumentParser(description='build omaha installer')
   parser.add_argument('--root_out_dir',
                       nargs=1)
@@ -163,22 +163,22 @@ def ParseArgs():
                       nargs=1)
   return parser.parse_args()
 
-def Main(args):
-  args = ParseArgs()
+def main(args):
+  args = parse_args()
   omaha_dir = os.path.join(args.root_out_dir[0], '..', '..', 'brave', 'vendor', 'omaha')
 
-  PrepareUntaggedStandalone(args, omaha_dir)
-  Build(omaha_dir, False)
-  TagStandalone(args, omaha_dir, False)
+  prepare_untagged_standalone(args, omaha_dir)
+  build(omaha_dir, False)
+  tag_standalone(args, omaha_dir, False)
 
-  PrepareUntaggedSilent(args, omaha_dir)
-  Build(omaha_dir, False)
-  TagSilent(args, omaha_dir, False)
+  prepare_untagged_silent(args, omaha_dir)
+  build(omaha_dir, False)
+  tag_silent(args, omaha_dir, False)
 
-  Copy_Untagged_Installers(args, omaha_dir, False)
+  copy_untagged_installers(args, omaha_dir, False)
 
   return 0
 
 
 if __name__ == '__main__':
-  sys.exit(Main(sys.argv))
+  sys.exit(main(sys.argv))
