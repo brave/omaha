@@ -38,7 +38,6 @@ action("build_omaha_installer") {
     "--root_out_dir=$out_dir",
     "--brave_installer_exe=$brave_installer_exe",
     "--stub_installer_exe=$brave_stub_installer_exe",
-    "--stub_silent_exe=$brave_silent_stub_installer_exe",
     "--stub_untagged_exe=$brave_untagged_stub_installer_exe",
     "--standalone_installer_exe=$brave_standalone_installer_exe",
     "--silent_installer_exe=$brave_silent_installer_exe",

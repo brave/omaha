@@ -120,7 +120,6 @@ def TagSilent(args, omaha_dir, debug):
   silent_tag = silent_tag.replace("TAG_AP", args.tag_ap[0])
 
   ApplyTag(omaha_dir, debug, 'Test_Installers/UNOFFICIAL_' + args.silent_installer_exe[0], args.silent_installer_exe[0], silent_tag, args.root_out_dir[0])
-  ApplyTag(omaha_dir, debug, 'staging/BraveUpdateSetup.exe', args.stub_silent_exe[0], silent_tag, args.root_out_dir[0])
 
 def ApplyTag(omaha_dir, debug, source_installer, target_installer_file, tag, root_out_dir):
   last_win_dir = 'opt-win'
@@ -145,8 +144,6 @@ def ParseArgs():
   parser.add_argument('--stub_installer_exe',
                       nargs=1)
   parser.add_argument('--stub_untagged_exe',
-                      nargs=1)
-  parser.add_argument('--stub_silent_exe',
                       nargs=1)
   parser.add_argument('--standalone_installer_exe',
                       nargs=1)
