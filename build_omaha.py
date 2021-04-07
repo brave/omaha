@@ -163,7 +163,7 @@ def parse_args():
                       nargs=1)
   return parser.parse_args()
 
-def main(args):
+def main():
   args = parse_args()
   omaha_dir = os.path.join(args.root_out_dir[0], '..', '..', 'brave', 'vendor', 'omaha')
 
@@ -181,4 +181,4 @@ def main(args):
 
 
 if __name__ == '__main__':
-  sys.exit(main(sys.argv))
+  sys.exit(main())
