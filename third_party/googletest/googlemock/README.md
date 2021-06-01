@@ -40,5 +40,5 @@ project](http://code.google.com/p/cppclean/) and under the Apache
 License, which is different from Google Mock's license.
 
 Google Mock is a part of
-[Google Test C++ testing framework](http://github.com/google/googletest/) and a
+[Google Test C++ testing framework](https://github.com/google/googletest/) and a
 subject to the same requirements.

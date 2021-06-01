@@ -40,7 +40,7 @@ deps = {
 
   # Protobuf.
   "src/src/third_party/protobuf/protobuf":
-    "https://github.com/google/protobuf.git" +
+    "https://github.com/protocolbuffers/protobuf.git" +
       "@cb6dd4ef5f82e41e06179dcd57d3b1d9246ad6ac",
 
   # GYP project generator.
