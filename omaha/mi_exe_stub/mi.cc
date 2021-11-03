@@ -57,6 +57,8 @@
 
 #include "omaha/base/system_info.h"
 #include "omaha/base/utils.h"
+#include "omaha/common/brave_referral_code_utils.h"
+#include "omaha/common/brave_stats_updater.h"
 #include "omaha/common/const_cmd_line.h"
 #include "omaha/mi_exe_stub/process.h"
 #include "omaha/mi_exe_stub/mi.grh"
@@ -152,11 +154,26 @@ char* ExtractTag(const TCHAR* module_file_name) {
   return ret;
 }
 
+char* GetTag(HINSTANCE instance) {
+  // Get this module file name.
+  TCHAR module_file_name[MAX_PATH] = {};
+  DWORD len = ::GetModuleFileName(instance,
+                                  module_file_name,
+                                  arraysize(module_file_name));
+  if (len == 0 || len >= arraysize(module_file_name)) {
+    _ASSERTE(false);
+    return NULL;
+  }
+
+  return ExtractTag(module_file_name);
+}
+
 class MetaInstaller {
  public:
-  MetaInstaller(HINSTANCE instance, LPCSTR cmd_line)
+  MetaInstaller(HINSTANCE instance, LPCSTR cmd_line, LPCTSTR referral_code)
       : instance_(instance),
         cmd_line_(cmd_line),
+        referral_code_(referral_code),
         exit_code_(0) {
   }
 
@@ -205,7 +222,7 @@ class MetaInstaller {
       CString command_line(exe_path_);
       ::PathQuoteSpaces(CStrBuf(command_line, MAX_PATH));
 
-      std::unique_ptr<char[]> tag(GetTag());
+      std::unique_ptr<char[]> tag(GetTag(instance_));
       if (cmd_line_.IsEmpty()) {
         // Run-by-user case.
         if (!tag.get()) {
@@ -214,10 +231,31 @@ class MetaInstaller {
           HandleError(hr);
           return hr;
         }
-        SafeCStringAppendCmdLine(&command_line, _T(" /%s %s /%s"),
-                                 kCmdLineInstallSource,
-                                 kCmdLineInstallSource_TaggedMetainstaller,
-                                 kCmdLineInstall);
+        const CString original_tag(tag.get());
+        CString silent_tag;
+        silent_tag.Format(_T("&%s"), kCmdLineSilent);
+        const int silent_tag_len = silent_tag.GetLength();
+        // If tag has silent tag, append \silent \install to command line.
+        // Also silent tag is removed from tag list and assign it to |tag|
+        // buffer again. silent tag isn't recognized by brave updater.
+        if (original_tag.Right(silent_tag_len).CompareNoCase(silent_tag) == 0) {
+          const CString revised_tag =
+              original_tag.Left(original_tag.GetLength() - silent_tag_len);
+          const int revised_tag_len = revised_tag.GetLength();
+          char *new_tag_buffer = new char[revised_tag_len + 1];
+          strncpy(new_tag_buffer, tag.get(), revised_tag_len);
+          new_tag_buffer[revised_tag_len] = NULL;
+          tag.reset(new_tag_buffer);
+
+          SafeCStringAppendCmdLine(&command_line, _T(" /%s /%s"),
+                                   kCmdLineSilent,
+                                   kCmdLineInstall);
+        } else {
+          SafeCStringAppendCmdLine(&command_line, _T(" /%s %s /%s"),
+                                   kCmdLineInstallSource,
+                                   kCmdLineInstallSource_TaggedMetainstaller,
+                                   kCmdLineInstall);
+        }
       } else {
         SafeCStringAppendCmdLine(&command_line, _T(" %s"), cmd_line_);
 
@@ -226,8 +264,10 @@ class MetaInstaller {
 
       const bool should_append_tag = !RemoveIgnoreTagSwitch(&command_line);
       if (should_append_tag && tag.get()) {
-        SafeCStringAppendCmdLine(&command_line, _T(" \"%s\""),
-                                 CString(tag.get()));
+        CString tag_with_referral_code(tag.get());
+        tag_with_referral_code.AppendFormat(_T("&referral=%s"), referral_code_);
+        SafeCStringAppendCmdLine(&command_line,
+                                 _T(" \"%s\""), tag_with_referral_code);
       }
 
       RunAndWait(command_line, &exit_code_);
@@ -452,20 +492,6 @@ class MetaInstaller {
     return true;
   }
 
-  char* GetTag() const {
-    // Get this module file name.
-    TCHAR module_file_name[MAX_PATH] = {};
-    DWORD len = ::GetModuleFileName(instance_,
-                                    module_file_name,
-                                    arraysize(module_file_name));
-    if (len == 0 || len >= arraysize(module_file_name)) {
-      _ASSERTE(false);
-      return NULL;
-    }
-
-    return ExtractTag(module_file_name);
-  }
-
   static CString GetFilespec(const CString& path) {
     int pos = path.ReverseFind('\\');
     if (pos >= 0) {
@@ -598,6 +624,7 @@ class MetaInstaller {
   HINSTANCE instance_;
   CString cmd_line_;
   CString exe_path_;
+  CString referral_code_;
   DWORD exit_code_;
   CSimpleArray<CString> files_to_delete_;
   CString temp_dir_;
@@ -643,6 +670,79 @@ HRESULT HandleError(HRESULT result) {
   return result;
 }
 
+CString ReadAppGuidFromTag(HINSTANCE hInstance) {
+  std::unique_ptr<char[]> tag(omaha::GetTag(hInstance));
+  const CString original_tag(tag.get());
+
+  CString app_guid;
+  const CString app_guid_prefix = _T("appguid=");
+  int appguid_start = original_tag.Find(app_guid_prefix);
+  if (appguid_start != -1) {
+    appguid_start += app_guid_prefix.GetLength();
+    int appguid_end = original_tag.Find(_T("&"), appguid_start);
+    if (appguid_end != -1) {
+      app_guid = original_tag.Mid(appguid_start, appguid_end - appguid_start);
+    }
+  }
+
+  return app_guid;
+}
+
+HRESULT StorePathToRegForPromoCode(LPSTR lpCmdLine) {
+  // This stub installer can be executed twice by internally when user allowed
+  // to run installer in admin mode. In this case, copied with changed filename
+  // |kOmahaMetainstallerFileName| at tempdir is used.
+  // In that case, command line is not empty.
+  // So, we can only get original file name when this run is user initiated.
+  if (!CString(lpCmdLine).IsEmpty())
+    return S_OK;
+
+  TCHAR module_file_name[MAX_PATH] = {};
+  DWORD len = ::GetModuleFileName(NULL,
+                                  module_file_name,
+                                  arraysize(module_file_name));
+  if (len == 0 || len >= arraysize(module_file_name)) {
+    _ASSERTE(false);
+    return NULL;
+  }
+
+  HKEY key;
+  DWORD dw;
+  if (RegCreateKeyEx(HKEY_CURRENT_USER,
+                     _T("Software\\BraveSoftware\\Promo"),
+                     0,
+                     NULL,
+                     REG_OPTION_NON_VOLATILE,
+                     KEY_WRITE,
+                     NULL, &key, &dw) != S_OK) {
+    return S_OK;
+  }
+
+  if (RegSetValueEx(key,
+                    _T("StubInstallerPath"),
+                    NULL,
+                    REG_SZ,
+                    reinterpret_cast<const byte *>(module_file_name),
+                    (lstrlen(module_file_name) + 1) * sizeof(TCHAR)) != S_OK) {
+    return S_OK;
+  }
+
+  RegCloseKey(key);
+  return S_OK;
+}
+
+CString GetReferralCodeFromModuleFileName() {
+  TCHAR module_file_name[MAX_PATH] = {};
+  DWORD len =
+      ::GetModuleFileName(NULL, module_file_name, arraysize(module_file_name));
+  if (len == 0 || len >= arraysize(module_file_name)) {
+    _ASSERTE(false);
+    return _T("none");
+  }
+
+  return omaha::GetReferralCode(module_file_name);
+}
+
 }  // namespace
 
 }  // namespace omaha
@@ -661,7 +761,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int) {
     return omaha::HandleError(hr);
   }
 
-  omaha::MetaInstaller mi(hInstance, lpCmdLine);
+  omaha::StorePathToRegForPromoCode(lpCmdLine);
+
+  const CString referral_code = omaha::GetReferralCodeFromModuleFileName();
+  if (CString(lpCmdLine).IsEmpty()) {
+    const CString app_guid = omaha::ReadAppGuidFromTag(hInstance);
+    hr = omaha::BraveSendStatsPing(_T("startup"), app_guid, referral_code,
+                                   _T(""));
+  }
+
+  omaha::MetaInstaller mi(hInstance, lpCmdLine, referral_code);
   int result = mi.ExtractAndRun();
   return result;
 }

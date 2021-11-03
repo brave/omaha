@@ -134,7 +134,7 @@ class CrashReporter {
   FRIEND_TEST(CrashReporterTest, Report_OmahaCrash);
   FRIEND_TEST(CrashReporterTest, Report_ProductCrash);
   FRIEND_TEST(CrashReporterTest, SaveLastCrash);
-  FRIEND_TEST(CrashReporterTest, WriteMinidump);
+  FRIEND_TEST(CrashReporterTest, DISABLED_WriteMinidump);
 
   DISALLOW_COPY_AND_ASSIGN(CrashReporter);
 };

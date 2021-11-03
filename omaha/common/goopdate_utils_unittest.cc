@@ -1227,7 +1227,7 @@ TEST(GoopdateUtilsTest, GetInstalledShellVersion_Machine_NoShell) {
 TEST(GoopdateUtilsTest, GetInstalledShellVersion_Machine_ShellExists) {
   CPath shell_path_1_2_183_21(app_util::GetCurrentModuleDirectory());
   shell_path_1_2_183_21.Append(_T("unittest_support\\omaha_1.3.x\\"));
-  shell_path_1_2_183_21.Append(kOmahaShellFileName);
+  shell_path_1_2_183_21.Append(_T("GoogleUpdate.exe"));
   CPath goopdate_exe(goopdate_utils::BuildGoogleUpdateExePath(true));
   EXPECT_SUCCEEDED(File::Copy(shell_path_1_2_183_21,
                               goopdate_exe,
@@ -1246,7 +1246,7 @@ TEST(GoopdateUtilsTest, GetInstalledShellVersion_User_NoShell) {
 TEST(GoopdateUtilsTest, GetInstalledShellVersion_User_ShellExists) {
   CPath shell_path_1_2_183_21(app_util::GetCurrentModuleDirectory());
   shell_path_1_2_183_21.Append(_T("unittest_support\\omaha_1.3.x\\"));
-  shell_path_1_2_183_21.Append(kOmahaShellFileName);
+  shell_path_1_2_183_21.Append(_T("GoogleUpdate.exe"));
   CPath goopdate_exe(goopdate_utils::BuildGoogleUpdateExePath(false));
   EXPECT_SUCCEEDED(File::Copy(shell_path_1_2_183_21,
                               goopdate_exe,

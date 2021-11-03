@@ -17,10 +17,10 @@
 
 """Constants and utilities related to Omaha and tools versions"""
 
-_ONECLICK_PLUGIN_NAME = 'npGoogleOneClick'
-_UPDATE_PLUGIN_NAME = 'npGoogleUpdate'
-_MAIN_EXE_BASE_NAME = 'GoogleUpdate'
-_CRASH_HANDLER_NAME = 'GoogleCrashHandler'
+_ONECLICK_PLUGIN_NAME = 'npBraveOneClick'
+_UPDATE_PLUGIN_NAME = 'npBraveUpdate'
+_MAIN_EXE_BASE_NAME = 'BraveUpdate'
+_CRASH_HANDLER_NAME = 'BraveCrashHandler'
 
 # List of languages that are fully supported in the current build.
 _OMAHA_LANGUAGES = [

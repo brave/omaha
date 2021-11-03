@@ -232,8 +232,8 @@ const TCHAR* const kRegValueOmahaEulaAccepted     = _T("eulaaccepted");
 // TODO(omaha3): Consider renaming these if there is not a upgrade problem.
 // If we can't consider moving all "gupdate" values to the customization file.
 // Use a non-gupdate name for the new medium service.
-#define SERVICE_PREFIX _T("omaha")
-#define MEDIUM_SERVICE_PREFIX _T("omaham")
+#define SERVICE_PREFIX _T("brave")
+#define MEDIUM_SERVICE_PREFIX _T("bravem")
 const TCHAR* const kServicePrefix                 = SERVICE_PREFIX;
 const TCHAR* const kMediumServicePrefix           = MEDIUM_SERVICE_PREFIX;
 const TCHAR* const kRegValueServiceName           = SERVICE_PREFIX _T("_service_name");

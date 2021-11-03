@@ -194,7 +194,8 @@ TEST_F(CrashReporterTest, DISABLED_Report_ProductCrash) {
 }
 
 // Tests generation of a minidump and uploading it to the staging server.
-TEST_F(CrashReporterTest, WriteMinidump) {
+// Disabled because Brave's update server rejects crash dumps.
+TEST_F(CrashReporterTest, DISABLED_WriteMinidump) {
   ASSERT_TRUE(!reporter_.crash_dir_.IsEmpty());
 
   MINIDUMP_TYPE dump_type = MiniDumpNormal;
