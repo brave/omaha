@@ -4,6 +4,9 @@
 :: tests do.
 set OMAHA_PSEXEC_DIR=%ProgramFiles(x86)%\pstools
 
+:: Set VS environment variables.
+call "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64_x86 10.0.18362.0
+
 setlocal
 
 rem -- Set all environment variables used by Hammer and Omaha. --
@@ -43,22 +46,25 @@ goto set_env_variables
 
 :set_env_variables
 
+:: Set signtool arguments
+set SIGNTOOL_ARGS="sign /t http://timestamp.digicert.com /fd sha256 /sm"
+
 :: Change these variables to match the local build environment.
 
 :: Directory where the Go programming language toolchain is installed.
 set GOROOT=C:\go
 
 :: This directory is needed to find protoc.exe, which is the protocol buffer
-:: compiler. From the release page https://github.com/google/protobuf/releases,
+:: compiler. From the release page https://github.com/protocolbuffers/protobuf/releases,
 :: download the zip file protoc-$VERSION-win32.zip. It contains the protoc
 :: binary. Unzip the contents under C:\protobuf.
-set OMAHA_PROTOBUF_BIN_DIR=C:\protobuf\bin
+set OMAHA_PROTOBUF_BIN_DIR=C:\protobuf-3.17.3\bin
 
 :: This directory is needed to find the protocol buffer source files. From the
-:: release page https://github.com/google/protobuf/releases, download the zip
+:: release page https://github.com/protocolbuffers/protobuf/releases, download the zip
 :: file protobuf-cpp-$VERSION.zip. Unzip the "src" sub-directory contents to
 :: C:\protobuf\src.
-set OMAHA_PROTOBUF_SRC_DIR=C:\protobuf\src
+set OMAHA_PROTOBUF_SRC_DIR=C:\protobuf-3.17.3\src
 
 :: Directory where Python (python.exe) is installed.
 set OMAHA_PYTHON_DIR=C:\Python27
@@ -67,7 +73,7 @@ set OMAHA_PYTHON_DIR=C:\Python27
 set OMAHA_WIX_DIR=%WIX%\bin
 
 :: Root directory of the WTL installation.
-set OMAHA_WTL_DIR=C:\wtl\files
+set OMAHA_WTL_DIR=C:\wtl
 
 set OMAHA_PLATFORM_SDK_DIR=%WindowsSdkDir%\
 set OMAHA_WINDOWS_SDK_10_0_VERSION=%WindowsSDKVersion:~0,-1%

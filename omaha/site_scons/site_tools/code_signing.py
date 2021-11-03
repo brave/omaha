@@ -63,15 +63,15 @@ def generate(env):
       # The default timestamp server when dual-signing.
       SHA1_TIMESTAMP_SERVER='http://timestamp.digicert.com',
       # The default timestamp server for sha256 timestamps.
-      SHA2_TIMESTAMP_SERVER='http://timestamp.digicert.com',
+      SHA2_TIMESTAMP_SERVER='http://timestamp.digicert.com?alg=sha256',
       # The default certificate store.
       CERTIFICATE_STORE='my',
       # Set the certificate name from the command line.
       CERTIFICATE_NAME=SCons.Script.GetOption('certificate_name'),
       # The name (substring) of the certificate issuer, when needed to
       # differentiate between multiple certificates.
-      SHA1_CERTIFICATE_ISSUER='Verisign',
-      SHA2_CERTIFICATE_ISSUER='Symantec',
+      SHA1_CERTIFICATE_ISSUER='Digicert',
+      SHA2_CERTIFICATE_ISSUER='Digicert',
       # Or differentiate based on the cert's hash.
       CERTIFICATE_HASH='5A9272CE76A9415A4A3A5002A2589A049312AA40',
       SHA1_CERTIFICATE_HASH='',

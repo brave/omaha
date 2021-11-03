@@ -85,7 +85,7 @@ HRESULT InitializeWorkerDesktop() {
   }
 
   scoped_hdesk worker_desktop(
-      ::CreateDesktop(_T("GoogleCrashHandlerWorkerDesktop"),
+      ::CreateDesktop(_T("BraveCrashHandlerWorkerDesktop"),
                       NULL,
                       NULL,
                       0,

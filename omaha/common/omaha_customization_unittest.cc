@@ -66,8 +66,8 @@ TEST(OmahaCustomizationTest, Constants_BuildFiles) {
                             kActualProxyClsidIsUserGuid));
 
   // Primary omaha_version_utils values.
-  EXPECT_STREQ(_T("npGoogleOneClick"), ONECLICK_PLUGIN_NAME);
-  EXPECT_STREQ(_T("npGoogleUpdate"), UPDATE_PLUGIN_NAME);
+  EXPECT_GU_STREQ(_T("npGoogleOneClick"), ONECLICK_PLUGIN_NAME);
+  EXPECT_GU_STREQ(_T("npGoogleUpdate"), UPDATE_PLUGIN_NAME);
 }
 
 TEST(OmahaCustomizationTest, Constants_Names) {
@@ -98,21 +98,21 @@ TEST(OmahaCustomizationTest, Constants_Names) {
 #endif  // GOOGLE_UPDATE_BUILD
 
   // Filename bases
-  EXPECT_STREQ(_T("GoogleUpdate"), MAIN_EXE_BASE_NAME);
+  EXPECT_GU_STREQ(_T("GoogleUpdate"), MAIN_EXE_BASE_NAME);
   EXPECT_STREQ(_T("goopdate"), MAIN_DLL_BASE_NAME);
 }
 
 TEST(OmahaCustomizationTest, Constants_Filenames) {
-  EXPECT_STREQ(_T("GoogleUpdate.exe"), kOmahaShellFileName);
-  EXPECT_STREQ(_T("GoogleCrashHandler.exe"), kCrashHandlerFileName);
-  EXPECT_STREQ(_T("GoogleCrashHandler64.exe"), kCrashHandler64FileName);
+  EXPECT_GU_STREQ(_T("GoogleUpdate.exe"), kOmahaShellFileName);
+  EXPECT_GU_STREQ(_T("GoogleCrashHandler.exe"), kCrashHandlerFileName);
+  EXPECT_GU_STREQ(_T("GoogleCrashHandler64.exe"), kCrashHandler64FileName);
   EXPECT_STREQ(_T("goopdate.dll"), kOmahaDllName);
   EXPECT_STREQ(_T("goopdateres_%s.dll"), kOmahaResourceDllNameFormat);
-  EXPECT_STREQ(_T("GoogleUpdateBroker.exe"), kOmahaBrokerFileName);
-  EXPECT_STREQ(_T("GoogleUpdateCore.exe"), kOmahaCoreFileName);
-  EXPECT_STREQ(_T("GoogleUpdateOnDemand.exe"), kOmahaOnDemandFileName);
-  EXPECT_STREQ(_T("GoogleUpdateSetup.exe"), kOmahaMetainstallerFileName);
-  EXPECT_STREQ(_T("GoogleUpdateComRegisterShell64.exe"),
+  EXPECT_GU_STREQ(_T("GoogleUpdateBroker.exe"), kOmahaBrokerFileName);
+  EXPECT_GU_STREQ(_T("GoogleUpdateCore.exe"), kOmahaCoreFileName);
+  EXPECT_GU_STREQ(_T("GoogleUpdateOnDemand.exe"), kOmahaOnDemandFileName);
+  EXPECT_GU_STREQ(_T("GoogleUpdateSetup.exe"), kOmahaMetainstallerFileName);
+  EXPECT_GU_STREQ(_T("GoogleUpdateComRegisterShell64.exe"),
                kOmahaCOMRegisterShell64);
   EXPECT_STREQ(_T("psmachine.dll"), kPSFileNameMachine);
   EXPECT_STREQ(_T("psmachine_64.dll"), kPSFileNameMachine64);
@@ -126,8 +126,8 @@ TEST(OmahaCustomizationTest, Constants_Certificate) {
 }
 
 TEST(OmahaCustomizationTest, Constants_OmahaAppId_String) {
-  EXPECT_STREQ(_T("{430FD4D0-B729-4F61-AA34-91526481799D}"), GOOPDATE_APP_ID);
-  EXPECT_STREQ(_T("{430FD4D0-B729-4F61-AA34-91526481799D}"),
+  EXPECT_GU_STREQ(_T("{430FD4D0-B729-4F61-AA34-91526481799D}"), GOOPDATE_APP_ID);
+  EXPECT_GU_STREQ(_T("{430FD4D0-B729-4F61-AA34-91526481799D}"),
                kGoogleUpdateAppId);
 }
 
@@ -135,8 +135,12 @@ TEST(OmahaCustomizationTest, Constants_OmahaAppId_GUID) {
   const GUID kExpectedGoogleUpdateGuid =
       {0x430FD4D0, 0xB729, 0x4F61,
        {0xAA, 0x34, 0x91, 0x52, 0x64, 0x81, 0x79, 0x9D}};
+#ifdef GOOGLE_UPDATE_BUILD
   EXPECT_TRUE(::IsEqualGUID(kExpectedGoogleUpdateGuid, kGoopdateGuid));
-  EXPECT_STREQ(_T("{430FD4D0-B729-4F61-AA34-91526481799D}"),
+#else
+  EXPECT_FALSE(::IsEqualGUID(kExpectedGoogleUpdateGuid, kGoopdateGuid));
+#endif
+  EXPECT_GU_STREQ(_T("{430FD4D0-B729-4F61-AA34-91526481799D}"),
                GuidToString(kGoopdateGuid));
 }
 
@@ -216,17 +220,19 @@ TEST(OmahaCustomizationTest, Constants_BrandCode) {
 }
 
 TEST(OmahaCustomizationTest, Constants_Addresses) {
-  EXPECT_STREQ(_T("www.google.com"), kGoogleHttpServer);
-  EXPECT_STREQ(_T("tools.google.com"), kGoopdateServer);
-  EXPECT_STREQ(_T("https://update.googleapis.com/service/update2"),
-               kUrlUpdateCheck);
-  EXPECT_STREQ(_T("https://update.googleapis.com/service/update2"), kUrlPing);
-  EXPECT_STREQ(_T("https://clients2.google.com/cr/report"), kUrlCrashReport);
-  EXPECT_STREQ(_T("https://www.google.com/support/installer/?"), kUrlMoreInfo);
-  EXPECT_STREQ(_T("https://clients2.google.com/service/check2?crx3=true"),
-               kUrlCodeRedCheck);
-  EXPECT_STREQ(_T("https://clients5.google.com/tbproxy/usagestats"),
-               kUrlUsageStatsReport);
+  EXPECT_GU_STREQ(_T("www.google.com"), kGoogleHttpServer);
+  EXPECT_GU_STREQ(_T("tools.google.com"), kGoopdateServer);
+  EXPECT_GU_STREQ(_T("https://update.googleapis.com/service/update2"),
+                  kUrlUpdateCheck);
+  EXPECT_GU_STREQ(_T("https://update.googleapis.com/service/update2"),
+                  kUrlPing);
+  EXPECT_GU_STREQ(_T("https://clients2.google.com/cr/report"), kUrlCrashReport);
+  EXPECT_GU_STREQ(_T("https://www.google.com/support/installer/?"),
+                  kUrlMoreInfo);
+  EXPECT_GU_STREQ(_T("https://clients2.google.com/service/check2?crx3=true"),
+                  kUrlCodeRedCheck);
+  EXPECT_GU_STREQ(_T("https://clients5.google.com/tbproxy/usagestats"),
+                  kUrlUsageStatsReport);
 }
 
 TEST(OmahaCustomizationTest, Constants_Config) {
@@ -238,8 +244,8 @@ TEST(OmahaCustomizationTest, Constants_Debug) {
 }
 
 TEST(OmahaCustomizationTest, Constants_Logging) {
-  EXPECT_STREQ(_T("GoogleUpdate.ini"), kLogConfigFileName);
-  EXPECT_STREQ(_T("GoogleUpdate.log"), kDefaultLogFileName);
+  EXPECT_GU_STREQ(_T("GoogleUpdate.ini"), kLogConfigFileName);
+  EXPECT_GU_STREQ(_T("GoogleUpdate.log"), kDefaultLogFileName);
 }
 
 // These should not change during customization.
@@ -252,22 +258,22 @@ TEST(OmahaCustomizationTest, Constants_ObjectNames_Pipes) {
 }
 
 TEST(OmahaCustomizationTest, Constants_ObjectNames_MutexesAndEvents) {
-  EXPECT_STREQ(_T("{A9A86B93-B54E-4570-BE89-42418507707B}"), kSetupMutex);
-  EXPECT_STREQ(_T("{A0C1F415-D2CE-4ddc-9B48-14E56FD55162}"), kShutdownEvent);
-  EXPECT_STREQ(_T("{B5665124-2B19-40e2-A7BC-B44321E72C4B}"),
-               kCoreSingleInstance);
-  EXPECT_STREQ(_T("{C4F406E5-F024-4e3f-89A7-D5AB7663C3CD}"),
-               kCrashHandlerSingleInstance);
-  EXPECT_STREQ(_T("{D0BB2EF1-C183-4cdb-B218-040922092869}"),
-               kUpdateAppsSingleInstance);
-  EXPECT_STREQ(_T("%s-{F707E94F-D66B-4525-AD84-B1DA87D6A971}"),
-               kInstallAppSingleInstance);
-  EXPECT_STREQ(_T("{0A175FBE-AEEC-4fea-855A-2AA549A88846}"),
-               kInstallManagerSerializer);
-  EXPECT_STREQ(_T("{C68009EA-1163-4498-8E93-D5C4E317D8CE}"),
-               kMetricsSerializer);
-  EXPECT_STREQ(_T("{66CC0160-ABB3-4066-AE47-1CA6AD5065C8}"),
-               kRegistryAccessMutex);
+  EXPECT_GU_STREQ(_T("{A9A86B93-B54E-4570-BE89-42418507707B}"), kSetupMutex);
+  EXPECT_GU_STREQ(_T("{A0C1F415-D2CE-4ddc-9B48-14E56FD55162}"), kShutdownEvent);
+  EXPECT_GU_STREQ(_T("{B5665124-2B19-40e2-A7BC-B44321E72C4B}"),
+                  kCoreSingleInstance);
+  EXPECT_GU_STREQ(_T("{C4F406E5-F024-4e3f-89A7-D5AB7663C3CD}"),
+                  kCrashHandlerSingleInstance);
+  EXPECT_GU_STREQ(_T("{D0BB2EF1-C183-4cdb-B218-040922092869}"),
+                  kUpdateAppsSingleInstance);
+  EXPECT_GU_STREQ(_T("%s-{F707E94F-D66B-4525-AD84-B1DA87D6A971}"),
+                  kInstallAppSingleInstance);
+  EXPECT_GU_STREQ(_T("{0A175FBE-AEEC-4fea-855A-2AA549A88846}"),
+                  kInstallManagerSerializer);
+  EXPECT_GU_STREQ(_T("{C68009EA-1163-4498-8E93-D5C4E317D8CE}"),
+                  kMetricsSerializer);
+  EXPECT_GU_STREQ(_T("{66CC0160-ABB3-4066-AE47-1CA6AD5065C8}"),
+                  kRegistryAccessMutex);
 }
 
 TEST(OmahaCustomizationTest, Constants_ObjectNames_SharedMemory) {
@@ -286,7 +292,7 @@ TEST(OmahaCustomizationTest, Constants_Services) {
   EXPECT_GU_STREQ(_T("gupdate"), kServicePrefix);
   EXPECT_GU_STREQ(_T("gupdatem"), kMediumServicePrefix);
 
-  EXPECT_STREQ(_T("GoogleUpdate.exe"), kServiceFileName);
+  EXPECT_GU_STREQ(_T("GoogleUpdate.exe"), kServiceFileName);
 }
 
 TEST(OmahaCustomizationTest, Constants_ScheduledTasks) {
@@ -334,7 +340,8 @@ TEST(OmahaCustomizationTest, ConfigManager_RegistryKeys) {
   EXPECT_GU_STREQ(_T("HKLM\\Software\\Google\\"), cm.registry_google(true));
 }
 
-TEST(OmahaCustomizationTest, IsInternalUser) {
+// Internal means Google internal. Disabled.
+TEST(OmahaCustomizationTest, DISABLED_IsInternalUser) {
   if (IsBuildSystem()) {
   // The build system is not configured the same.
   // This may or may not be true in non-Google Update builds.

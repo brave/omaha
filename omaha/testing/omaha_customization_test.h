@@ -57,6 +57,9 @@
 
 #endif
 
+#define EXPECT_ID_EQ(uuid, interface_id) \
+    EXPECT_STREQ(CString(uuid).MakeUpper(), \
+                 omaha::GuidToString(interface_id));
 
 class OmahaCustomizationTypeLibComInterfaceTest : public testing::Test {
  protected:

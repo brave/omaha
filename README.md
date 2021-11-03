@@ -1,6 +1,8 @@
 # Omaha
 
-## This is not an official Google product.
+## This is not an official Google product. ##
+## How to build ##
+See https://github.com/brave/brave-browser/wiki/Brave-omaha
 
 Omaha is the open-source version of Google Update, a program to install requested software and keep it up to date.  The Google-branded version of Omaha is used to support software patching (both background updating, and on-demand update checks) for Google Chrome, Earth, and a variety of other Google products on Windows 7, 8, and 10.
 

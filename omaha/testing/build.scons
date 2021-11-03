@@ -119,16 +119,20 @@ unittest_support = env.Replicate('$STAGING_DIR/unittest_support/', [
 unittest_support += env.Replicate(
     '$STAGING_DIR/unittest_support/omaha_1.2.131.7_shell/', [
     'unittest_support/omaha_1.2.131.7_shell/GoogleUpdate.exe',
+    'unittest_support/omaha_1.2.131.7_shell/BraveUpdate.exe',
     ])
 unittest_support += env.Replicate(
     '$STAGING_DIR/unittest_support/omaha_1.2.183.9_shell/', [
     'unittest_support/omaha_1.2.183.9_shell/GoogleUpdate.exe',
+    'unittest_support/omaha_1.2.183.9_shell/BraveUpdate.exe',
     ])
 unittest_support += env.Replicate('$STAGING_DIR/unittest_support/omaha_1.2.x/',
-    'unittest_support/omaha_1.2.x/GoogleUpdate.exe'
-    )
+    [ 'unittest_support/omaha_1.2.x/GoogleUpdate.exe',
+      'unittest_support/omaha_1.2.x/BraveUpdate.exe'
+    ])
 unittest_support += env.Replicate('$STAGING_DIR/unittest_support/omaha_1.3.x/',
     [ 'unittest_support/omaha_1.3.x/GoogleUpdate.exe',
+      'unittest_support/omaha_1.3.x/BraveUpdate.exe',
       'unittest_support/omaha_1.3.x/goopdate.dll',
       'unittest_support/omaha_1.3.x/goopdateres_en.dll',
     ])
@@ -142,7 +146,7 @@ unittest_support += env.Replicate('$STAGING_DIR/unittest_support/omaha_1.3.x/',
 unittest_support += env.Replicate(
     target='$STAGING_DIR/unittest_support/does_not_shutdown/',
     source='$MAIN_DIR/testing/unittest_support/LongRunningSilent.exe',
-    REPLICATE_REPLACE=[('LongRunningSilent\\.exe', 'GoogleUpdate.exe')],
+    REPLICATE_REPLACE=[('LongRunningSilent\\.exe', 'BraveUpdate.exe')],
 )
 
 # download_cache test files
@@ -469,6 +473,7 @@ omaha_unittest_inputs = [
     '../common/lang_unittest.cc',
     '../common/oem_install_utils_test.cc',
     '../common/omaha_customization_unittest.cc',
+    '../common/omaha_brave_customization_unittest.cc',
     '../common/ping_event_unittest.cc',
     '../common/ping_event_download_metrics_unittest.cc',
     '../common/ping_test.cc',
@@ -518,6 +523,7 @@ omaha_unittest_inputs = [
     '../goopdate/model_unittest.cc',
     '../goopdate/offline_utils_unittest.cc',
     '../goopdate/omaha_customization_goopdate_apis_unittest.cc',
+    '../goopdate/omaha_brave_customization_goopdate_apis_unittest.cc',
     '../goopdate/string_formatter_unittest.cc',
     '../goopdate/package_cache_unittest.cc',
     '../goopdate/ping_event_cancel_test.cc',
@@ -659,7 +665,7 @@ omaha_unittest_env.Depends(test, unittest_support)
 
 # extractor_unittest.cc uses GoogleUpdateSetup_repair.exe as a zero-length tag
 # cert-tagged exe.
-omaha_unittest_env.Depends(test, '$STAGING_DIR/GoogleUpdateSetup_repair.exe')
+omaha_unittest_env.Depends(test, '$STAGING_DIR/BraveUpdateSetup_repair.exe')
 
 # Customization/UI tests depend on goopdate.dll (for TypeLib/resources)
 omaha_unittest_env.Depends(test, '$TESTS_DIR/goopdate.dll')

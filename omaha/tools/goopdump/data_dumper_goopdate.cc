@@ -204,8 +204,8 @@ HRESULT DataDumperGoopdate::GetDllDir(bool is_machine, CString* dll_path) {
 }
 
 void DataDumperGoopdate::DumpGoogleUpdateIniFile(const DumpLog& dump_log) {
-  DumpHeader header(dump_log, _T("GoogleUpdate.ini File Contents"));
-  DumpFileContents(dump_log, _T("c:\\googleupdate.ini"), 0);
+  DumpHeader header(dump_log, _T("BraveUpdate.ini File Contents"));
+  DumpFileContents(dump_log, _T("c:\\braveupdate.ini"), 0);
 }
 
 void DataDumperGoopdate::DumpHostsFile(const DumpLog& dump_log) {
@@ -229,7 +229,7 @@ void DataDumperGoopdate::DumpHostsFile(const DumpLog& dump_log) {
 void DataDumperGoopdate::DumpUpdateDevKeys(const DumpLog& dump_log) {
   DumpHeader header(dump_log, _T("UpdateDev Keys"));
 
-  DumpRegistryKeyData(dump_log, _T("HKLM\\Software\\Google\\UpdateDev"));
+  DumpRegistryKeyData(dump_log, _T("HKLM\\Software\\BraveSoftware\\UpdateDev"));
 }
 
 void DataDumperGoopdate::DumpLogFile(const DumpLog& dump_log) {
@@ -340,7 +340,7 @@ void DataDumperGoopdate::DumpEventLog(const DumpLog& dump_log) {
 }
 
 void DataDumperGoopdate::DumpGoogleUpdateProcessInfo(const DumpLog& dump_log) {
-  DumpHeader header(dump_log, _T("GoogleUpdate.exe Process Info"));
+  DumpHeader header(dump_log, _T("BraveUpdate.exe Process Info"));
 
   EnableDebugPrivilege();
 
@@ -364,7 +364,7 @@ void DataDumperGoopdate::DumpGoogleUpdateProcessInfo(const DumpLog& dump_log) {
     CString exe_file_name = process_entry32.szExeFile;
     exe_file_name.MakeLower();
 
-    if (exe_file_name.Find(_T("googleupdate.exe")) >= 0) {
+    if (exe_file_name.Find(_T("braveupdate.exe")) >= 0) {
       if (first) {
         first = false;
       } else {
