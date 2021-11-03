@@ -26,11 +26,13 @@ for omaha_version_info in env['omaha_versions_info']:
 
   source_binary = '$OBJ_ROOT/mi_exe_stub/%smi_exe_stub.exe' % (prefix)
 
+  standalone_installers_dir = env['standalone_installers_dir']
+
   standalone_installer.BuildOfflineInstallersVersion(
       env,
       omaha_version_info,
       '$STAGING_DIR',
       source_binary,
-      '$MAIN_DIR/standalone/standalone_installers.txt',
-      '$MAIN_DIR/standalone/manifests',
+      standalone_installers_dir + '/standalone_installers.txt',
+      standalone_installers_dir + '/manifests',
       prefix)

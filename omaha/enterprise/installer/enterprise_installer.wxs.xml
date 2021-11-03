@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-  <?define CompanyName = 'Google'?>
-  <?define CompanyFullName = 'Google LLC'?>
+  <?define CompanyName = 'BraveSoftware'?>
+  <?define CompanyFullName = 'BraveSoftware Inc.'?>
   <?define Copyright = 'Copyright 2007-2010 Google LLC'?>
 
   <Product

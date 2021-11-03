@@ -63,7 +63,7 @@ def generate(env):
       # The default timestamp server when dual-signing.
       SHA1_TIMESTAMP_SERVER='http://timestamp.digicert.com',
       # The default timestamp server for sha256 timestamps.
-      SHA2_TIMESTAMP_SERVER='http://timestamp.digicert.com',
+      SHA2_TIMESTAMP_SERVER='http://timestamp.digicert.com?alg=sha256',
       # The default certificate store.
       CERTIFICATE_STORE='my',
       # Set the certificate name from the command line.
@@ -71,7 +71,7 @@ def generate(env):
       # The name (substring) of the certificate issuer, when needed to
       # differentiate between multiple certificates.
       SHA1_CERTIFICATE_ISSUER='Verisign',
-      SHA2_CERTIFICATE_ISSUER='Symantec',
+      SHA2_CERTIFICATE_ISSUER='Digicert',
       # Or differentiate based on the cert's hash.
       CERTIFICATE_HASH='5A9272CE76A9415A4A3A5002A2589A049312AA40',
       SHA1_CERTIFICATE_HASH='',
@@ -107,9 +107,10 @@ def SignedBinaryGenerator(source, target, env, for_signature):
   ]
 
   # Only do signing if there is a certificate file or certificate name.
-  if env.subst('$CERTIFICATE_PATH') or env.subst('$CERTIFICATE_NAME'):
+  if env.subst('$CERTIFICATE_PATH') or env.subst('$CERTIFICATE_NAME') \
+      or env.subst('$CERTIFICATE_HASH'):
     # The command used to do signing (target added on below).
-    signing_cmd = '$SIGNTOOL sign /fd sha1'
+    signing_cmd = '$SIGNTOOL sign /fd SHA256'
     # Add in certificate file if any.
     if env.subst('$CERTIFICATE_PATH'):
       signing_cmd += ' /f "$CERTIFICATE_PATH"'
@@ -123,6 +124,8 @@ def SignedBinaryGenerator(source, target, env, for_signature):
     # Add cert hash if any.
     if env.subst('$CERTIFICATE_HASH'):
       signing_cmd += ' /sha1 "$CERTIFICATE_HASH"'
+    if env.Bit('use_authenticode_machine_store'):
+      signing_cmd += ' /sm'
     # Add timestamp server if any.
     if env.subst('$TIMESTAMP_SERVER'):
       signing_cmd += ' /t "$TIMESTAMP_SERVER"'
@@ -177,6 +180,8 @@ def DualSignedBinaryGenerator(source, target, env, for_signature):
     # Add cert hash if any.
     if env.subst('$SHA1_CERTIFICATE_HASH'):
       sha1_signing_cmd += ' /sha1 "$SHA1_CERTIFICATE_HASH"'
+    if env.Bit('use_authenticode_machine_store'):
+      sha1_signing_cmd += ' /sm'
     # Add in target name
     sha1_signing_cmd += ' "$TARGET"'
     # Add the SHA1 signing to the list of commands to perform.
@@ -202,6 +207,8 @@ def DualSignedBinaryGenerator(source, target, env, for_signature):
     # Add cert hash if any.
     if env.subst('$SHA2_CERTIFICATE_HASH'):
       sha2_signing_cmd += ' /sha1 "$SHA2_CERTIFICATE_HASH"'
+    if env.Bit('use_authenticode_machine_store'):
+      sha2_signing_cmd += ' /sm'
     # Other options needed when adding a second, sha2 signature.
     sha2_signing_cmd += ' /as /fd "SHA256"'
     # Add in target name

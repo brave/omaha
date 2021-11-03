@@ -65,20 +65,20 @@ _is_google_update_build = False
 # These values must be changed when customizing open source Omaha.
 # You may also wish to replace the language-neutral constants in the individual
 # *generated_resources_*.rc files with localized strings.
-_FULL_COMPANY_NAME = 'OmahaCompanyName Inc.'
-_SHORT_COMPANY_NAME = 'OmahaCompanyName'
-_PATH_COMPANY_NAME = 'OmahaCompanyName'
+_FULL_COMPANY_NAME = 'BraveSoftware Inc.'
+_SHORT_COMPANY_NAME = 'BraveSoftware'
+_PATH_COMPANY_NAME = 'BraveSoftware'
 _PRODUCT_NAME = 'Update'
-_COMPANY_DOMAIN_BASE = 'google'
+_COMPANY_DOMAIN_BASE = 'brave'
 _COMPANY_DOMAIN = _COMPANY_DOMAIN_BASE + '.com'
-_MAIN_EXE_BASE_NAME = 'GoogleUpdate'
+_MAIN_EXE_BASE_NAME = 'BraveUpdate'
 # TODO(omaha): Use this throughout the build files where goopdate and
 # goopdateres are referenced.
 _MAIN_DLL_BASE_NAME = 'goopdate'
 # "Google LLC" must not be removed from the copyright string. This literal also
 # appears as LegalCopyright in the VERSIONINFO section of .rc files.
 # TODO(omaha): Use this variable in .wxs files, etc.
-_OMAHA_COPYRIGHT_STRING_ENGLISH = 'Copyright 2018 Google LLC'
+_OMAHA_COPYRIGHT_STRING_ENGLISH = ''
 
 
 # TODO(omaha): Allow open source Omaha to be built without the Recovery MSI,
@@ -162,6 +162,10 @@ win_env['ENV']['LocalAppData'] = os.getenv('LocalAppData')
 # Append paths for supporting tools such as uuidgen.exe.
 win_env.AppendENVPath('PATH', (os.environ['WindowsSdkVerBinPath'] + '\\x86\\'))
 
+if os.getenv('n3fips_password'):
+    # Forward this env. var, which is used for CloudHSM code signing.
+    win_env['ENV']['n3fips_password'] = os.getenv('n3fips_password')
+
 # Remove this value because it conflicts with a #define
 # in shlwapi.h in the Vista SDK
 win_env.FilterOut(CPPDEFINES = ['OS_WINDOWS=OS_WINDOWS'])
@@ -189,7 +193,7 @@ AddOption(
     action='store',
     nargs=1,
     type='string',
-    default='$MAIN_DIR/data/OmahaTestCert.pfx'
+    default=None
 )
 
 default_cert_password = 'test'
@@ -198,7 +202,23 @@ AddOption(
     action='store',
     nargs=1,
     type='string',
-    default=default_cert_password
+    default=None
+)
+
+AddOption(
+    '--authenticode_hash',
+    action='store',
+    nargs=1,
+    type='string',
+    default=None
+)
+
+AddOption(
+    '--sha2_authenticode_hash',
+    action='store',
+    nargs=1,
+    type='string',
+    default=None
 )
 
 AddOption(
@@ -206,7 +226,7 @@ AddOption(
     action='store',
     nargs=1,
     type='string',
-    default='$MAIN_DIR/data/Sha2OmahaTestCert.pfx'
+    default=None
 )
 
 default_sha2_cert_password = '888'
@@ -215,7 +235,7 @@ AddOption(
     action='store',
     nargs=1,
     type='string',
-    default=default_sha2_cert_password
+    default=None
 )
 
 # Declare option for specifying path to new official build files
@@ -235,6 +255,14 @@ AddOption(
     default=''
 )
 
+AddOption(
+    '--standalone_installers_dir',
+    action='store',
+    nargs=1,
+    type='string',
+    default='$MAIN_DIR/standalone'
+)
+
 # Declare various boolean states.
 DeclareBit('is_google_update_build', 'True if building Google Update')
 DeclareBit('official_installers', 'Building using checked-in binaries')
@@ -249,12 +277,15 @@ DeclareBit('all', 'Building all Projects')
 DeclareBit('msvs', 'Building Visual Studio solution files')
 DeclareBit('no-tests', 'Do not build the unit tests')
 DeclareBit('x64', 'Build 64 bit code')
+DeclareBit('arm64', 'Build 64 bit ARM code')
 DeclareBit('analysis', 'Turns on static analysis')
 DeclareBit('suppress_light_validation', 'Suppress WiX Linker ICE validation')
 DeclareBit('has_device_management',
            'True if including cloud-based device management')
 DeclareBit('verify_payload_authenticode_signature',
            'Whether to verify the Authenticode signature of payloads')
+DeclareBit('use_authenticode_machine_store',
+           'Use the machine store, instead of the user store, of certificates')
 
 # Build official installers if --official_installers is on the command line.
 win_env.SetBitFromOption('official_installers', False)
@@ -305,20 +336,32 @@ if win_env.Bit('build_three_versions'):
 # Allow use of command-line-specified certificates to sign with, but
 # only if we're not on the build server.
 if not win_env.Bit('build_server'):
-  win_env.Replace(
-    CERTIFICATE_HASH='',
-    CERTIFICATE_PASSWORD=GetOption('authenticode_password'),
-    CERTIFICATE_PATH=GetOption('authenticode_file'),
-    SHA2_CERTIFICATE_HASH='',
-    SHA2_CERTIFICATE_ISSUER='',
-    SHA2_CERTIFICATE_PASSWORD=GetOption('sha2_authenticode_password'),
-    SHA2_CERTIFICATE_PATH=GetOption('sha2_authenticode_file'),
-  )
-
-  # Store whether we're using the default test cert separately, because
-  # we won't always know what the default password was.
-  if GetOption('authenticode_password') is default_cert_password:
+  _authenticode_hash = GetOption('authenticode_hash')
+  _authenticode_file = GetOption('authenticode_file')
+  _authenticode_password = GetOption('authenticode_password')
+  if not _authenticode_hash and not _authenticode_file:
+    assert not _authenticode_password
     win_env.SetBits('test_certificate')
+    _authenticode_file = '$MAIN_DIR/data/OmahaTestCert.pfx'
+    _authenticode_password = default_cert_password
+
+  _sha2_authenticode_hash = GetOption('sha2_authenticode_hash')
+  _sha2_authenticode_file = GetOption('sha2_authenticode_file')
+  _sha2_authenticode_password = GetOption('sha2_authenticode_password')
+  if not _sha2_authenticode_hash and not _sha2_authenticode_file:
+    assert not _sha2_authenticode_password
+    _sha2_authenticode_file = '$MAIN_DIR/data/Sha2OmahaTestCert.pfx'
+    _sha2_authenticode_password = default_sha2_cert_password
+
+  win_env.Replace(
+    CERTIFICATE_HASH=_authenticode_hash,
+    CERTIFICATE_PASSWORD=_authenticode_password,
+    CERTIFICATE_PATH=_authenticode_file,
+    SHA2_CERTIFICATE_HASH=_sha2_authenticode_hash,
+    SHA2_CERTIFICATE_ISSUER='',
+    SHA2_CERTIFICATE_PASSWORD=_sha2_authenticode_password,
+    SHA2_CERTIFICATE_PATH=_sha2_authenticode_file,
+  )
 
 # Build the 64 bit version of the code.
 win_env.SetBitFromOption('x64', False)
@@ -332,6 +375,9 @@ win_env.SetBitFromOption('suppress_light_validation', False)
 
 # Whether the Authenticode signature of update payloads should be verified.
 win_env.SetBitFromOption('verify_payload_authenticode_signature', False)
+
+# Whether to use the machine store instead of the user store for certificates.
+win_env.SetBitFromOption('use_authenticode_machine_store', False)
 
 #
 # Set up version info.
@@ -361,6 +407,8 @@ print 'Building versions: %s' % ', '.join(
 build_number = GetOption('build_number')
 if build_number:
   print 'Build number: %s' % build_number
+
+win_env['standalone_installers_dir'] = GetOption('standalone_installers_dir')
 
 win_env['omaha_versions_info'] = omaha_versions_info
 
@@ -882,7 +930,8 @@ windows_coverage_env['SIGNTOOL'] = '@echo Signing deferred: '
 
 def SigningCommand(env, filename):
   # Only do signing if there is a certificate file or certificate name.
-  if env.subst('$CERTIFICATE_PATH') or env.subst('$CERTIFICATE_NAME'):
+  if env.subst('$CERTIFICATE_PATH') or env.subst('$CERTIFICATE_NAME') \
+      or env.subst('$CERTIFICATE_HASH'):
     # The command used to do signing (target added on below).
     signing_cmd = '$SIGNTOOL_ORIG sign '
     # Add in certificate file if any.
@@ -895,6 +944,11 @@ def SigningCommand(env, filename):
     if env.subst('$CERTIFICATE_NAME'):
       # The command used to do signing (target added on below).
       signing_cmd += ' /s "$CERTIFICATE_STORE" /n "$CERTIFICATE_NAME"'
+    # Add cert hash if any.
+    if env.subst('$CERTIFICATE_HASH'):
+      signing_cmd += ' /sha1 "$CERTIFICATE_HASH"'
+    if env.Bit('use_authenticode_machine_store'):
+      signing_cmd += ' /sm'
     # Add timestamp server if any.
     if env.subst('$TIMESTAMP_SERVER'):
       signing_cmd += ' /t "$TIMESTAMP_SERVER"'

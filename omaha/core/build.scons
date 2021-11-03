@@ -86,7 +86,7 @@ google_core_inputs = [
     google_core_res,
     ]
 
-exe_name = 'GoogleUpdateCore'
+exe_name = 'BraveUpdateCore'
 
 unsigned_core = core_env.ComponentProgram(
     prog_name='%s_unsigned.exe' % exe_name,

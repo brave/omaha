@@ -114,7 +114,9 @@ int wmain(int argc, WCHAR* argv[], WCHAR* env[]) {
     DWORD bytes_written = 0;
     if (!::WriteFile(get(file),
                      out.data(),
-                     out.size(),
+                     // This cast is safe because we checked
+                     // out0.size() + ... + out4.size() <= DWORD_MAX above:
+                     static_cast<DWORD>(out.size()),
                      &bytes_written,
                      NULL) ||
         bytes_written != out.size()) {
