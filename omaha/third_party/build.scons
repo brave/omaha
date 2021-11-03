@@ -122,11 +122,18 @@ lzma_env.Append(
       '/wd4457',  # declaration of '...' hides function parameter
     ],
 )
+lzma_inputs = [
+    'lzma/files/C/Bcj2.c',
+    'lzma/files/C/Bra86.c',
+    'lzma/files/C/LzmaDec.c',
+    ]
 lzma_env.ComponentLibrary(
     lib_name='lzma',
-    source=[
-        'lzma/files/C/Bcj2.c',
-        'lzma/files/C/Bra86.c',
-        'lzma/files/C/LzmaDec.c',
-    ],
+    source=lzma_inputs,
+)
+
+lzma_env_64 = lzma_env.CloneAndMake64Bit()
+lzma_env_64.ComponentLibrary(
+    lib_name='lzma_64',
+    source=lzma_inputs,
 )

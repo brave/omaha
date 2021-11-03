@@ -32,7 +32,7 @@ from enterprise.installer import build_enterprise_installer
 
 # APPTEAMS: Change this value to False.
 # Build the installer using build rules specific to Google Update builds.
-BUILDING_WITH_GOOGLE_UPDATE = True
+BUILDING_WITH_GOOGLE_UPDATE = False
 
 # We need to build the custom_actions dll.
 env.BuildSConscript('custom_actions')
@@ -108,7 +108,7 @@ def _BuildSampleForTest():
 
         build_enterprise_installer.BuildEnterpriseInstaller(
             env,
-            'Google',
+            'BraveSoftware',
             product_name, product_version, product_guid,
             product_custom_params,
             product_installer_path,
@@ -118,7 +118,7 @@ def _BuildSampleForTest():
             prefix + msi_base_name + '_' + combo[0],
             '$MAIN_DIR/enterprise/installer',
             msi_custom_action_dll,
-            '$STAGING_DIR/%sGoogleUpdateSetup.exe' % prefix,
+            '$STAGING_DIR/%sBraveUpdateSetup.exe' % prefix,
             output_dir = '$TARGET_ROOT/Test_Installers'
         )
 

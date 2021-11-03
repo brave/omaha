@@ -71,7 +71,9 @@ CString BuildGoogleUpdateExePath(bool is_machine);
 CString BuildGoogleUpdateServicesPath(bool is_machine, bool use64bit);
 
 // Builds the path of the crash handler and adds the enclosing quotes.
-CString BuildGoogleUpdateServicesEnclosedPath(bool is_machine, bool use64bit);
+CString BuildGoogleUpdateServicesEnclosedPath(bool is_machine,
+                                              bool use64bit,
+                                              bool useArm64bit);
 
 // Returns true if the currently executing binary is running from the
 // Machine/User Goopdate directory, or a directory under it.

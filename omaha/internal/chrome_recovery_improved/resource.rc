@@ -65,7 +65,6 @@ BEGIN
   #endif
             VALUE "FileVersion", VERSION_NUMBER_STRING
             VALUE "InternalName", OMAHA_APP_NAME_ANSI
-            VALUE "LegalCopyright", "Copyright 2018 Google LLC"
             VALUE "OriginalFilename", MAIN_EXE_BASE_NAME_ANSI ".exe"
   #ifdef GOOGLE_UPDATE_BUILD
             VALUE "ProductName", "Google Update"

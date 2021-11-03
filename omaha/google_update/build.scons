@@ -90,12 +90,12 @@ Depends(exe_env['OBJ_ROOT'] + '/google_update/generated_resources_en.res',
     exe_env['MAIN_DIR'] + '/VERSION')
 
 unsigned_exe_output = exe_env.ComponentProgram(
-    prog_name='GoogleUpdate_unsigned',
+    prog_name='BraveUpdate_unsigned',
     source=exe_inputs,
 )
 
 sign_output = env.SignedBinary(
-    target='GoogleUpdate_signed.exe',
+    target='BraveUpdate_signed.exe',
     source=unsigned_exe_output,
 )
 

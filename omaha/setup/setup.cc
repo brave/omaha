@@ -972,6 +972,7 @@ HRESULT Setup::GetPidsToWaitForUsingCommandLine(Pids* pids) const {
   const TCHAR* kCrashHandlerFileNames[] = {
     kCrashHandlerFileName,
     kCrashHandler64FileName,
+    kCrashHandlerArm64FileName,
   };
   for (size_t i = 0; i < arraysize(kCrashHandlerFileNames); ++i) {
     std::vector<uint32> matching_pids;

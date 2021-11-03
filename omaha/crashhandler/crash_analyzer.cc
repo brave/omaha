@@ -236,7 +236,9 @@ BYTE* CrashAnalyzer::GetThreadStack(BYTE* ptr) const {
     return 0;
   }
   const ThreadInfo thread = (*thread_it).second;
-#ifdef _WIN64
+#ifdef ARCH_CPU_ARM64
+  UINT_PTR stack_address = thread.context.Sp;
+#elif defined(_WIN64)
   UINT_PTR stack_address = thread.context.Rsp;
 #else
   UINT_PTR stack_address = thread.context.Esp;
@@ -288,6 +290,14 @@ size_t CrashAnalyzer::GetUserStreamInfo(MINIDUMP_USER_STREAM* user_stream_array,
 // Timeout for attaching the debugger is 2 seconds.
 DWORD kDebugAttachTimeoutMs = 2000;
 
+DWORD kContextFlags = CONTEXT_INTEGER
+                      | CONTEXT_CONTROL
+#ifndef ARCH_CPU_ARM64
+                      // Does not exist on Arm64:
+                      | CONTEXT_SEGMENTS
+#endif
+                      ;
+
 HANDLE CrashAnalyzer::AttachDebugger() {
   if (!::DebugActiveProcess(pid_)) {
     return INVALID_HANDLE_VALUE;
@@ -318,9 +328,7 @@ HANDLE CrashAnalyzer::AttachDebugger() {
       return INVALID_HANDLE_VALUE;
     }
     ThreadInfo thread_info = {0};
-    thread_info.context.ContextFlags = CONTEXT_INTEGER |
-                                       CONTEXT_CONTROL |
-                                       CONTEXT_SEGMENTS;
+    thread_info.context.ContextFlags = kContextFlags;
     thread_info.handle = debug_event.u.CreateProcessInfo.hThread;
     if (::GetThreadContext(debug_event.u.CreateProcessInfo.hThread,
                            &thread_info.context)) {
@@ -399,9 +407,7 @@ bool CrashAnalyzer::InitializeDebuggerAndSuspendProcess() {
         modules_[reinterpret_cast<BYTE*>(module_info.address)] = module_info;
         break;
       case CREATE_THREAD_DEBUG_EVENT:
-        thread_info.context.ContextFlags = CONTEXT_INTEGER |
-                                           CONTEXT_CONTROL |
-                                           CONTEXT_SEGMENTS;
+        thread_info.context.ContextFlags = kContextFlags;
         thread_info.handle = debug_event.u.CreateThread.hThread;
         if (::GetThreadContext(debug_event.u.CreateThread.hThread,
                                &thread_info.context)) {

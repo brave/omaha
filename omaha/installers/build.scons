@@ -30,7 +30,7 @@ _RECOVERY_MARKUP_DLL = _RECOVERY_MARKUP_DLL_BASE_NAME + '.dll'
 
 def _BuildSetup(omaha_versions_info, is_repair = False):
   # Build the meta-installer for each version.
-  _PRODUCT_NAME = 'GoogleUpdate'
+  _PRODUCT_NAME = 'BraveUpdate'
 
   for omaha_version_info in omaha_versions_info:
     prefix = omaha_version_info.filename_prefix
@@ -99,7 +99,7 @@ if not env.Bit('official_installers'):
       target=[
           '$STAGING_DIR',
           ],
-      source='$OBJ_ROOT/installers/GoogleUpdateSetup.exe',
+      source='$OBJ_ROOT/installers/BraveUpdateSetup.exe',
   )
 
   # Build the repair installer.

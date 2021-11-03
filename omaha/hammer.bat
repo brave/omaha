@@ -4,6 +4,8 @@ setlocal
 
 rem -- Set all environment variables used by Hammer and Omaha. --
 
+call "%ProgramFiles%\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64_x86 10.0.22621.0 || (SET ERRORLINE=7&& goto :error)
+
 :: VS2003/VC71 is 1310 (not supported by the current build).
 :: VS2005/VC80 is 1400 (not supported by the current build).
 :: VS2008/VC90 is 1500 (not supported by the current build).
@@ -128,7 +130,10 @@ rem Force Hammer to use Python 2.7
 set PYTHON_TO_USE=python_27
 set "PYTHONPATH=%OMAHA_PYTHON_DIR%"
 
-call "%SCT_DIR%\hammer.bat" %*
+:: Make sure we're using Python from the install location above:
+set PATH=%OMAHA_PYTHON_DIR%;%PATH%
+
+call "%SCT_DIR%\hammer.bat" %* || (SET ERRORLINE=132&&goto :error)
 
 if /i {%1} == {-c} (
   del /q /f "%PROXY_CLSID_TARGET%" 2> NUL
@@ -139,10 +144,17 @@ goto end
 
 :error_no_vc
 echo VisualStudioVersion variable is not set. Have you run vcvarsall.bat before running this script?
+exit /b 1
 goto end
 
 :error_vc_not_supported
 echo Visual Studio version %VisualStudioVersion% is not supported.
+exit /b 2
+goto end
+
+:error
+echo Error in hammer.bat:%ERRORLINE%.
+exit /b %ERRORLEVEL%
 goto end
 
 :end

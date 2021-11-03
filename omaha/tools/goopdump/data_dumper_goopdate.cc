@@ -205,7 +205,7 @@ HRESULT DataDumperGoopdate::GetDllDir(bool is_machine, CString* dll_path) {
 
 void DataDumperGoopdate::DumpGoogleUpdateIniFile(const DumpLog& dump_log) {
   DumpHeader header(dump_log, MAIN_EXE_BASE_NAME _T(".ini File Contents"));
-  DumpFileContents(dump_log, _T("c:\\googleupdate.ini"), 0);
+  DumpFileContents(dump_log, _T("c:\\") MAIN_EXE_BASE_NAME _T(".ini"), 0);
 }
 
 void DataDumperGoopdate::DumpHostsFile(const DumpLog& dump_log) {
