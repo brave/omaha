@@ -10,6 +10,9 @@ import subprocess as sp
 import sys
 
 
+def fetch_submodules(omaha_dir):
+  sp.check_call(['git', 'submodule', 'update', '--init'], stderr=sp.STDOUT, cwd=omaha_dir)
+
 def build(omaha_dir, build_all):
   # move to omaha/omaha and start build.
   os.chdir(os.path.join(omaha_dir, 'omaha'))
@@ -167,6 +170,7 @@ def main():
   args = parse_args()
   omaha_dir = os.path.join(args.root_out_dir[0], '..', '..', 'brave', 'vendor', 'omaha')
 
+  fetch_submodules(omaha_dir)
   prepare_untagged_standalone(args, omaha_dir)
   build(omaha_dir, False)
   tag_standalone(args, omaha_dir, False)
