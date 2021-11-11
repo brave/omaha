@@ -24,8 +24,8 @@ def build(omaha_dir, build_all):
     mode = 'all'
   command = ['hammer.bat', 'MODE=' + mode, '--all', '--sha2_authenticode_file=' + key_pfx_path,
     '--sha2_authenticode_password=' + authenticode_password, '--sha1_authenticode_file=' + key_pfx_path,
-    '--sha1_authenticode_password=' + authenticode_password, '--patching_certificate=' + key_cer_path,
-    '--authenticode_file=' + key_pfx_path, '--authenticode_password=' + authenticode_password]
+    '--sha1_authenticode_password=' + authenticode_password, '--authenticode_file=' + key_pfx_path,
+    '--authenticode_password=' + authenticode_password]
 
   sp.check_call(command, stderr=sp.STDOUT)
 
