@@ -30,10 +30,7 @@ def build(omaha_dir, build_all):
   sp.check_call(command, stderr=sp.STDOUT)
 
 def copy_untagged_installers(args, omaha_dir, debug):
-  last_win_dir = 'opt-win'
-  if debug:
-    last_win_dir = 'dbg-win'
-  omaha_out_dir = os.path.join(omaha_dir, 'omaha', 'scons-out', last_win_dir)
+  omaha_out_dir = get_omaha_out_dir(omaha_dir, debug)
 
   source_untagged_installer = os.path.join(omaha_out_dir, 'Test_Installers', 'UNOFFICIAL_' + args.untagged_installer_exe[0])
   target_untagged_installer_file = args.untagged_installer_exe[0]
@@ -50,6 +47,12 @@ def copy_untagged_installers(args, omaha_dir, debug):
   target_untagged_stub_installer = os.path.join(args.root_out_dir[0], target_untagged_stub_installer_file)
 
   shutil.copyfile(source_untagged_stub_installer, target_untagged_stub_installer)
+
+def get_omaha_out_dir(omaha_dir, debug):
+  last_win_dir = 'opt-win'
+  if debug:
+    last_win_dir = 'dbg-win'
+  return os.path.join(omaha_dir, 'omaha', 'scons-out', last_win_dir)
 
 def prepare_untagged_standalone(args, omaha_dir):
   prepare_untagged(omaha_dir, args.root_out_dir[0], args.brave_installer_exe[0], args.guid[0], args.install_switch[0], args.brave_full_version[0],
@@ -122,10 +125,7 @@ def tag_silent(args, omaha_dir, debug):
   apply_tag(omaha_dir, debug, 'Test_Installers/UNOFFICIAL_' + args.silent_installer_exe[0], args.silent_installer_exe[0], silent_tag, args.root_out_dir[0])
 
 def apply_tag(omaha_dir, debug, source_installer, target_installer_file, tag, root_out_dir):
-  last_win_dir = 'opt-win'
-  if debug:
-    last_win_dir = 'dbg-win'
-  omaha_out_dir = os.path.join(omaha_dir, 'omaha', 'scons-out', last_win_dir)
+  omaha_out_dir = get_omaha_out_dir(omaha_dir, debug)
   apply_tag_exe = os.path.join(omaha_out_dir, 'obj', 'tools', 'ApplyTag', 'ApplyTag.exe')
 
   source_installer_path = os.path.join(omaha_out_dir, *source_installer.split('/'))
