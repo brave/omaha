@@ -180,11 +180,11 @@ def main():
   args = parse_args()
   omaha_dir = os.path.join(args.root_out_dir[0], '..', '..', 'brave', 'vendor', 'omaha')
 
-  installer_metadata_dir = prepare_untagged_standalone(args, omaha_dir)
+  installer_metadata_dir = prepare_untagged_standalone(args, omaha_dir, False)
   build(omaha_dir, installer_metadata_dir, False)
   tag_standalone(args, omaha_dir, False)
 
-  installer_metadata_dir = prepare_untagged_silent(args, omaha_dir)
+  installer_metadata_dir = prepare_untagged_silent(args, omaha_dir, False)
   build(omaha_dir, installer_metadata_dir, False)
   tag_silent(args, omaha_dir, False)
 
