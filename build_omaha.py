@@ -64,7 +64,7 @@ def prepare_untagged_standalone(args, omaha_dir, debug):
   )
 
 def prepare_untagged_silent(args, omaha_dir, debug):
-  prepare_untagged(
+  return prepare_untagged(
     omaha_dir, 'silent', args.root_out_dir[0], args.brave_installer_exe[0], args.guid[0],
     '--do-not-launch-chrome ' + args.install_switch[0], args.brave_full_version[0],
     [(args.silent_installer_exe[0], args.silent_installer_exe[0])], debug
