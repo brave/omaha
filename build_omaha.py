@@ -103,15 +103,18 @@ def prepare_untagged(omaha_dir, name, root_out_dir, brave_installer_exe, app_gui
   open(target_installer_text_path, 'w').close()
 
   for file_name, installer_exe in details:
-    add_to_standalone_installers_txt(target_installer_text_path, file_name, app_guid, installer_exe, brave_full_version)
+    brave_installer_path = os.path.join(root_out_dir, brave_installer_exe)
+    brave_installer_path_fixed_name = os.path.join(out_dir, installer_exe)
+    shutil.copyfile(brave_installer_path, brave_installer_path_fixed_name)
+    add_to_standalone_installers_txt(target_installer_text_path, file_name, app_guid, brave_installer_path_fixed_name, brave_full_version)
 
   return out_dir
 
-def add_to_standalone_installers_txt(target_installer_text_path, file_name, app_guid, brave_installer_exe, brave_version):
+def add_to_standalone_installers_txt(target_installer_text_path, file_name, app_guid, installer_exe_path, brave_version):
   installer_text = "('FILE_NAME', 'FILE_NAME', [('BRAVE_VERSION', 'BRAVE_INSTALLER_EXE', 'APP_GUID')], None, None, None, False, '', '')"
   installer_text = installer_text.replace("FILE_NAME", os.path.splitext(file_name)[0])
   installer_text = installer_text.replace("APP_GUID", app_guid)
-  installer_text = installer_text.replace("BRAVE_INSTALLER_EXE", brave_installer_exe.replace('\\', '/'))
+  installer_text = installer_text.replace("BRAVE_INSTALLER_EXE", installer_exe_path.replace('\\', '/'))
   installer_text = installer_text.replace("BRAVE_VERSION", brave_version)
   f = open(target_installer_text_path,'a+')
   f.write(installer_text + '\n')
