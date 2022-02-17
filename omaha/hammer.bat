@@ -5,7 +5,7 @@
 set OMAHA_PSEXEC_DIR=%ProgramFiles(x86)%\pstools
 
 :: Set VS environment variables.
-call "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64_x86 10.0.18362.0
+call "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64_x86 10.0.18362.0
 
 setlocal
 
