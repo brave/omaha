@@ -5,7 +5,7 @@
 set OMAHA_PSEXEC_DIR=%ProgramFiles(x86)%\pstools
 
 :: Set VS environment variables.
-call "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64_x86 10.0.18362.0
+call "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64_x86 10.0.18362.0 || (SET ERRORLINE=8&& goto :error)
 
 setlocal
 
@@ -93,7 +93,7 @@ set CUSTOMIZATION_UT_TARGET=%~dp0common\omaha_customization_proxy_clsid.h
 
 rem Force Hammer to use Python 2.7
 set PYTHON_TO_USE=python_27
-call "%SCT_DIR%\hammer.bat" %*
+call "%SCT_DIR%\hammer.bat" %* || (SET ERRORLINE=96&& goto :error)
 
 if /i {%1} == {-c} (
   del /q /f "%PROXY_CLSID_TARGET%" 2> NUL
@@ -104,10 +104,17 @@ goto end
 
 :error_no_vc
 echo VisualStudioVersion variable is not set. Have you run vcvarsall.bat before running this script?
+exit /b 1
 goto end
 
 :error_vc_not_supported
 echo Visual Studio version %VisualStudioVersion% is not supported.
+exit /b 2
+goto end
+
+:error
+echo Error in hammer.bat:%ERRORLINE%.
+exit /b %ERRORLEVEL%
 goto end
 
 :end
