@@ -23,7 +23,6 @@
 #include "omaha/base/scope_guard.h"
 #include "omaha/base/synchronized.h"
 #include "omaha/base/utils.h"
-#include "omaha/common/brave_stats_updater.h"
 #include "omaha/common/config_manager.h"
 #include "omaha/common/const_cmd_line.h"
 #include "omaha/common/install_manifest.h"
@@ -119,9 +118,6 @@ void InstallManager::InstallApp(App* app,  const CString& dir) {
   const CString current_version_string = app->current_version()->version();
 
   HANDLE primary_token(app->app_bundle()->primary_token());
-
-  omaha::BraveSendStatsPing(_T("installer-run"), app->app_guid_string(),
-                            app->referral_id(), next_version->version());
 
   HRESULT hr = InstallApp(is_machine_,
                           primary_token,

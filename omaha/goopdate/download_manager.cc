@@ -39,7 +39,6 @@
 #include "omaha/base/synchronized.h"
 #include "omaha/base/user_rights.h"
 #include "omaha/base/utils.h"
-#include "omaha/common/brave_stats_updater.h"
 #include "omaha/common/config_manager.h"
 #include "omaha/common/const_goopdate.h"
 #include "omaha/common/google_signaturevalidator.h"
@@ -279,9 +278,6 @@ HRESULT DownloadManager::DownloadApp(App* app) {
   }
 
   if (SUCCEEDED(hr)) {
-    omaha::BraveSendStatsPing(_T("download-complete"), app->app_guid_string(),
-                              app->referral_id(),
-                              app_version->app()->next_version()->version());
     app->DownloadComplete();
     app->MarkReadyToInstall();
   } else {
