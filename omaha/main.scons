@@ -403,8 +403,6 @@ elif win_env.Bit('build_three_versions'):
 print 'Building versions: %s' % ', '.join(
     [version_info.GetVersionString() for version_info in omaha_versions_info])
 
-print 'Python interpreter: ' + sys.executable
-
 build_number = GetOption('build_number')
 if build_number:
   print 'Build number: %s' % build_number
