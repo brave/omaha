@@ -49,7 +49,8 @@ def OmahaCertificateTag(env, target, source):
 
   certificate_tag = ('"' + env['ENV']['GOROOT'] + '/bin/go.exe' + '"' +
                      ' run ' +
-                     '$MAIN_DIR/../common/certificate_tag/certificate_tag.go')
+                     '$MAIN_DIR/../common/certificate_tag/certificate_tag.go' +
+                     ' --print-tag-details')
   magic_bytes = 'Gact2.0Omaha'
   padded_length = len(magic_bytes) + 2 + 8192
   certificate_tag_cmd = env.Command(
@@ -89,7 +90,8 @@ def OmahaCertificateTagForTesting(env,
 
   certificate_tag = ('"' + env['ENV']['GOROOT'] + '/bin/go.exe' + '"' +
                      ' run ' +
-                     '$MAIN_DIR/../common/certificate_tag/certificate_tag.go')
+                     '$MAIN_DIR/../common/certificate_tag/certificate_tag.go' +
+                     ' --print-tag-details')
   if magic_bytes is None:
     magic_bytes = 'Gact2.0Omaha'
   if tag_length is None:
