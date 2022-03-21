@@ -52,7 +52,7 @@ def OmahaCertificateTag(env, target, source):
   certificate_tag_exe = env.Command(
       target='$STAGING_DIR/certificate_tag.exe',
       source=certificate_tag_go,
-      command=go_exe + ' build -o $STAGING_DIR ' + certificate_tag_go
+      action=go_exe + ' build -o $STAGING_DIR ' + certificate_tag_go
 
   )
   env.Depends(certificate_tag_exe)
