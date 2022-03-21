@@ -55,7 +55,6 @@ def OmahaCertificateTag(env, target, source):
       action=go_exe + ' build -o $STAGING_DIR ' + certificate_tag_go
 
   )
-  env.Depends(certificate_tag_exe)
   magic_bytes = 'Gact2.0Omaha'
   padded_length = len(magic_bytes) + 2 + 8192
   certificate_tag_cmd = env.Command(
@@ -65,6 +64,7 @@ def OmahaCertificateTag(env, target, source):
       + magic_bytes + ' -padded-length=' + str(padded_length) +
       ' -out $TARGET $SOURCE'
   )
+  env.Depends(certificate_tag_cmd, certificate_tag_exe)
 
   return certificate_tag_cmd
 
