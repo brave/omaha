@@ -32,8 +32,8 @@ from subprocess import PIPE,Popen
 import omaha_version_utils
 
 
-_CERTIFICATE_TAG_EXE = '$STAGING_DIR/certificate_tag.exe'
 _CERTIFICATE_TAG_LOCK = 'non-existent-file.txt'
+
 
 def OmahaCertificateTag(env, target, source):
   """Adds a superfluous certificate with a magic signature to an EXE or MSI.
@@ -50,29 +50,20 @@ def OmahaCertificateTag(env, target, source):
     Output node list from env.Command().
   """
 
+  certificate_tag = ('"' + env['ENV']['GOROOT'] + '/bin/go.exe' + '"' +
+                     ' run ' +
+                     '$MAIN_DIR/../common/certificate_tag/certificate_tag.go')
   magic_bytes = 'Gact2.0Omaha'
   padded_length = len(magic_bytes) + 2 + 8192
   certificate_tag_cmd = env.Command(
-      target=target, source=source,
-      action=_CERTIFICATE_TAG_EXE + ' -set-superfluous-cert-tag=' +
-             magic_bytes + ' -padded-length=' + str(padded_length) +
-             ' -out $TARGET $SOURCE'
+      target=target,
+      source=source,
+      action=certificate_tag + ' -set-superfluous-cert-tag=' + magic_bytes +
+      ' -padded-length=' + str(padded_length) + ' -out $TARGET $SOURCE',
   )
-  build_certificate_tag_exe = BuildCertificateTagExe(env)
-  env.Depends(certificate_tag_cmd, build_certificate_tag_exe)
   env.SideEffect(_CERTIFICATE_TAG_LOCK, certificate_tag_cmd)
 
   return certificate_tag_cmd
-
-
-def BuildCertificateTagExe(env):
-  certificate_tag_go = '$MAIN_DIR/../common/certificate_tag/certificate_tag.go'
-  go_exe = '"' + env['ENV']['GOROOT'] + '/bin/go.exe' + '"'
-  return env.Command(
-      target=_CERTIFICATE_TAG_EXE, source=certificate_tag_go,
-      action=go_exe + ' build -o ' + _CERTIFICATE_TAG_EXE + ' ' +
-             certificate_tag_go
-  )
 
 
 def OmahaCertificateTagForTesting(env,
@@ -100,6 +91,9 @@ def OmahaCertificateTagForTesting(env,
     Output node list from env.Command().
   """
 
+  certificate_tag = ('"' + env['ENV']['GOROOT'] + '/bin/go.exe' + '"' +
+                     ' run ' +
+                     '$MAIN_DIR/../common/certificate_tag/certificate_tag.go')
   if magic_bytes is None:
     magic_bytes = 'Gact2.0Omaha'
   if tag_length is None:
@@ -115,12 +109,10 @@ def OmahaCertificateTagForTesting(env,
   certificate_tag_cmd = env.Command(
       target=target,
       source=source,
-      action=_CERTIFICATE_TAG_EXE + ' -set-superfluous-cert-tag=' +
+      action=certificate_tag + ' -set-superfluous-cert-tag=' +
       full_tag_encoded + ' -padded-length=' + str(padded_length) +
       ' -out $TARGET $SOURCE',
   )
-  build_certificate_tag_exe = BuildCertificateTagExe(env)
-  env.Depends(certificate_tag_cmd, build_certificate_tag_exe)
   env.SideEffect(_CERTIFICATE_TAG_LOCK, certificate_tag_cmd)
 
   return certificate_tag_cmd
