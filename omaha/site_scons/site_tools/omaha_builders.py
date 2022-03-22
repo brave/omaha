@@ -33,6 +33,7 @@ import omaha_version_utils
 
 
 _CERTIFICATE_TAG_EXE = '$STAGING_DIR/certificate_tag.exe'
+_CERTIFICATE_TAG_LOCK = 'non-existent-file.txt'
 
 def OmahaCertificateTag(env, target, source):
   """Adds a superfluous certificate with a magic signature to an EXE or MSI.
@@ -59,6 +60,7 @@ def OmahaCertificateTag(env, target, source):
   )
   build_certificate_tag_exe = BuildCertificateTagExe(env)
   env.Depends(certificate_tag_cmd, build_certificate_tag_exe)
+  env.SideEffect(_CERTIFICATE_TAG_LOCK, certificate_tag_cmd)
 
   return certificate_tag_cmd
 
@@ -119,6 +121,7 @@ def OmahaCertificateTagForTesting(env,
   )
   build_certificate_tag_exe = BuildCertificateTagExe(env)
   env.Depends(certificate_tag_cmd, build_certificate_tag_exe)
+  env.SideEffect(_CERTIFICATE_TAG_LOCK, certificate_tag_cmd)
 
   return certificate_tag_cmd
 
