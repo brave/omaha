@@ -3,6 +3,7 @@
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import argparse
+import multiprocessing
 import os
 import os.path
 import shutil
@@ -22,7 +23,10 @@ def build(omaha_dir, standalone_installers_dir, build_all):
   mode = 'opt-win'
   if build_all:
     mode = 'all'
-  command = ['hammer.bat', 'MODE=' + mode, '--all', '--standalone_installers_dir=' + standalone_installers_dir]
+  num_cpus = multiprocessing.cpu_count()
+  parallelism = 1 if num_cpus <= 1 else num_cpus // 2
+  command = ['hammer.bat', 'MODE=' + mode, '--all', '--standalone_installers_dir=' + standalone_installers_dir,
+              '-j%d' % (parallelism)]
   if key_pfx_path:
     command.append('--authenticode_file=' + key_pfx_path)
     command.append('--sha1_authenticode_file=' + key_pfx_path)
