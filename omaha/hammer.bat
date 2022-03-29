@@ -4,6 +4,8 @@ setlocal
 
 rem -- Set all environment variables used by Hammer and Omaha. --
 
+call "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64_x86 10.0.22000.0 || (SET ERRORLINE=8&& goto :error)
+
 :: VS2003/VC71 is 1310 (not supported by the current build).
 :: VS2005/VC80 is 1400 (not supported by the current build).
 :: VS2008/VC90 is 1500 (not supported by the current build).
@@ -127,7 +129,7 @@ set "PYTHONPATH=%OMAHA_PYTHON_DIR%"
 :: Make sure we're using Python from the install location above:
 set PATH=%OMAHA_PYTHON_DIR%;%PATH%
 
-call "%SCT_DIR%\hammer.bat" %* || (SET ERRORLINE=130&&goto :error)
+call "%SCT_DIR%\hammer.bat" %* || (SET ERRORLINE=132&&goto :error)
 
 if /i {%1} == {-c} (
   del /q /f "%PROXY_CLSID_TARGET%" 2> NUL
