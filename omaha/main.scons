@@ -269,6 +269,14 @@ AddOption(
     default=''
 )
 
+AddOption(
+    '--standalone_installers_dir',
+    action='store',
+    nargs=1,
+    type='string',
+    default='$MAIN_DIR/standalone'
+)
+
 # Declare various boolean states.
 DeclareBit('is_google_update_build', 'True if building Google Update')
 DeclareBit('official_installers', 'Building using checked-in binaries')
@@ -399,6 +407,8 @@ print 'Building versions: %s' % ', '.join(
 build_number = GetOption('build_number')
 if build_number:
   print 'Build number: %s' % build_number
+
+win_env['standalone_installers_dir'] = GetOption('standalone_installers_dir')
 
 win_env['omaha_versions_info'] = omaha_versions_info
 
