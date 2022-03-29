@@ -22,12 +22,15 @@ def build(omaha_dir, standalone_installers_dir, build_all):
   mode = 'opt-win'
   if build_all:
     mode = 'all'
-  command = ['hammer.bat', 'MODE=' + mode, '--all', '--standalone_installers_dir=' + standalone_installers_dir,
-    '--sha2_authenticode_file=' + key_pfx_path,
-    '--sha2_authenticode_password=' + authenticode_password, '--sha1_authenticode_file=' + key_pfx_path,
-    '--sha1_authenticode_password=' + authenticode_password, '--authenticode_file=' + key_pfx_path,
-    '--authenticode_password=' + authenticode_password]
-
+  command = ['hammer.bat', 'MODE=' + mode, '--all', '--standalone_installers_dir=' + standalone_installers_dir]
+  if key_pfx_path:
+    command.append('--authenticode_file=' + key_pfx_path)
+    command.append('--sha1_authenticode_file=' + key_pfx_path)
+    command.append('--sha2_authenticode_file=' + key_pfx_path)
+  if authenticode_password:
+    command.append('--authenticode_password=' + authenticode_password)
+    command.append('--sha1_authenticode_password=' + authenticode_password)
+    command.append('--sha2_authenticode_password=' + authenticode_password)
   sp.check_call(command, stderr=sp.STDOUT)
 
 def copy_untagged_installers(args, omaha_dir, debug):
