@@ -124,7 +124,10 @@ rem Force Hammer to use Python 2.7
 set PYTHON_TO_USE=python_27
 set "PYTHONPATH=%OMAHA_PYTHON_DIR%"
 
-call "%SCT_DIR%\hammer.bat" %* || (SET ERRORLINE=127&&goto :error)
+:: Make sure we're using Python from the install location above:
+set PATH=%OMAHA_PYTHON_DIR%;%PATH%
+
+call "%SCT_DIR%\hammer.bat" %* || (SET ERRORLINE=130&&goto :error)
 
 if /i {%1} == {-c} (
   del /q /f "%PROXY_CLSID_TARGET%" 2> NUL
