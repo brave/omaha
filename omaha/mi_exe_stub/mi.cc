@@ -58,7 +58,6 @@
 #include "omaha/base/system_info.h"
 #include "omaha/base/utils.h"
 #include "omaha/common/brave_referral_code_utils.h"
-#include "omaha/common/brave_stats_updater.h"
 #include "omaha/common/const_cmd_line.h"
 #include "omaha/mi_exe_stub/process.h"
 #include "omaha/mi_exe_stub/mi.grh"
@@ -764,11 +763,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int) {
   omaha::StorePathToRegForPromoCode(lpCmdLine);
 
   const CString referral_code = omaha::GetReferralCodeFromModuleFileName();
-  if (CString(lpCmdLine).IsEmpty()) {
-    const CString app_guid = omaha::ReadAppGuidFromTag(hInstance);
-    hr = omaha::BraveSendStatsPing(_T("startup"), app_guid, referral_code,
-                                   _T(""));
-  }
 
   omaha::MetaInstaller mi(hInstance, lpCmdLine, referral_code);
   int result = mi.ExtractAndRun();
