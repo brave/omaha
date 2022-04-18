@@ -61,7 +61,7 @@ def get_omaha_out_dir(omaha_dir, debug):
 def prepare_untagged_standalone(args, omaha_dir, debug):
   return prepare_untagged(
     omaha_dir, 'standalone', args.root_out_dir[0], args.brave_installer_exe[0], args.guid[0],
-    args.install_switch[0], args.brave_full_version[0],
+    '--do-not-launch-chrome ' + args.install_switch[0], args.brave_full_version[0],
     [(args.standalone_installer_exe[0], args.brave_installer_exe[0]),
      (args.untagged_installer_exe[0], args.untagged_installer_exe[0])], debug
   )
