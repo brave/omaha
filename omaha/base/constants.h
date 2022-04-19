@@ -430,7 +430,9 @@ const int kSecondsPerDay      = 24 * kSecondsPerHour;
 // hourly mark, the timer interval between updates will have a high likelihood
 // of being satisfied.
 const int kLastCheckJitterSec = 5 * kSecPerMin;
-const int kLastCheckPeriodSec = 5 * kSecondsPerHour - kLastCheckJitterSec;
+
+// We set kLastCheckPeriodSec to 0 to disable automatic updates:
+const int kLastCheckPeriodSec = 0;
 const int kLastCheckPeriodInternalUserSec = kLastCheckPeriodSec / 5;
 
 const int kMinLastCheckPeriodSec = 60;  // 60 seconds minimum.

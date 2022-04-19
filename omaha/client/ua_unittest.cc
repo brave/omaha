@@ -40,6 +40,13 @@ class UATest : public testing::TestWithParam<std::tuple<bool, bool> > {
   bool is_machine_;
   bool is_domain_;
 
+  void EnableAutomaticUpdates() {
+    last_check_period_sec_ = 5 * 60 * 60;
+    EXPECT_SUCCEEDED(RegKey::SetValue(MACHINE_REG_UPDATE_DEV,
+                                      kRegValueLastCheckPeriodSec,
+                                      (unsigned long) last_check_period_sec_));
+  }
+
  private:
   virtual void SetUp() {
     std::tie(is_machine_, is_domain_) = GetParam();
@@ -81,14 +88,18 @@ TEST_P(UATest, UpdateLastChecked) {
   EXPECT_FALSE(ShouldCheckForUpdates(is_machine_));
 
   ConfigManager::Instance()->SetLastCheckedTime(is_machine_, 0);
+  EXPECT_FALSE(ShouldCheckForUpdates(is_machine_));
+  EnableAutomaticUpdates();
   EXPECT_TRUE(ShouldCheckForUpdates(is_machine_));
 }
 
 TEST_P(UATest, ShouldCheckForUpdates_NoLastCheckedPresent) {
-  EXPECT_TRUE(ShouldCheckForUpdates(is_machine_));
+  EXPECT_FALSE(ShouldCheckForUpdates(is_machine_));
 }
 
 TEST_P(UATest, ShouldCheckForUpdates_LastCheckedPresent) {
+  EnableAutomaticUpdates();
+
   const uint32 now = Time64ToInt32(GetCurrent100NSTime());
 
   ConfigManager::Instance()->SetLastCheckedTime(is_machine_, now - 10);
@@ -110,6 +121,8 @@ TEST_P(UATest, ShouldCheckForUpdates_LastCheckedInFuture) {
       is_machine_,
       now + 600);
   EXPECT_FALSE(ShouldCheckForUpdates(is_machine_));
+  EnableAutomaticUpdates();
+  EXPECT_FALSE(ShouldCheckForUpdates(is_machine_));
 
   // The absolute difference is greater than the check period. Choose a value
   // in the future which is solidly beyond 2 update cycles.
@@ -122,7 +135,7 @@ TEST_P(UATest, ShouldCheckForUpdates_LastCheckedInFuture) {
 TEST_P(UATest, ShouldCheckForUpdates_PeriodZero) {
   EXPECT_SUCCEEDED(SetPolicy(kRegValueAutoUpdateCheckPeriodOverrideMinutes, 0));
 
-  EXPECT_EQ(!is_domain_, ShouldCheckForUpdates(is_machine_));
+  EXPECT_FALSE(ShouldCheckForUpdates(is_machine_));
 }
 
 TEST_P(UATest, ShouldCheckForUpdates_PeriodOverride) {
@@ -142,6 +155,8 @@ TEST_P(UATest, ShouldCheckForUpdates_PeriodOverride) {
 }
 
 TEST_P(UATest, ShouldCheckForUpdates_SkipUpdate) {
+  EnableAutomaticUpdates();
+
   const uint32 now = Time64ToInt32(GetCurrent100NSTime());
 
   // Choose a value in the past which falls within the time interval where
@@ -179,6 +194,8 @@ TEST_P(UATest, ShouldCheckForUpdates_SkipUpdate) {
 }
 
 TEST_P(UATest, ShouldCheckForUpdates_RetryAfter) {
+  EnableAutomaticUpdates();
+
   ConfigManager::Instance()->SetRetryAfterTime(is_machine_, 0);
   EXPECT_TRUE(ShouldCheckForUpdates(is_machine_));
 
@@ -194,6 +211,8 @@ TEST_P(UATest, ShouldCheckForUpdates_RetryAfter) {
 }
 
 TEST_P(UATest, ShouldCheckForUpdates_UpdatesSuppressed) {
+  EnableAutomaticUpdates();
+
   CTime now(CTime::GetCurrentTime());
   tm local = {};
   now.GetLocalTm(&local);
@@ -214,6 +233,8 @@ TEST_P(UATest, ShouldCheckForUpdates_UpdatesSuppressed) {
 }
 
 TEST_P(UATest, ShouldCheckForUpdates_UpdatesSuppressed_InvalidHour) {
+  EnableAutomaticUpdates();
+
   CTime now(CTime::GetCurrentTime());
   tm local = {};
   now.GetLocalTm(&local);
@@ -226,6 +247,8 @@ TEST_P(UATest, ShouldCheckForUpdates_UpdatesSuppressed_InvalidHour) {
 }
 
 TEST_P(UATest, ShouldCheckForUpdates_UpdatesSuppressed_InvalidMin) {
+  EnableAutomaticUpdates();
+
   CTime now(CTime::GetCurrentTime());
   tm local = {};
   now.GetLocalTm(&local);
@@ -239,6 +262,8 @@ TEST_P(UATest, ShouldCheckForUpdates_UpdatesSuppressed_InvalidMin) {
 }
 
 TEST_P(UATest, ShouldCheckForUpdates_UpdatesSuppressed_InvalidDuration) {
+  EnableAutomaticUpdates();
+
   CTime now(CTime::GetCurrentTime());
   tm local = {};
   now.GetLocalTm(&local);

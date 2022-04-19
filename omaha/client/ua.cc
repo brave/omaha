@@ -145,7 +145,6 @@ bool ShouldCheckForUpdates(bool is_machine) {
   bool is_period_overridden = false;
   const int update_interval = cm->GetLastCheckPeriodSec(&is_period_overridden);
   if (0 == update_interval) {
-    ASSERT1(is_period_overridden);
     OPT_LOG(L1, (_T("[ShouldCheckForUpdates returned 0][checks disabled]")));
     return false;
   }
@@ -161,9 +160,9 @@ bool ShouldCheckForUpdates(bool is_machine) {
     should_check_for_updates = false;
   } else if (update_interval <= time_since_last_check &&
              time_since_last_check < update_interval + kSecondsPerHour) {
-    // Defer some checks if not overridden or if the feature is not disabled.
+    // Defer some checks if the feature is not disabled.
     // Do not skip checks when errors happen in the RNG.
-    if (!is_period_overridden && !IsUpdateAppsHourlyJitterDisabled()) {
+    if (!IsUpdateAppsHourlyJitterDisabled()) {
       const int kPercentageToSkip = 10;    // skip 10% of the checks.
       unsigned int random_value = 0;
       if (!RandUint32(&random_value)) {
