@@ -514,7 +514,7 @@ TEST_F(SetupFilesUserTest, ShouldCopyShell_ExistingIsOlderSameMinor) {
 TEST_F(SetupFilesUserTest, ShouldCopyShell_ExistingHasNoVersion) {
   CString target_path = ConcatenatePath(
       ConcatenatePath(exe_parent_dir_, _T("does_not_shutdown")),
-      _T("GoogleUpdate.exe"));
+      MAIN_EXE_BASE_NAME _T(".exe"));
   ASSERT_TRUE(File::Exists(target_path));
   bool should_copy = false;
   bool already_exists = false;
