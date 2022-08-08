@@ -187,7 +187,7 @@ AddOption(
     action='store',
     nargs=1,
     type='string',
-    default='$MAIN_DIR/data/OmahaTestCert.pfx'
+    default=None
 )
 
 default_cert_password = 'test'
@@ -196,7 +196,31 @@ AddOption(
     action='store',
     nargs=1,
     type='string',
-    default=default_cert_password
+    default=None
+)
+
+AddOption(
+    '--authenticode_hash',
+    action='store',
+    nargs=1,
+    type='string',
+    default=None
+)
+
+AddOption(
+    '--sha1_authenticode_hash',
+    action='store',
+    nargs=1,
+    type='string',
+    default=None
+)
+
+AddOption(
+    '--sha2_authenticode_hash',
+    action='store',
+    nargs=1,
+    type='string',
+    default=None
 )
 
 AddOption(
@@ -204,7 +228,7 @@ AddOption(
     action='store',
     nargs=1,
     type='string',
-    default='$MAIN_DIR/data/Sha1OmahaTestCert.pfx'
+    default=None
 )
 
 default_sha1_cert_password = '888'
@@ -213,7 +237,7 @@ AddOption(
     action='store',
     nargs=1,
     type='string',
-    default=default_sha1_cert_password
+    default=None
 )
 
 AddOption(
@@ -221,7 +245,7 @@ AddOption(
     action='store',
     nargs=1,
     type='string',
-    default='$MAIN_DIR/data/Sha2OmahaTestCert.pfx'
+    default=None
 )
 
 default_sha2_cert_password = '888'
@@ -230,7 +254,7 @@ AddOption(
     action='store',
     nargs=1,
     type='string',
-    default=default_sha2_cert_password
+    default=None
 )
 
 # Declare option for specifying path to new official build files
@@ -347,24 +371,42 @@ if win_env.Bit('build_three_versions'):
 # Allow use of command-line-specified certificates to sign with, but
 # only if we're not on the build server.
 if not win_env.Bit('build_server'):
+  _authenticode_hash = GetOption('authenticode_hash')
+  _authenticode_file = GetOption('authenticode_file')
+  _authenticode_password = GetOption('authenticode_password')
+  if not _authenticode_hash and not _authenticode_file:
+    assert not _authenticode_password
+    win_env.SetBits('test_certificate')
+    _authenticode_file = '$MAIN_DIR/data/OmahaTestCert.pfx'
+    _authenticode_password = default_cert_password
+
+  _sha1_authenticode_hash = GetOption('sha1_authenticode_hash')
+  _sha2_authenticode_hash = GetOption('sha2_authenticode_hash')
+  _sha1_authenticode_file = GetOption('sha1_authenticode_file')
+  _sha2_authenticode_file = GetOption('sha2_authenticode_file')
+  _sha1_authenticode_password = GetOption('sha1_authenticode_password')
+  _sha2_authenticode_password = GetOption('sha2_authenticode_password')
+  if not _sha1_authenticode_hash and not _sha2_authenticode_hash \
+    and not _sha1_authenticode_file and not _sha2_authenticode_file:
+    assert not _sha1_authenticode_password and not _sha2_authenticode_password
+    _sha1_authenticode_file = '$MAIN_DIR/data/Sha1OmahaTestCert.pfx'
+    _sha2_authenticode_file = '$MAIN_DIR/data/Sha2OmahaTestCert.pfx'
+    _sha1_authenticode_password = default_sha1_cert_password
+    _sha2_authenticode_password = default_sha2_cert_password
+
   win_env.Replace(
-    CERTIFICATE_HASH='',
-    CERTIFICATE_PASSWORD=GetOption('authenticode_password'),
-    CERTIFICATE_PATH=GetOption('authenticode_file'),
-    SHA1_CERTIFICATE_HASH='',
-    SHA2_CERTIFICATE_HASH='',
+    CERTIFICATE_HASH=_authenticode_hash,
+    CERTIFICATE_PASSWORD=_authenticode_password,
+    CERTIFICATE_PATH=_authenticode_file,
+    SHA1_CERTIFICATE_HASH=_sha1_authenticode_hash,
+    SHA2_CERTIFICATE_HASH=_sha2_authenticode_hash,
     SHA1_CERTIFICATE_ISSUER='',
     SHA2_CERTIFICATE_ISSUER='',
-    SHA1_CERTIFICATE_PASSWORD=GetOption('sha1_authenticode_password'),
-    SHA2_CERTIFICATE_PASSWORD=GetOption('sha2_authenticode_password'),
-    SHA1_CERTIFICATE_PATH=GetOption('sha1_authenticode_file'),
-    SHA2_CERTIFICATE_PATH=GetOption('sha2_authenticode_file'),
+    SHA1_CERTIFICATE_PASSWORD=_sha1_authenticode_password,
+    SHA2_CERTIFICATE_PASSWORD=_sha2_authenticode_password,
+    SHA1_CERTIFICATE_PATH=_sha1_authenticode_file,
+    SHA2_CERTIFICATE_PATH=_sha2_authenticode_file,
   )
-
-  # Store whether we're using the default test cert separately, because
-  # we won't always know what the default password was.
-  if GetOption('authenticode_password') is default_cert_password:
-    win_env.SetBits('test_certificate')
 
 # Build the 64 bit version of the code.
 win_env.SetBitFromOption('x64', False)
@@ -924,7 +966,8 @@ windows_coverage_env['SIGNTOOL'] = '@echo Signing deferred: '
 
 def SigningCommand(env, filename):
   # Only do signing if there is a certificate file or certificate name.
-  if env.subst('$CERTIFICATE_PATH') or env.subst('$CERTIFICATE_NAME'):
+  if env.subst('$CERTIFICATE_PATH') or env.subst('$CERTIFICATE_NAME') \
+      or env.subst('$CERTIFICATE_HASH'):
     # The command used to do signing (target added on below).
     signing_cmd = '$SIGNTOOL_ORIG sign '
     # Add in certificate file if any.
@@ -937,6 +980,9 @@ def SigningCommand(env, filename):
     if env.subst('$CERTIFICATE_NAME'):
       # The command used to do signing (target added on below).
       signing_cmd += ' /s "$CERTIFICATE_STORE" /n "$CERTIFICATE_NAME"'
+    # Add cert hash if any.
+    if env.subst('$CERTIFICATE_HASH'):
+      signing_cmd += ' /sha1 "$CERTIFICATE_HASH"'
     # Add timestamp server if any.
     if env.subst('$TIMESTAMP_SERVER'):
       signing_cmd += ' /t "$TIMESTAMP_SERVER"'

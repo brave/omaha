@@ -18,6 +18,7 @@ def build(omaha_dir, standalone_installers_dir, build_all):
   key_pfx_path = os.environ.get('KEY_PFX_PATH', '')
   key_cer_path = os.environ.get('KEY_CER_PATH', '')
   authenticode_password = os.environ.get('AUTHENTICODE_PASSWORD', '')
+  authenticode_hash = os.environ.get('AUTHENTICODE_HASH', '')
 
   mode = 'opt-win'
   if build_all:
@@ -31,6 +32,10 @@ def build(omaha_dir, standalone_installers_dir, build_all):
     command.append('--authenticode_password=' + authenticode_password)
     command.append('--sha1_authenticode_password=' + authenticode_password)
     command.append('--sha2_authenticode_password=' + authenticode_password)
+  if authenticode_hash:
+    command.append('--authenticode_hash=' + authenticode_hash)
+    command.append('--sha1_authenticode_hash=' + authenticode_hash)
+    command.append('--sha2_authenticode_hash=' + authenticode_hash)
   sp.check_call(command, stderr=sp.STDOUT)
 
 def copy_untagged_installers(args, omaha_dir, debug):

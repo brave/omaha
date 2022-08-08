@@ -107,7 +107,8 @@ def SignedBinaryGenerator(source, target, env, for_signature):
   ]
 
   # Only do signing if there is a certificate file or certificate name.
-  if env.subst('$CERTIFICATE_PATH') or env.subst('$CERTIFICATE_NAME'):
+  if env.subst('$CERTIFICATE_PATH') or env.subst('$CERTIFICATE_NAME') \
+      or env.subst('$CERTIFICATE_HASH'):
     # The command used to do signing (target added on below).
     signing_cmd = '$SIGNTOOL sign /fd sha1'
     # Add in certificate file if any.
@@ -148,7 +149,9 @@ def DualSignedBinaryGenerator(source, target, env, for_signature):
   # Only do signing if there are certificate files or a certificate name. The
   # CERTIFICATE_NAME is expected to be the same for both SHA1 and SHA2.
   if (env.subst('$SHA1_CERTIFICATE_PATH') and
-      env.subst('$SHA2_CERTIFICATE_PATH')) or env.subst('$CERTIFICATE_NAME'):
+      env.subst('$SHA2_CERTIFICATE_PATH')) or \
+     (env.subst('$SHA1_CERTIFICATE_HASH') and
+      env.subst('$SHA2_CERTIFICATE_HASH')) or env.subst('$CERTIFICATE_NAME'):
     # Setup common signing command options (same as single signing).
     base_signing_cmd = '$SIGNTOOL sign /v '
     # Add certificate store if any.
