@@ -36,6 +36,8 @@ def build(omaha_dir, standalone_installers_dir, build_all):
     command.append('--authenticode_hash=' + authenticode_hash)
     command.append('--sha1_authenticode_hash=' + authenticode_hash)
     command.append('--sha2_authenticode_hash=' + authenticode_hash)
+    # Our certs identified by hash are always in the machine store:
+    command.append('--use_authenticode_machine_store')
 
   # Pick signtool.exe from PATH. This in particular ensures that we use the same
   # signtool as Chromium, which is 64 bit and thus has access to the same certs.
