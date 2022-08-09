@@ -36,6 +36,14 @@ def build(omaha_dir, standalone_installers_dir, build_all):
     command.append('--authenticode_hash=' + authenticode_hash)
     command.append('--sha1_authenticode_hash=' + authenticode_hash)
     command.append('--sha2_authenticode_hash=' + authenticode_hash)
+
+  # Pick signtool.exe from PATH. This in particular ensures that we use the same
+  # signtool as Chromium, which is 64 bit and thus has access to the same certs.
+  env = dict(os.environ)
+  signtool_path = shutil.which('signtool.exe')
+  assert signtool_path, 'signtool.exe is expected to be on PATH'
+  env['OMAHA_SIGNTOOL_SDK_DIR'] = os.path.dirname(signtool_path)
+
   sp.check_call(command, stderr=sp.STDOUT)
 
 def copy_untagged_installers(args, omaha_dir, debug):
