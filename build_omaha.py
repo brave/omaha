@@ -46,7 +46,7 @@ def build(omaha_dir, standalone_installers_dir, build_all):
   assert signtool_path, 'signtool.exe is expected to be on PATH'
   env['OMAHA_SIGNTOOL_SDK_DIR'] = os.path.dirname(signtool_path)
 
-  sp.check_call(command, stderr=sp.STDOUT)
+  sp.check_call(command, stderr=sp.STDOUT, env=env)
 
 def copy_untagged_installers(args, omaha_dir, debug):
   omaha_out_dir = get_omaha_out_dir(omaha_dir, debug)
