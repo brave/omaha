@@ -160,6 +160,10 @@ win_env['ENV']['LocalAppData'] = os.getenv('LocalAppData')
 # Append paths for supporting tools such as uuidgen.exe.
 win_env.AppendENVPath('PATH', (os.environ['WindowsSdkVerBinPath'] + '\\x86\\'))
 
+if os.getenv('n3fips_password'):
+    # Forward this env. var, which is used for CloudHSM code signing.
+    win_env['ENV']['n3fips_password'] = os.getenv('n3fips_password')
+
 # Remove this value because it conflicts with a #define
 # in shlwapi.h in the Vista SDK
 win_env.FilterOut(CPPDEFINES = ['OS_WINDOWS=OS_WINDOWS'])
