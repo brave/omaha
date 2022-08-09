@@ -321,6 +321,8 @@ DeclareBit('has_device_management',
            'True if including cloud-based device management')
 DeclareBit('verify_payload_authenticode_signature',
            'Whether to verify the Authenticode signature of payloads')
+DeclareBit('use_authenticode_machine_store',
+           'Use the machine store, instead of the user store, of certificates')
 
 # Build official installers if --official_installers is on the command line.
 win_env.SetBitFromOption('official_installers', False)
@@ -420,6 +422,9 @@ win_env.SetBitFromOption('suppress_light_validation', False)
 
 # Whether the Authenticode signature of update payloads should be verified.
 win_env.SetBitFromOption('verify_payload_authenticode_signature', False)
+
+# Whether to use the machine store instead of the user store for certificates.
+win_env.SetBitFromOption('use_authenticode_machine_store', False)
 
 #
 # Set up version info.
@@ -983,6 +988,8 @@ def SigningCommand(env, filename):
     # Add cert hash if any.
     if env.subst('$CERTIFICATE_HASH'):
       signing_cmd += ' /sha1 "$CERTIFICATE_HASH"'
+    if env.Bit('use_authenticode_machine_store'):
+      signing_cmd += ' /sm'
     # Add timestamp server if any.
     if env.subst('$TIMESTAMP_SERVER'):
       signing_cmd += ' /t "$TIMESTAMP_SERVER"'
