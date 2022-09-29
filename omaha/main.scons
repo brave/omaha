@@ -319,6 +319,7 @@ DeclareBit('all', 'Building all Projects')
 DeclareBit('msvs', 'Building Visual Studio solution files')
 DeclareBit('no-tests', 'Do not build the unit tests')
 DeclareBit('x64', 'Build 64 bit code')
+DeclareBit('arm64', 'Build 64 bit ARM code')
 DeclareBit('analysis', 'Turns on static analysis')
 DeclareBit('suppress_light_validation', 'Suppress WiX Linker ICE validation')
 DeclareBit('has_device_management',

@@ -77,8 +77,18 @@ def BuildCOMForwarder(cmd_line_switch,
 BuildCOMForwarder('/broker', 'BraveUpdateBroker', False)
 BuildCOMForwarder('/ondemand', 'BraveUpdateOnDemand', False)
 
+
 def BuildCOMRegisterShell64():
   com_register_shell_env = env.CloneAndMake64Bit()
+  BuildCOMRegisterShellNon32Bit(com_register_shell_env, '64')
+
+
+def BuildCOMRegisterShellArm64():
+  com_register_shell_env = env.CloneAndMakeArm64Bit()
+  BuildCOMRegisterShellNon32Bit(com_register_shell_env, 'arm64')
+
+
+def BuildCOMRegisterShellNon32Bit(com_register_shell_env, suffix):
   com_register_shell_env.FilterOut(CCFLAGS=['/GL', '/RTC1',])
   com_register_shell_env.FilterOut(LINKFLAGS=['/LTCG'])
 
@@ -90,10 +100,10 @@ def BuildCOMRegisterShell64():
           '/ENTRY:WinMainCRTStartup',
       ],
       LIBS=[
-          '$LIB_DIR/base_64.lib',
-          '$LIB_DIR/common_64.lib',
-          '$LIB_DIR/logging_64.lib',
-          '$LIB_DIR/goopdate_lib_64.lib',
+          '$LIB_DIR/base_%s.lib' % suffix,
+          '$LIB_DIR/common_%s.lib' % suffix,
+          '$LIB_DIR/logging_%s.lib' % suffix,
+          '$LIB_DIR/goopdate_lib_%s.lib' % suffix,
           com_register_shell_env['atls_libs'][
               com_register_shell_env.Bit('debug')
           ],
@@ -111,25 +121,26 @@ def BuildCOMRegisterShell64():
   if env.Bit('has_device_management'):
     com_register_shell_env.Append(
         LIBS=[
-            '$LIB_DIR/dm_proto_64.lib',
-            '$LIB_DIR/libprotobuf_64.lib',
+            '$LIB_DIR/dm_proto_%s.lib' % suffix,
+            '$LIB_DIR/libprotobuf_%s.lib' % suffix,
         ],
     )
 
   unsigned_exe = com_register_shell_env.ComponentProgram(
-      prog_name='BraveUpdateComRegisterShell64_unsigned',
+      prog_name='BraveUpdateComRegisterShell%s_unsigned' % suffix.title(),
       source= [
           'com_register_shell.cc',
           ]
   )
   signed_exe = com_register_shell_env.DualSignedBinary(
-      target='BraveUpdateComRegisterShell64.exe',
+      target='BraveUpdateComRegisterShell%s.exe' % suffix.title(),
       source=unsigned_exe,
   )
   env.Replicate('$STAGING_DIR', signed_exe)
 
 # Build the COM register shell.
 BuildCOMRegisterShell64()
+BuildCOMRegisterShellArm64()
 
 #
 # Generate omaha3_idl.idl. The output is an IDL file with a variant CLSID
@@ -152,13 +163,21 @@ def BuildGoogleUpdateCOMProxy(midl_env, generated_idl):
       '/Oicf',  # generate optimized stubless proxy/stub code
       ]
 
-  suffix = ('', '_64')[midl_env.Bit('x64')]
   if midl_env.Bit('x64'):
-    midl_env['MIDLFLAGS'] += [ '/amd64' ]
+    suffix = '_64'
+    midlflags = '/amd64'
+  elif midl_env.Bit('arm64'):
+    suffix = '_arm64'
+    midlflags = '/arm64'
+  else:
+    suffix = ''
+
+  if suffix:
+    midl_env['MIDLFLAGS'] += [ midlflags ]
 
     # Make a copy of the IDL file with different name so the output won't
     # collide with the output from 32-bit version IDL.
-    target_idl = 'omaha3_idl_64.idl',
+    target_idl = 'omaha3_idl%s.idl' % suffix,
     midl_env.Command(target_idl, 'omaha3_idl.idl', Copy('$TARGET', '$SOURCE'))
     midl_env.TypeLibrary(target_idl)
   else:
@@ -186,6 +205,7 @@ def BuildGoogleUpdateCOMProxy(midl_env, generated_idl):
 generated_omaha3_idl = GenerateOmaha3IDLFile()
 BuildGoogleUpdateCOMProxy(env.Clone(), generated_omaha3_idl)
 BuildGoogleUpdateCOMProxy(env.CloneAndMake64Bit(), generated_omaha3_idl)
+BuildGoogleUpdateCOMProxy(env.CloneAndMakeArm64Bit(), generated_omaha3_idl)
 
 def BuildGoogleUpdateHandlerDll(handler_env,
                                 omaha_version_info,
@@ -251,7 +271,13 @@ def BuildGoogleUpdateHandlerDll(handler_env,
       ],
   )
 
-  suffix = ('', '_64')[handler_env.Bit('x64')]
+  if handler_env.Bit('x64'):
+    suffix = '_64'
+  elif handler_env.Bit('arm64'):
+    suffix = '_arm64'
+  else:
+    suffix = ''
+
   resource = handler_env.RES(
       target='%s%s_resource%s.res' % (prefix, psname, suffix),
       source='google_update_ps_resource.rc')
@@ -292,9 +318,13 @@ for omaha_version_info in env['omaha_versions_info']:
                               omaha_version_info, 1, 'psmachine')
   BuildGoogleUpdateHandlerDll(handler_env.CloneAndMake64Bit(),
                               omaha_version_info, 1, 'psmachine')
+  BuildGoogleUpdateHandlerDll(handler_env.CloneAndMakeArm64Bit(),
+                              omaha_version_info, 1, 'psmachine')
   BuildGoogleUpdateHandlerDll(handler_env.Clone(),
                               omaha_version_info, 0, 'psuser')
   BuildGoogleUpdateHandlerDll(handler_env.CloneAndMake64Bit(),
+                              omaha_version_info, 0, 'psuser')
+  BuildGoogleUpdateHandlerDll(handler_env.CloneAndMakeArm64Bit(),
                               omaha_version_info, 0, 'psuser')
 
 if env.Bit('has_device_management'):
