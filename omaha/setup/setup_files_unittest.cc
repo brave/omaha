@@ -36,7 +36,7 @@ namespace {
 // TODO(omaha3): Update the numbers in the else block as we build more files.
 // Eventually use the original values in the if block.
 const int kNumberOfLanguageDlls = 55;
-const int kNumberOfCoreFiles = 10;
+const int kNumberOfCoreFiles = 14;
 const int kNumberOfMetainstallerFiles = 1;
 const int kNumberOfOptionalFiles = 2;
 const int kNumberOfInstalledRequiredFiles =

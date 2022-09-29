@@ -200,28 +200,21 @@ HRESULT RegisterOrUnregisterProxies32(bool is_machine, bool is_register) {
 }
 
 
-// Register/unregister 64-bit proxy for 64-bit OS. We cannot directly load the
-// 64-bit DLL since Omaha is running in 32-bit mode. Fork a process and let
-// GoogleUpdateComRegisterShell64.exe do heavy lifting.
-HRESULT RegisterOrUnregisterProxies64(bool is_machine, bool is_register) {
-  BOOL is64bit = FALSE;
-  if (0 == Kernel32::IsWow64Process(GetCurrentProcess(), &is64bit) ||
-      !is64bit) {
-    return S_OK;
-  }
-
+HRESULT RegisterOrUnregisterProxiesHelper(bool is_machine,
+                                          bool is_register,
+                                          const TCHAR* const exe_name) {
   const CString module_dir(app_util::GetCurrentModuleDirectory());
 
-  CPath com_register_shell64(module_dir);
-  if (!com_register_shell64.Append(kOmahaCOMRegisterShell64)) {
+  CPath com_register_shell(module_dir);
+  if (!com_register_shell.Append(exe_name)) {
     return HRESULTFromLastError();
   }
-  if (!com_register_shell64.FileExists()) {
-    CORE_LOG(LE, (_T("[Cannot find %s]"), kOmahaCOMRegisterShell64));
+  if (!com_register_shell.FileExists()) {
+    CORE_LOG(LE, (_T("[Cannot find %s]"), exe_name));
     return HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND);
   }
 
-  // Run command: com_register_shell64.exe [/user] [/unregister]
+  // Run command: com_register_shell.exe [/user] [/unregister]
   //   /user: register the proxy for user case, otherwise for machine case.
   //   /unregister: do unregister, otherwise register.
   CString cmd_line_args;
@@ -229,7 +222,7 @@ HRESULT RegisterOrUnregisterProxies64(bool is_machine, bool is_register) {
                     is_machine ? _T("") : _T("/user"),
                     is_register ? _T("") : _T("/unregister"));
 
-  Process register_process(com_register_shell64, NULL);
+  Process register_process(com_register_shell, NULL);
   HRESULT hr = register_process.Start(cmd_line_args, NULL);
   if (FAILED(hr)) {
     CORE_LOG(LE, (_T("[Failed to start COM register process][0x%x]"), hr));
@@ -240,6 +233,36 @@ HRESULT RegisterOrUnregisterProxies64(bool is_machine, bool is_register) {
       S_OK : HRESULT_FROM_WIN32(ERROR_TIMEOUT);
 }
 
+
+// Register/unregister 64-bit proxy for 64-bit OS. We cannot directly load the
+// 64-bit DLL since Omaha is running in 32-bit mode. Fork a process and let
+// GoogleUpdateComRegisterShell64.exe do heavy lifting.
+HRESULT RegisterOrUnregisterProxies64(bool is_machine, bool is_register) {
+  BOOL is64bit = FALSE;
+  if (0 == Kernel32::IsWow64Process(GetCurrentProcess(), &is64bit) ||
+      !is64bit) {
+    return S_OK;
+  }
+
+  return RegisterOrUnregisterProxiesHelper(is_machine,
+                                           is_register,
+                                           kOmahaCOMRegisterShell64);
+}
+
+// Register/unregister Arm64 proxy for Arm64 OS. We cannot directly load the
+// Arm64 DLL since Omaha is running in 32-bit mode. Fork a process and let
+// GoogleUpdateComRegisterShellArm64.exe do heavy lifting.
+HRESULT RegisterOrUnregisterProxiesArm64(bool is_machine, bool is_register) {
+  USHORT _, machineArch = 0;
+  if (0 == Kernel32::IsWow64Process2(GetCurrentProcess(), &_, &machineArch) ||
+      machineArch != IMAGE_FILE_MACHINE_ARM64)
+    return S_OK;
+
+  return RegisterOrUnregisterProxiesHelper(is_machine,
+                                           is_register,
+                                           kOmahaCOMRegisterShellArm64);
+}
+
 HRESULT RegisterOrUnregisterProxies(void* data, bool is_register) {
   ASSERT1(data);
   bool is_machine = *reinterpret_cast<bool*>(data);
@@ -247,6 +270,8 @@ HRESULT RegisterOrUnregisterProxies(void* data, bool is_register) {
                 is_machine, is_register));
 
   HRESULT hr = RegisterOrUnregisterProxies64(is_machine, is_register);
+  VERIFY1(SUCCEEDED(hr) || !is_register);
+  hr = RegisterOrUnregisterProxiesArm64(is_machine, is_register);
   VERIFY1(SUCCEEDED(hr) || !is_register);
   hr = RegisterOrUnregisterProxies32(is_machine, is_register);
   VERIFY1(SUCCEEDED(hr) || !is_register);

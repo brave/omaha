@@ -41,7 +41,10 @@
 #define DLLDUMMYPURECALL
 #endif
 
-#ifndef _M_AMD64
+#ifdef ARCH_CPU_ARM64
+  #include "goopdate/omaha3_idl_arm64_data.c"
+  #include "goopdate/omaha3_idl_arm64_p.c"
+#elif !defined(_M_AMD64)
   #include "goopdate/omaha3_idl_data.c"
   #include "goopdate/omaha3_idl_p.c"
 #else

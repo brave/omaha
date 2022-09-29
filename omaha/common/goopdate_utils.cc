@@ -289,19 +289,28 @@ CString BuildGoogleUpdateExePath(bool is_machine) {
   return full_file_path;
 }
 
-CString BuildGoogleUpdateServicesPath(bool is_machine, bool use64bit) {
-  CORE_LOG(L3, (_T("[BuildGoogleUpdateServicesPath][%d][%d]"),
-               is_machine, use64bit));
+CString BuildGoogleUpdateServicesPath(bool is_machine,
+                                      bool use64bit,
+                                      bool useArm64bit) {
+  ASSERT1(!(use64bit && useArm64bit));
+  CORE_LOG(L3, (_T("[BuildGoogleUpdateServicesPath][%d][%d][%d]"),
+               is_machine, use64bit, useArm64bit));
 
   CPath full_file_path(BuildInstallDirectory(is_machine, GetVersionString()));
   VERIFY1(full_file_path.Append(use64bit ? kCrashHandler64FileName
-                                         : kCrashHandlerFileName));
+                                         : useArm64bit ?
+                                               kCrashHandlerArm64FileName :
+                                               kCrashHandlerFileName));
 
   return full_file_path;
 }
 
-CString BuildGoogleUpdateServicesEnclosedPath(bool is_machine, bool use64bit) {
-  CString path(BuildGoogleUpdateServicesPath(is_machine, use64bit));
+CString BuildGoogleUpdateServicesEnclosedPath(bool is_machine,
+                                              bool use64bit,
+                                              bool useArm64bit) {
+  CString path(BuildGoogleUpdateServicesPath(is_machine,
+                                             use64bit,
+                                             useArm64bit));
   EnclosePath(&path);
   return path;
 }
@@ -395,7 +404,9 @@ HRESULT StartCrashHandler(bool is_machine) {
   ASSERT1(!is_machine || user_info::IsRunningAsSystem());
 
   // Always attempt start the 32-bit crash handler.
-  CString exe_path = BuildGoogleUpdateServicesEnclosedPath(is_machine, false);
+  CString exe_path = BuildGoogleUpdateServicesEnclosedPath(is_machine,
+                                                           false,
+                                                           false);
   HRESULT hr = System::StartCommandLine(exe_path);
   if (FAILED(hr)) {
     CORE_LOG(LE, (_T("[can't start 32-bit crash handler][0x%08x]"), hr));
@@ -410,10 +421,22 @@ HRESULT StartCrashHandler(bool is_machine) {
     CORE_LOG(LE, (_T("[Kernel32::IsWow64Process failed][0x%08x]"), hr));
   }
   if (!!is64bit) {
-    exe_path = BuildGoogleUpdateServicesEnclosedPath(is_machine, true);
+    exe_path = BuildGoogleUpdateServicesEnclosedPath(is_machine, true, false);
     hr = System::StartCommandLine(exe_path);
     if (FAILED(hr)) {
       CORE_LOG(LE, (_T("[can't start 64-bit crash handler][0x%08x]"), hr));
+    }
+  }
+
+  BOOL isArm64bit = FALSE;
+  USHORT _, machineArch = 0;
+  if(Kernel32::IsWow64Process2(GetCurrentProcess(), &_, &machineArch))
+    isArm64bit = machineArch == IMAGE_FILE_MACHINE_ARM64;
+  if (isArm64bit) {
+    exe_path = BuildGoogleUpdateServicesEnclosedPath(is_machine, false, true);
+    hr = System::StartCommandLine(exe_path);
+    if (FAILED(hr)) {
+      CORE_LOG(LE, (_T("[can't start Arm64 crash handler][0x%08x]"), hr));
     }
   }
 

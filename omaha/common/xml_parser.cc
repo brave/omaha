@@ -154,6 +154,9 @@ CString ConvertProcessorArchitectureToString(DWORD arch) {
     case PROCESSOR_ARCHITECTURE_AMD64:
       return xml::value::kArchAmd64;
 
+    case PROCESSOR_ARCHITECTURE_ARM64:
+      return xml::value::kArchArm64;
+
     default:
       ASSERT1(false);
       return xml::value::kArchUnknown;

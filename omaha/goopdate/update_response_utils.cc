@@ -64,7 +64,11 @@ bool IsArchCompatible(const CString& arch) {
   return arch.IsEmpty() ||
          !arch.CompareNoCase(current_arch) ||
          (arch == xml::value::kArchIntel &&
-         current_arch == xml::value::kArchAmd64);
+         current_arch == xml::value::kArchAmd64) ||
+         (arch == xml::value::kArchIntel &&
+         current_arch == xml::value::kArchArm64) ||
+         (arch == xml::value::kArchAmd64 &&
+         current_arch == xml::value::kArchArm64);;
 }
 
 bool IsOSVersionCompatible(const CString& min_os_version) {

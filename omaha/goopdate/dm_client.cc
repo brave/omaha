@@ -408,7 +408,9 @@ CString GetPlatform() {
                         _T("x86_64") :
                         (architecture == PROCESSOR_ARCHITECTURE_INTEL ?
                              _T("x86") :
-                             _T("")),
+                             architecture == PROCESSOR_ARCHITECTURE_ARM64 ?
+                                  _T("arm64") :
+                                  _T("")),
                     major_version, minor_version);
   return platform;
 }

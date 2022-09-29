@@ -166,6 +166,15 @@ def _GetMetainstallerPayloadFilenames(prefix,
     # GoogleUpdateHelper.msi was removed with version 1.3.36.61.
     payload_files.remove('%sHelper.msi' % _MAIN_EXE_BASE_NAME)
 
+  if (omaha_version[0] >= 1 and
+      omaha_version[1] >= 3 and
+      (omaha_version[2] > 361 or
+       (omaha_version[2] == 361 and omaha_version[3] >= 135))):
+    payload_files += ['%sArm64.exe' % _CRASH_HANDLER_NAME,
+                      '%sComRegisterShellArm64.exe' % _MAIN_EXE_BASE_NAME,
+                      '%spsmachine_arm64.dll' % (prefix),
+                      '%spsuser_arm64.dll' % (prefix),]
+
   for language in languages:
     payload_files += ['%sgoopdateres_%s.dll' % (prefix, language)]
 
