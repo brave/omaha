@@ -708,7 +708,7 @@ HRESULT StorePathToRegForPromoCode(LPSTR lpCmdLine) {
   HKEY key;
   DWORD dw;
   if (RegCreateKeyEx(HKEY_CURRENT_USER,
-                     _T("Software\\BraveSoftware\\Promo"),
+                     _T("Software\\HerondLabs\\Promo"),
                      0,
                      NULL,
                      REG_OPTION_NON_VOLATILE,

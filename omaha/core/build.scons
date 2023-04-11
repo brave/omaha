@@ -86,7 +86,7 @@ google_core_inputs = [
     google_core_res,
     ]
 
-exe_name = 'BraveUpdateCore'
+exe_name = 'HerondUpdateCore'
 
 unsigned_core = core_env.ComponentProgram(
     prog_name='%s_unsigned.exe' % exe_name,

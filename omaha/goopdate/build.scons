@@ -74,8 +74,8 @@ def BuildCOMForwarder(cmd_line_switch,
 
 
 # Build the broker/legacy on-demand/WebPlugin forwarders.
-BuildCOMForwarder('/broker', 'BraveUpdateBroker', False)
-BuildCOMForwarder('/ondemand', 'BraveUpdateOnDemand', False)
+BuildCOMForwarder('/broker', 'HerondUpdateBroker', False)
+BuildCOMForwarder('/ondemand', 'HerondUpdateOnDemand', False)
 
 def BuildCOMRegisterShell64():
   com_register_shell_env = env.CloneAndMake64Bit()
@@ -117,13 +117,13 @@ def BuildCOMRegisterShell64():
     )
 
   unsigned_exe = com_register_shell_env.ComponentProgram(
-      prog_name='BraveUpdateComRegisterShell64_unsigned',
+      prog_name='HerondUpdateComRegisterShell64_unsigned',
       source= [
           'com_register_shell.cc',
           ]
   )
   signed_exe = com_register_shell_env.DualSignedBinary(
-      target='BraveUpdateComRegisterShell64.exe',
+      target='HerondUpdateComRegisterShell64.exe',
       source=unsigned_exe,
   )
   env.Replicate('$STAGING_DIR', signed_exe)

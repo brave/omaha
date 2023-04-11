@@ -65,13 +65,13 @@ _is_google_update_build = False
 # These values must be changed when customizing open source Omaha.
 # You may also wish to replace the language-neutral constants in the individual
 # *generated_resources_*.rc files with localized strings.
-_FULL_COMPANY_NAME = 'BraveSoftware Inc.'
-_SHORT_COMPANY_NAME = 'BraveSoftware'
-_PATH_COMPANY_NAME = 'BraveSoftware'
+_FULL_COMPANY_NAME = 'HerondLabs Inc.'
+_SHORT_COMPANY_NAME = 'HerondLabs'
+_PATH_COMPANY_NAME = 'HerondLabs'
 _PRODUCT_NAME = 'Update'
-_COMPANY_DOMAIN_BASE = 'brave'
-_COMPANY_DOMAIN = _COMPANY_DOMAIN_BASE + '.com'
-_MAIN_EXE_BASE_NAME = 'BraveUpdate'
+_COMPANY_DOMAIN_BASE = 'herondlabs'
+_COMPANY_DOMAIN = _COMPANY_DOMAIN_BASE + '.org'
+_MAIN_EXE_BASE_NAME = 'HerondUpdate'
 # TODO(omaha): Use this throughout the build files where goopdate and
 # goopdateres are referenced.
 _MAIN_DLL_BASE_NAME = 'goopdate'

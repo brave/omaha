@@ -4,7 +4,7 @@ setlocal
 
 rem -- Set all environment variables used by Hammer and Omaha. --
 
-call "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64_x86 10.0.22000.0 || (SET ERRORLINE=8&& goto :error)
+call "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64_x86 10.0.20348.0 || (SET ERRORLINE=8&& goto :error)
 
 :: VS2003/VC71 is 1310 (not supported by the current build).
 :: VS2005/VC80 is 1400 (not supported by the current build).

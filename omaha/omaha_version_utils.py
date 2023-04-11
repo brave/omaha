@@ -17,10 +17,10 @@
 
 """Constants and utilities related to Omaha and tools versions"""
 
-_ONECLICK_PLUGIN_NAME = 'npBraveOneClick'
-_UPDATE_PLUGIN_NAME = 'npBraveUpdate'
-_MAIN_EXE_BASE_NAME = 'BraveUpdate'
-_CRASH_HANDLER_NAME = 'BraveCrashHandler'
+_ONECLICK_PLUGIN_NAME = 'npHerondOneClick'
+_UPDATE_PLUGIN_NAME = 'npHerondUpdate'
+_MAIN_EXE_BASE_NAME = 'HerondUpdate'
+_CRASH_HANDLER_NAME = 'HerondCrashHandler'
 
 # List of languages that are fully supported in the current build.
 _OMAHA_LANGUAGES = [

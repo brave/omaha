@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-  <?define CompanyName = 'BraveSoftware'?>
-  <?define CompanyFullName = 'BraveSoftware Inc.'?>
+  <?define CompanyName = 'HerondLabs'?>
+  <?define CompanyFullName = 'HerondLabs Inc.'?>
   <?define Copyright = '$(var.ProductOriginalVersionString) Copyright $(var.ProductBuildYear) Google LLC'?>
   <?define UpdateKeyPath = 'SOFTWARE\$(var.CompanyName)\Update'?>
   <?define InstallCommandBase='/silent /install "[ProductTag]" /installsource enterprisemsi[OptOmahaArgs]'?>

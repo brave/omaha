@@ -7,10 +7,10 @@
       </urls>
       <manifest version="${INSTALLER_VERSION}">
         <packages>
-          <package name="BRAVE_INSTALLER_EXE" hash_sha256="${INSTALLER_HASH_SHA256}" size="${INSTALLER_SIZE}" required="true"/>
+          <package name="HEROND_INSTALLER_EXE" hash_sha256="${INSTALLER_HASH_SHA256}" size="${INSTALLER_SIZE}" required="true"/>
         </packages>
         <actions>
-          <action event="install" run="BRAVE_INSTALLER_EXE" arguments="INSTALL_SWITCH" needsadmin="true"/>
+          <action event="install" run="HEROND_INSTALLER_EXE" arguments="INSTALL_SWITCH" needsadmin="true"/>
         </actions>
        </manifest>
     </updatecheck>

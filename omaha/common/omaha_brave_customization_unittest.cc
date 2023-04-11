@@ -66,8 +66,8 @@ TEST(OmahaBraveCustomizationTest, Constants_BuildFiles) {
                             kActualProxyClsidIsUserGuid));
 
   // Primary omaha_version_utils values.
-  EXPECT_STREQ(_T("npBraveOneClick"), ONECLICK_PLUGIN_NAME);
-  EXPECT_STREQ(_T("npBraveUpdate"), UPDATE_PLUGIN_NAME);
+  EXPECT_STREQ(_T("npHerondOneClick"), ONECLICK_PLUGIN_NAME);
+  EXPECT_STREQ(_T("npHerondUpdate"), UPDATE_PLUGIN_NAME);
 }
 
 TEST(OmahaBraveCustomizationTest, Constants_Names) {
@@ -98,21 +98,21 @@ TEST(OmahaBraveCustomizationTest, Constants_Names) {
 #endif  // GOOGLE_UPDATE_BUILD
 
   // Filename bases
-  EXPECT_STREQ(_T("BraveUpdate"), MAIN_EXE_BASE_NAME);
+  EXPECT_STREQ(_T("HerondUpdate"), MAIN_EXE_BASE_NAME);
   EXPECT_STREQ(_T("goopdate"), MAIN_DLL_BASE_NAME);
 }
 
 TEST(OmahaBraveCustomizationTest, Constants_Filenames) {
-  EXPECT_STREQ(_T("BraveUpdate.exe"), kOmahaShellFileName);
-  EXPECT_STREQ(_T("BraveCrashHandler.exe"), kCrashHandlerFileName);
-  EXPECT_STREQ(_T("BraveCrashHandler64.exe"), kCrashHandler64FileName);
+  EXPECT_STREQ(_T("HerondUpdate.exe"), kOmahaShellFileName);
+  EXPECT_STREQ(_T("HerondCrashHandler.exe"), kCrashHandlerFileName);
+  EXPECT_STREQ(_T("HerondCrashHandler64.exe"), kCrashHandler64FileName);
   EXPECT_STREQ(_T("goopdate.dll"), kOmahaDllName);
   EXPECT_STREQ(_T("goopdateres_%s.dll"), kOmahaResourceDllNameFormat);
-  EXPECT_STREQ(_T("BraveUpdateBroker.exe"), kOmahaBrokerFileName);
-  EXPECT_STREQ(_T("BraveUpdateCore.exe"), kOmahaCoreFileName);
-  EXPECT_STREQ(_T("BraveUpdateOnDemand.exe"), kOmahaOnDemandFileName);
-  EXPECT_STREQ(_T("BraveUpdateSetup.exe"), kOmahaMetainstallerFileName);
-  EXPECT_STREQ(_T("BraveUpdateComRegisterShell64.exe"),
+  EXPECT_STREQ(_T("HerondUpdateBroker.exe"), kOmahaBrokerFileName);
+  EXPECT_STREQ(_T("HerondUpdateCore.exe"), kOmahaCoreFileName);
+  EXPECT_STREQ(_T("HerondUpdateOnDemand.exe"), kOmahaOnDemandFileName);
+  EXPECT_STREQ(_T("HerondUpdateSetup.exe"), kOmahaMetainstallerFileName);
+  EXPECT_STREQ(_T("HerondUpdateComRegisterShell64.exe"),
                kOmahaCOMRegisterShell64);
   EXPECT_STREQ(_T("psmachine.dll"), kPSFileNameMachine);
   EXPECT_STREQ(_T("psmachine_64.dll"), kPSFileNameMachine64);
@@ -146,15 +146,15 @@ TEST(OmahaBraveCustomizationTest, Constants_OmahaAppId_GUIDAndStringMatch) {
 
 TEST(OmahaBraveCustomizationTest, Constants_Directories) {
   EXPECT_STREQ(_T("Offline"), OFFLINE_DIR_NAME);
-  EXPECT_STREQ(_T("BraveSoftware"), OMAHA_REL_COMPANY_DIR);
-  EXPECT_STREQ(_T("BraveSoftware\\CrashReports"), OMAHA_REL_CRASH_DIR);
-  EXPECT_STREQ(_T("BraveSoftware\\Update"), OMAHA_REL_GOOPDATE_INSTALL_DIR);
-  EXPECT_STREQ(_T("BraveSoftware\\Update\\Log"), OMAHA_REL_LOG_DIR);
-  EXPECT_STREQ(_T("BraveSoftware\\Update\\Offline"),
+  EXPECT_STREQ(_T("HerondLabs"), OMAHA_REL_COMPANY_DIR);
+  EXPECT_STREQ(_T("HerondLabs\\CrashReports"), OMAHA_REL_CRASH_DIR);
+  EXPECT_STREQ(_T("HerondLabs\\Update"), OMAHA_REL_GOOPDATE_INSTALL_DIR);
+  EXPECT_STREQ(_T("HerondLabs\\Update\\Log"), OMAHA_REL_LOG_DIR);
+  EXPECT_STREQ(_T("HerondLabs\\Update\\Offline"),
                   OMAHA_REL_OFFLINE_STORAGE_DIR);
-  EXPECT_STREQ(_T("BraveSoftware\\Update\\Download"),
+  EXPECT_STREQ(_T("HerondLabs\\Update\\Download"),
                   OMAHA_REL_DOWNLOAD_STORAGE_DIR);
-  EXPECT_STREQ(_T("BraveSoftware\\Update\\Install"),
+  EXPECT_STREQ(_T("HerondLabs\\Update\\Install"),
                   OMAHA_REL_INSTALL_WORKING_DIR);
 }
 
@@ -167,39 +167,39 @@ TEST(OmahaBraveCustomizationTest, Constants_RegistryKeys_NotCustomized) {
 }
 
 TEST(OmahaBraveCustomizationTest, Constants_RegistryKeys) {
-  EXPECT_STREQ(_T("Software\\BraveSoftware\\"), COMPANY_MAIN_KEY);
-  EXPECT_STREQ(_T("Software\\BraveSoftware\\Update\\"), GOOPDATE_MAIN_KEY);
-  EXPECT_STREQ(_T("Software\\BraveSoftware\\Update\\Clients\\"), GOOPDATE_REG_RELATIVE_CLIENTS);  // NOLINT
-  EXPECT_STREQ(_T("Software\\BraveSoftware\\Update\\ClientState\\"), GOOPDATE_REG_RELATIVE_CLIENT_STATE);  // NOLINT
-  EXPECT_STREQ(_T("Software\\BraveSoftware\\Update\\ClientStateMedium\\"), GOOPDATE_REG_RELATIVE_CLIENT_STATE_MEDIUM);  // NOLINT
-  EXPECT_STREQ(_T("Software\\Policies\\BraveSoftware\\"), COMPANY_POLICIES_MAIN_KEY);           // NOLINT
-  EXPECT_STREQ(_T("Software\\Policies\\BraveSoftware\\Update\\"), GOOPDATE_POLICIES_RELATIVE);  // NOLINT
+  EXPECT_STREQ(_T("Software\\HerondLabs\\"), COMPANY_MAIN_KEY);
+  EXPECT_STREQ(_T("Software\\HerondLabs\\Update\\"), GOOPDATE_MAIN_KEY);
+  EXPECT_STREQ(_T("Software\\HerondLabs\\Update\\Clients\\"), GOOPDATE_REG_RELATIVE_CLIENTS);  // NOLINT
+  EXPECT_STREQ(_T("Software\\HerondLabs\\Update\\ClientState\\"), GOOPDATE_REG_RELATIVE_CLIENT_STATE);  // NOLINT
+  EXPECT_STREQ(_T("Software\\HerondLabs\\Update\\ClientStateMedium\\"), GOOPDATE_REG_RELATIVE_CLIENT_STATE_MEDIUM);  // NOLINT
+  EXPECT_STREQ(_T("Software\\Policies\\HerondLabs\\"), COMPANY_POLICIES_MAIN_KEY);           // NOLINT
+  EXPECT_STREQ(_T("Software\\Policies\\HerondLabs\\Update\\"), GOOPDATE_POLICIES_RELATIVE);  // NOLINT
 
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\"), USER_REG_GOOGLE);
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\"), USER_REG_UPDATE);
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\Clients\\"), USER_REG_CLIENTS);  // NOLINT
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\Clients\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), USER_REG_CLIENTS_GOOPDATE);  // NOLINT
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\ClientState\\"), USER_REG_CLIENT_STATE);  // NOLINT
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\ClientState\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), USER_REG_CLIENT_STATE_GOOPDATE);  // NOLINT
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\"), USER_REG_GOOGLE);
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\"), USER_REG_UPDATE);
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\Clients\\"), USER_REG_CLIENTS);  // NOLINT
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\Clients\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), USER_REG_CLIENTS_GOOPDATE);  // NOLINT
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\ClientState\\"), USER_REG_CLIENT_STATE);  // NOLINT
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\ClientState\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), USER_REG_CLIENT_STATE_GOOPDATE);  // NOLINT
 
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\"), MACHINE_REG_GOOGLE);
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\"), MACHINE_REG_UPDATE);
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\Clients\\"), MACHINE_REG_CLIENTS);  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\Clients\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), MACHINE_REG_CLIENTS_GOOPDATE);  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\ClientState\\"), MACHINE_REG_CLIENT_STATE);  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\ClientState\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), MACHINE_REG_CLIENT_STATE_GOOPDATE);  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\ClientStateMedium\\"), MACHINE_REG_CLIENT_STATE_MEDIUM);  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\"), MACHINE_REG_GOOGLE);
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\"), MACHINE_REG_UPDATE);
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\Clients\\"), MACHINE_REG_CLIENTS);  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\Clients\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), MACHINE_REG_CLIENTS_GOOPDATE);  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\ClientState\\"), MACHINE_REG_CLIENT_STATE);  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\ClientState\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), MACHINE_REG_CLIENT_STATE_GOOPDATE);  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\ClientStateMedium\\"), MACHINE_REG_CLIENT_STATE_MEDIUM);  // NOLINT
 
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\UpdateDev\\"), MACHINE_REG_UPDATE_DEV);  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\UpdateDev\\"), MACHINE_REG_UPDATE_DEV);  // NOLINT
 }
 
 TEST(OmahaBraveCustomizationTest, Constants_RegistryKeys_GroupPolicy) {
-  EXPECT_STREQ(_T("Software\\Policies\\BraveSoftware\\Update\\"), GOOPDATE_POLICIES_RELATIVE);  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\Policies\\BraveSoftware\\Update\\"), kRegKeyGoopdateGroupPolicy);  // NOLINT
+  EXPECT_STREQ(_T("Software\\Policies\\HerondLabs\\Update\\"), GOOPDATE_POLICIES_RELATIVE);  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\Policies\\HerondLabs\\Update\\"), kRegKeyGoopdateGroupPolicy);  // NOLINT
 }
 
 TEST(OmahaBraveCustomizationTest, Constants_RegistryValues) {
-  EXPECT_STREQ(_T("BraveSoftware Update"), kRunValueName);
+  EXPECT_STREQ(_T("HerondLabs Update"), kRunValueName);
 }
 
 TEST(OmahaBraveCustomizationTest, Constants_LegacyMsi) {
@@ -230,25 +230,25 @@ TEST(OmahaBraveCustomizationTest, Constants_Addresses) {
 }
 
 TEST(OmahaBraveCustomizationTest, Constants_Config) {
-  EXPECT_STREQ(_T("Software\\BraveSoftware\\Update\\Shared"), kCiRegKeyShared);
+  EXPECT_STREQ(_T("Software\\HerondLabs\\Update\\Shared"), kCiRegKeyShared);
 }
 
 TEST(OmahaBraveCustomizationTest, Constants_Debug) {
-  EXPECT_STREQ(_T("BraveSoftwareUpdate-debug"), kCiDebugDirectory);
+  EXPECT_STREQ(_T("HerondLabsUpdate-debug"), kCiDebugDirectory);
 }
 
 TEST(OmahaBraveCustomizationTest, Constants_Logging) {
-  EXPECT_STREQ(_T("BraveUpdate.ini"), kLogConfigFileName);
-  EXPECT_STREQ(_T("BraveUpdate.log"), kDefaultLogFileName);
+  EXPECT_STREQ(_T("HerondUpdate.ini"), kLogConfigFileName);
+  EXPECT_STREQ(_T("HerondUpdate.log"), kDefaultLogFileName);
 }
 
 // These should not change during customization.
 TEST(OmahaBraveCustomizationTest, Constants_ObjectNames_Prefixes) {
-  EXPECT_STREQ(_T("Global\\BraveSoftware"), kGlobalPrefix);
+  EXPECT_STREQ(_T("Global\\HerondLabs"), kGlobalPrefix);
 }
 
 TEST(OmahaBraveCustomizationTest, Constants_ObjectNames_Pipes) {
-  EXPECT_STREQ(_T("\\\\.\\pipe\\BraveSoftwareCrashServices"), kCrashPipeNamePrefix);
+  EXPECT_STREQ(_T("\\\\.\\pipe\\HerondLabsCrashServices"), kCrashPipeNamePrefix);
 }
 
 TEST(OmahaBraveCustomizationTest, Constants_ObjectNames_MutexesAndEvents) {
@@ -271,27 +271,27 @@ TEST(OmahaBraveCustomizationTest, Constants_ObjectNames_MutexesAndEvents) {
 }
 
 TEST(OmahaBraveCustomizationTest, Constants_ObjectNames_SharedMemory) {
-  EXPECT_STREQ(_T("Global\\BraveSoftwareUpdate3"),
+  EXPECT_STREQ(_T("Global\\HerondLabsUpdate3"),
                   kGoogleUpdate3SharedMemoryName);
-  EXPECT_STREQ(_T("Global\\BraveSoftwareUpdateCore"),
+  EXPECT_STREQ(_T("Global\\HerondLabsUpdateCore"),
                   kGoogleUpdateCoreSharedMemoryName);
 }
 
 TEST(OmahaBraveCustomizationTest, Constants_Services) {
-  EXPECT_STREQ(_T("brave_service_name"), kRegValueServiceName);
-  EXPECT_STREQ(_T("bravem_service_name"), kRegValueMediumServiceName);
-  EXPECT_STREQ(_T("brave_task_name_c"), kRegValueTaskNameC);
-  EXPECT_STREQ(_T("brave_task_name_ua"), kRegValueTaskNameUA);
+  EXPECT_STREQ(_T("herond_service_name"), kRegValueServiceName);
+  EXPECT_STREQ(_T("herondm_service_name"), kRegValueMediumServiceName);
+  EXPECT_STREQ(_T("herond_task_name_c"), kRegValueTaskNameC);
+  EXPECT_STREQ(_T("herond_task_name_ua"), kRegValueTaskNameUA);
 
-  EXPECT_STREQ(_T("brave"), kServicePrefix);
-  EXPECT_STREQ(_T("bravem"), kMediumServicePrefix);
+  EXPECT_STREQ(_T("herond"), kServicePrefix);
+  EXPECT_STREQ(_T("herondm"), kMediumServicePrefix);
 
-  EXPECT_STREQ(_T("BraveUpdate.exe"), kServiceFileName);
+  EXPECT_STREQ(_T("HerondUpdate.exe"), kServiceFileName);
 }
 
 TEST(OmahaBraveCustomizationTest, Constants_ScheduledTasks) {
-  EXPECT_STREQ(_T("BraveSoftwareUpdateTaskUser"), kScheduledTaskNameUserPrefix);
-  EXPECT_STREQ(_T("BraveSoftwareUpdateTaskMachine"), kScheduledTaskNameMachinePrefix);    // NOLINT
+  EXPECT_STREQ(_T("HerondLabsUpdateTaskUser"), kScheduledTaskNameUserPrefix);
+  EXPECT_STREQ(_T("HerondLabsUpdateTaskMachine"), kScheduledTaskNameMachinePrefix);    // NOLINT
 }
 
 //
@@ -301,37 +301,37 @@ TEST(OmahaBraveCustomizationTest, Constants_ScheduledTasks) {
 TEST(OmahaBraveCustomizationTest, ConfigManager_RegistryKeys) {
   const ConfigManager& cm = *ConfigManager::Instance();
 
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\Clients\\"), cm.user_registry_clients());  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\Clients\\"), cm.machine_registry_clients());  // NOLINT
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\Clients\\"), cm.registry_clients(false));  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\Clients\\"), cm.registry_clients(true));  // NOLINT
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\Clients\\"), cm.user_registry_clients());  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\Clients\\"), cm.machine_registry_clients());  // NOLINT
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\Clients\\"), cm.registry_clients(false));  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\Clients\\"), cm.registry_clients(true));  // NOLINT
 
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\Clients\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.user_registry_clients_goopdate());  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\Clients\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.machine_registry_clients_goopdate());  // NOLINT
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\Clients\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.registry_clients_goopdate(false));  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\Clients\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.registry_clients_goopdate(true));  // NOLINT
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\Clients\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.user_registry_clients_goopdate());  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\Clients\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.machine_registry_clients_goopdate());  // NOLINT
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\Clients\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.registry_clients_goopdate(false));  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\Clients\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.registry_clients_goopdate(true));  // NOLINT
 
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\ClientState\\"), cm.user_registry_client_state());  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\ClientState\\"), cm.machine_registry_client_state());  // NOLINT
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\ClientState\\"), cm.registry_client_state(false));  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\ClientState\\"), cm.registry_client_state(true));  // NOLINT
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\ClientState\\"), cm.user_registry_client_state());  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\ClientState\\"), cm.machine_registry_client_state());  // NOLINT
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\ClientState\\"), cm.registry_client_state(false));  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\ClientState\\"), cm.registry_client_state(true));  // NOLINT
 
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\ClientState\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.user_registry_client_state_goopdate());  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\ClientState\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.machine_registry_client_state_goopdate());  // NOLINT
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\ClientState\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.registry_client_state_goopdate(false));  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\ClientState\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.registry_client_state_goopdate(true));  // NOLINT
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\ClientState\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.user_registry_client_state_goopdate());  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\ClientState\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.machine_registry_client_state_goopdate());  // NOLINT
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\ClientState\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.registry_client_state_goopdate(false));  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\ClientState\\{B131C935-9BE6-41DA-9599-1F776BEB8019}"), cm.registry_client_state_goopdate(true));  // NOLINT
 
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\ClientStateMedium\\"), cm.machine_registry_client_state_medium());  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\ClientStateMedium\\"), cm.machine_registry_client_state_medium());  // NOLINT
 
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\"), cm.user_registry_update());  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\"), cm.machine_registry_update());  // NOLINT
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\Update\\"), cm.registry_update(false));  // NOLINT
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\Update\\"), cm.registry_update(true));  // NOLINT
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\"), cm.user_registry_update());  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\"), cm.machine_registry_update());  // NOLINT
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\Update\\"), cm.registry_update(false));  // NOLINT
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\Update\\"), cm.registry_update(true));  // NOLINT
 
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\"), cm.user_registry_google());
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\"), cm.machine_registry_google());
-  EXPECT_STREQ(_T("HKCU\\Software\\BraveSoftware\\"), cm.registry_google(false));
-  EXPECT_STREQ(_T("HKLM\\Software\\BraveSoftware\\"), cm.registry_google(true));
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\"), cm.user_registry_google());
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\"), cm.machine_registry_google());
+  EXPECT_STREQ(_T("HKCU\\Software\\HerondLabs\\"), cm.registry_google(false));
+  EXPECT_STREQ(_T("HKLM\\Software\\HerondLabs\\"), cm.registry_google(true));
 }
 
 // Internal means google internal. Disabled.

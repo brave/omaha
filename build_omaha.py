@@ -9,6 +9,7 @@ import shutil
 import subprocess as sp
 import sys
 
+SUPPORTED_LANGUAGE = ["en", "vi"]
 
 def build(omaha_dir, standalone_installers_dir, debug):
   # move to omaha/omaha and start build.
@@ -59,7 +60,7 @@ def copy_untagged_installers(args, omaha_dir):
 
   shutil.copyfile(source_untagged_installer, target_untagged_installer)
 
-  source_untagged_stub_installer = os.path.join(omaha_out_dir, 'staging', 'BraveUpdateSetup.exe')
+  source_untagged_stub_installer = os.path.join(omaha_out_dir, 'staging', 'HerondUpdateSetup.exe')
   target_untagged_stub_installer_file = args.stub_untagged_exe[0]
   if args.debug:
     target_untagged_stub_installer_file = 'Debug' + target_untagged_stub_installer_file
@@ -75,22 +76,22 @@ def get_omaha_out_dir(omaha_dir, debug):
 
 def prepare_untagged_standalone(args, omaha_dir):
   return prepare_untagged(
-    omaha_dir, 'standalone', args.root_out_dir[0], args.brave_installer_exe[0], args.guid[0],
-    '--do-not-launch-chrome ' + args.install_switch[0], args.brave_full_version[0],
-    [(args.standalone_installer_exe[0], args.brave_installer_exe[0]),
+    omaha_dir, 'standalone', args.root_out_dir[0], args.herond_installer_exe[0], args.guid[0],
+    '--do-not-launch-chrome ' + args.install_switch[0], args.herond_full_version[0],
+    [(args.standalone_installer_exe[0], args.herond_installer_exe[0]),
      (args.untagged_installer_exe[0], args.untagged_installer_exe[0])], args.debug
   )
 
 def prepare_untagged_silent(args, omaha_dir):
   return prepare_untagged(
-    omaha_dir, 'silent', args.root_out_dir[0], args.brave_installer_exe[0], args.guid[0],
-    '--do-not-launch-chrome ' + args.install_switch[0], args.brave_full_version[0],
+    omaha_dir, 'silent', args.root_out_dir[0], args.herond_installer_exe[0], args.guid[0],
+    '--do-not-launch-chrome ' + args.install_switch[0], args.herond_full_version[0],
     [(args.silent_installer_exe[0], args.silent_installer_exe[0])], args.debug
   )
 
-def prepare_untagged(omaha_dir, name, root_out_dir, brave_installer_exe, app_guid, install_switch, brave_full_version, details, debug):
+def prepare_untagged(omaha_dir, name, root_out_dir, herond_installer_exe, app_guid, install_switch, herond_full_version, details, debug):
   omaha_out_dir = get_omaha_out_dir(omaha_dir, debug)
-  out_dir = os.path.join(omaha_out_dir, 'Brave_Installers', name)
+  out_dir = os.path.join(omaha_out_dir, 'Herond_Installers', name)
 
   if not os.path.exists(out_dir):
     os.makedirs(out_dir)
@@ -101,7 +102,7 @@ def prepare_untagged(omaha_dir, name, root_out_dir, brave_installer_exe, app_gui
   f.close()
 
   newdata = filedata.replace("APP_GUID", app_guid)
-  newdata = newdata.replace("BRAVE_INSTALLER_EXE", brave_installer_exe)
+  newdata = newdata.replace("HEROND_INSTALLER_EXE", herond_installer_exe)
   newdata = newdata.replace("INSTALL_SWITCH", install_switch)
 
   target_manifest_dir = os.path.join(out_dir, 'manifests')
@@ -121,42 +122,73 @@ def prepare_untagged(omaha_dir, name, root_out_dir, brave_installer_exe, app_gui
   open(target_installer_text_path, 'w').close()
 
   for file_name, installer_exe in details:
-    brave_installer_path = os.path.join(root_out_dir, brave_installer_exe)
-    brave_installer_path_fixed_name = os.path.join(out_dir, installer_exe)
-    shutil.copyfile(brave_installer_path, brave_installer_path_fixed_name)
-    add_to_standalone_installers_txt(target_installer_text_path, file_name, app_guid, brave_installer_path_fixed_name, brave_full_version)
+    herond_installer_path = os.path.join(root_out_dir, herond_installer_exe)
+    herond_installer_path_fixed_name = os.path.join(out_dir, installer_exe)
+    shutil.copyfile(herond_installer_path, herond_installer_path_fixed_name)
+    add_to_standalone_installers_txt(target_installer_text_path, file_name, app_guid, herond_installer_path_fixed_name, herond_full_version)
 
   return out_dir
 
-def add_to_standalone_installers_txt(target_installer_text_path, file_name, app_guid, installer_exe_path, brave_version):
-  installer_text = "('FILE_NAME', 'FILE_NAME', [('BRAVE_VERSION', 'BRAVE_INSTALLER_EXE', 'APP_GUID')], None, None, None, False, '', '')"
+def add_to_standalone_installers_txt(target_installer_text_path, file_name, app_guid, installer_exe_path, herond_version):
+  installer_text = "('FILE_NAME', 'FILE_NAME', [('HEROND_VERSION', 'HEROND_INSTALLER_EXE', 'APP_GUID')], None, None, None, False, '', '')"
   installer_text = installer_text.replace("FILE_NAME", os.path.splitext(file_name)[0])
   installer_text = installer_text.replace("APP_GUID", app_guid)
-  installer_text = installer_text.replace("BRAVE_INSTALLER_EXE", installer_exe_path.replace('\\', '/'))
-  installer_text = installer_text.replace("BRAVE_VERSION", brave_version)
+  installer_text = installer_text.replace("HEROND_INSTALLER_EXE", installer_exe_path.replace('\\', '/'))
+  installer_text = installer_text.replace("HEROND_VERSION", herond_version)
   f = open(target_installer_text_path,'a+')
   f.write(installer_text + '\n')
   f.close()
 
 def tag_standalone(args, omaha_dir):
   tag_admin = os.environ.get('TAG_ADMIN', 'prefers')
-  tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&needsadmin=TAG_ADMIN&ap=TAG_AP'
+  tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&lang=TAG_LANG&needsadmin=TAG_ADMIN&ap=TAG_AP'
   tag = tag.replace("TAG_ADMIN", tag_admin)
   tag = tag.replace("APP_GUID", args.guid[0])
   tag = tag.replace("TAG_APP_NAME", args.tag_app_name[0])
   tag = tag.replace("TAG_AP", args.tag_ap[0])
-
-  apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], tag, args.root_out_dir[0])
-  apply_tag(omaha_dir, args.debug, 'staging/BraveUpdateSetup.exe', args.stub_installer_exe[0], tag, args.root_out_dir[0])
+  print("args.root_out_dir[0]=" + args.root_out_dir[0])
+  if not (args.tag_lang[0] and args.tag_lang[0].strip()) or args.tag_lang[0] == 'all':
+    for lang in SUPPORTED_LANGUAGE:
+        print("lang=" + lang)
+        ltag = tag.replace("TAG_LANG", lang)
+        out_dir = os.path.join(args.root_out_dir[0], "lang", lang)
+        apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], ltag, out_dir)
+        apply_tag(omaha_dir, args.debug, 'staging/HerondUpdateSetup.exe', args.stub_installer_exe[0], ltag, out_dir)
+  else:
+      language = args.tag_lang[0].split(',')
+      for lang in language:
+        print("lang=" + lang)
+        ltag = tag.replace("TAG_LANG", lang)
+        out_dir = os.path.join(args.root_out_dir[0], "lang", lang)
+        apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], ltag, out_dir)
+        apply_tag(omaha_dir, args.debug, 'staging/HerondUpdateSetup.exe', args.stub_installer_exe[0], ltag, out_dir)
+        
+  #apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], tag, args.root_out_dir[0])
+  #apply_tag(omaha_dir, args.debug, 'staging/HerondUpdateSetup.exe', args.stub_installer_exe[0], tag, args.root_out_dir[0])
 
 def tag_silent(args, omaha_dir):
-  silent_tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&needsadmin=TAG_ADMIN&ap=TAG_AP&silent'
+  silent_tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&lang=TAG_LANG&needsadmin=TAG_ADMIN&ap=TAG_AP&silent'
   silent_tag = silent_tag.replace("TAG_ADMIN", 'False')
   silent_tag = silent_tag.replace("APP_GUID", args.guid[0])
   silent_tag = silent_tag.replace("TAG_APP_NAME", args.tag_app_name[0])
   silent_tag = silent_tag.replace("TAG_AP", args.tag_ap[0])
 
-  apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.silent_installer_exe[0], args.silent_installer_exe[0], silent_tag, args.root_out_dir[0])
+  print("args.root_out_dir[0]=" + args.root_out_dir[0])
+  if not (args.tag_lang[0] and args.tag_lang[0].strip()) or args.tag_lang[0] == 'all':
+    for lang in SUPPORTED_LANGUAGE:
+        print("lang=" + lang)
+        ltag = silent_tag.replace("TAG_LANG", lang)
+        out_dir = os.path.join(args.root_out_dir[0], "lang", lang)
+        apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.silent_installer_exe[0], args.silent_installer_exe[0], ltag, out_dir)
+  else:
+      language = args.tag_lang[0].split(',')
+      for lang in language:
+        print("lang=" + lang)
+        ltag = silent_tag.replace("TAG_LANG", lang)
+        out_dir = os.path.join(args.root_out_dir[0], "lang", lang)
+        apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.silent_installer_exe[0], args.silent_installer_exe[0], ltag, out_dir)
+
+  #apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.silent_installer_exe[0], args.silent_installer_exe[0], silent_tag, args.root_out_dir[0])
 
 def apply_tag(omaha_dir, debug, source_installer, target_installer_file, tag, root_out_dir):
   omaha_out_dir = get_omaha_out_dir(omaha_dir, debug)
@@ -173,7 +205,7 @@ def parse_args():
   parser = argparse.ArgumentParser(description='build omaha installer')
   parser.add_argument('--root_out_dir',
                       nargs=1)
-  parser.add_argument('--brave_installer_exe',
+  parser.add_argument('--herond_installer_exe',
                       nargs=1)
   parser.add_argument('--stub_installer_exe',
                       nargs=1)
@@ -193,7 +225,9 @@ def parse_args():
                       nargs=1)
   parser.add_argument('--tag_app_name',
                       nargs=1)
-  parser.add_argument('--brave_full_version',
+  parser.add_argument("--tag_lang",
+                      nargs=1)
+  parser.add_argument('--herond_full_version',
                       nargs=1)
   parser.add_argument('--debug', action='store_true')
   return parser.parse_args()

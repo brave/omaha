@@ -30,7 +30,7 @@ import sys
 
 
 HORIZONTAL_RULE = ';%s\n' % ('-' * 78)
-MAIN_POLICY_KEY = r'Software\Policies\BraveSoftware\Update'
+MAIN_POLICY_KEY = r'Software\Policies\HerondLabs\Update'
 
 # pylint: disable-msg=C6004
 HEADER = """\

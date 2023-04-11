@@ -59,26 +59,26 @@ namespace omaha {
 // TODO(omaha): We should probably move these to a separate
 // const_com_customization.h in goopdate\.
 TEST(OmahaBraveCustomizationTest, Constants_ComProgIds) {
-  EXPECT_STREQ(_T("BraveSoftwareUpdate.OnDemandCOMClassUser"), kProgIDOnDemandUser);
-  EXPECT_STREQ(_T("BraveSoftwareUpdate.OnDemandCOMClassMachine"),
+  EXPECT_STREQ(_T("HerondLabsUpdate.OnDemandCOMClassUser"), kProgIDOnDemandUser);
+  EXPECT_STREQ(_T("HerondLabsUpdate.OnDemandCOMClassMachine"),
                   kProgIDOnDemandMachine);
-  EXPECT_STREQ(_T("BraveSoftwareUpdate.OnDemandCOMClassSvc"), kProgIDOnDemandSvc);
+  EXPECT_STREQ(_T("HerondLabsUpdate.OnDemandCOMClassSvc"), kProgIDOnDemandSvc);
 
-  EXPECT_STREQ(_T("BraveSoftwareUpdate.Update3WebUser"), kProgIDUpdate3WebUser);
-  EXPECT_STREQ(_T("BraveSoftwareUpdate.Update3WebMachine"),
+  EXPECT_STREQ(_T("HerondLabsUpdate.Update3WebUser"), kProgIDUpdate3WebUser);
+  EXPECT_STREQ(_T("HerondLabsUpdate.Update3WebMachine"),
                   kProgIDUpdate3WebMachine);
-  EXPECT_STREQ(_T("BraveSoftwareUpdate.Update3WebSvc"), kProgIDUpdate3WebSvc);
+  EXPECT_STREQ(_T("HerondLabsUpdate.Update3WebSvc"), kProgIDUpdate3WebSvc);
 
-  EXPECT_STREQ(_T("BraveSoftwareUpdate.CoreClass"), kProgIDGoogleUpdateCoreService);
+  EXPECT_STREQ(_T("HerondLabsUpdate.CoreClass"), kProgIDGoogleUpdateCoreService);
 
-  EXPECT_STREQ(_T("BraveSoftwareUpdate.ProcessLauncher"), kProgIDProcessLauncher);
+  EXPECT_STREQ(_T("HerondLabsUpdate.ProcessLauncher"), kProgIDProcessLauncher);
 
-  EXPECT_STREQ(_T("BraveSoftwareUpdate.PolicyStatusUser"), kProgIDPolicyStatusUser);
-  EXPECT_STREQ(_T("BraveSoftwareUpdate.PolicyStatusMachine"),
+  EXPECT_STREQ(_T("HerondLabsUpdate.PolicyStatusUser"), kProgIDPolicyStatusUser);
+  EXPECT_STREQ(_T("HerondLabsUpdate.PolicyStatusMachine"),
                   kProgIDPolicyStatusMachine);
-  EXPECT_STREQ(_T("BraveSoftwareUpdate.PolicyStatusMachineFallback"),
+  EXPECT_STREQ(_T("HerondLabsUpdate.PolicyStatusMachineFallback"),
                   kProgIDPolicyStatusMachineFallback);
-  EXPECT_STREQ(_T("BraveSoftwareUpdate.PolicyStatusSvc"), kProgIDPolicyStatusSvc);
+  EXPECT_STREQ(_T("HerondLabsUpdate.PolicyStatusSvc"), kProgIDPolicyStatusSvc);
 }
 
 }  // namespace omaha

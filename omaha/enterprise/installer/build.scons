@@ -108,7 +108,7 @@ def _BuildSampleForTest():
 
         build_enterprise_installer.BuildEnterpriseInstaller(
             env,
-            'BraveSoftware',
+            'HerondLabs',
             product_name, product_version, product_guid,
             product_custom_params,
             product_installer_path,
@@ -118,7 +118,7 @@ def _BuildSampleForTest():
             prefix + msi_base_name + '_' + combo[0],
             '$MAIN_DIR/enterprise/installer',
             msi_custom_action_dll,
-            '$STAGING_DIR/%sBraveUpdateSetup.exe' % prefix,
+            '$STAGING_DIR/%sHerondUpdateSetup.exe' % prefix,
             output_dir = '$TARGET_ROOT/Test_Installers'
         )
 

@@ -28,7 +28,7 @@ import re
 import sys
 
 
-MAIN_POLICY_KEY = r'Software\Policies\BraveSoftware\Update'
+MAIN_POLICY_KEY = r'Software\Policies\HerondLabs\Update'
 
 ADMX_HEADER = '<policyDefinitions revision="1.0" schemaVersion="1.0">'
 
