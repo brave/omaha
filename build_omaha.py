@@ -146,10 +146,8 @@ def tag_standalone(args, omaha_dir):
   tag = tag.replace("APP_GUID", args.guid[0])
   tag = tag.replace("TAG_APP_NAME", args.tag_app_name[0])
   tag = tag.replace("TAG_AP", args.tag_ap[0])
-  print("args.root_out_dir[0]=" + args.root_out_dir[0])
   if not (args.tag_lang[0] and args.tag_lang[0].strip()) or args.tag_lang[0] == 'all':
     for lang in SUPPORTED_LANGUAGE:
-        print("lang=" + lang)
         ltag = tag.replace("TAG_LANG", lang)
         out_dir = os.path.join(args.root_out_dir[0], "lang", lang)
         apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], ltag, out_dir)
@@ -157,14 +155,10 @@ def tag_standalone(args, omaha_dir):
   else:
       language = args.tag_lang[0].split(',')
       for lang in language:
-        print("lang=" + lang)
         ltag = tag.replace("TAG_LANG", lang)
         out_dir = os.path.join(args.root_out_dir[0], "lang", lang)
         apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], ltag, out_dir)
         apply_tag(omaha_dir, args.debug, 'staging/HerondUpdateSetup.exe', args.stub_installer_exe[0], ltag, out_dir)
-        
-  #apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], tag, args.root_out_dir[0])
-  #apply_tag(omaha_dir, args.debug, 'staging/HerondUpdateSetup.exe', args.stub_installer_exe[0], tag, args.root_out_dir[0])
 
 def tag_silent(args, omaha_dir):
   silent_tag = 'appguid=APP_GUID&appname=TAG_APP_NAME&lang=TAG_LANG&needsadmin=TAG_ADMIN&ap=TAG_AP&silent'
@@ -173,22 +167,17 @@ def tag_silent(args, omaha_dir):
   silent_tag = silent_tag.replace("TAG_APP_NAME", args.tag_app_name[0])
   silent_tag = silent_tag.replace("TAG_AP", args.tag_ap[0])
 
-  print("args.root_out_dir[0]=" + args.root_out_dir[0])
   if not (args.tag_lang[0] and args.tag_lang[0].strip()) or args.tag_lang[0] == 'all':
     for lang in SUPPORTED_LANGUAGE:
-        print("lang=" + lang)
         ltag = silent_tag.replace("TAG_LANG", lang)
         out_dir = os.path.join(args.root_out_dir[0], "lang", lang)
         apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.silent_installer_exe[0], args.silent_installer_exe[0], ltag, out_dir)
   else:
       language = args.tag_lang[0].split(',')
       for lang in language:
-        print("lang=" + lang)
         ltag = silent_tag.replace("TAG_LANG", lang)
         out_dir = os.path.join(args.root_out_dir[0], "lang", lang)
         apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.silent_installer_exe[0], args.silent_installer_exe[0], ltag, out_dir)
-
-  #apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.silent_installer_exe[0], args.silent_installer_exe[0], silent_tag, args.root_out_dir[0])
 
 def apply_tag(omaha_dir, debug, source_installer, target_installer_file, tag, root_out_dir):
   omaha_out_dir = get_omaha_out_dir(omaha_dir, debug)
