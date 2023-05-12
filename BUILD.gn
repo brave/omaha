@@ -15,46 +15,46 @@ action("build_omaha_installer") {
 
   inputs = [ "build_omaha.py" ]
 
-  sources = [ "$root_out_dir/$herond_installer_exe" ]
+  sources = [ "$root_out_dir/$brave_installer_exe" ]
 
   _install_switch = ""
   _tag_app_name = "Herond-Release"
-  if (herond_channel == "beta") {
+  if (brave_channel == "beta") {
     _install_switch = "--chrome-beta"
     _tag_app_name = "Herond-Browser-Beta"
-  } else if (herond_channel == "dev") {
+  } else if (brave_channel == "dev") {
     _install_switch = "--chrome-dev"
     _tag_app_name = "Herond-Browser-Dev"
-  } else if (herond_channel == "nightly") {
+  } else if (brave_channel == "nightly") {
     _install_switch = "--chrome-sxs"
     _tag_app_name = "Herond-Browser-Nightly"
   } else {
-    assert(herond_channel == "", "Unknown channel name")
+    assert(brave_channel == "", "Unknown channel name")
   }
 
   out_dir = rebase_path(root_out_dir)
 
   args = [
     "--root_out_dir=$out_dir",
-    "--herond_installer_exe=$herond_installer_exe",
-    "--stub_installer_exe=$herond_stub_installer_exe",
-    "--stub_untagged_exe=$herond_untagged_stub_installer_exe",
-    "--standalone_installer_exe=$herond_standalone_installer_exe",
-    "--silent_installer_exe=$herond_silent_installer_exe",
-    "--untagged_installer_exe=$herond_untagged_installer_exe",
-    "--guid=$herond_app_guid",
+    "--brave_installer_exe=$brave_installer_exe",
+    "--stub_installer_exe=$brave_stub_installer_exe",
+    "--stub_untagged_exe=$brave_untagged_stub_installer_exe",
+    "--standalone_installer_exe=$brave_standalone_installer_exe",
+    "--silent_installer_exe=$brave_silent_installer_exe",
+    "--untagged_installer_exe=$brave_untagged_installer_exe",
+    "--guid=$brave_app_guid",
     "--install_switch=$_install_switch",
     "--tag_ap=$tag_ap",
     "--tag_app_name=$_tag_app_name",
     "--tag_lang=$tag_lang",
-    "--herond_full_version=$chrome_version_major.$herond_version_major.$herond_version_minor.$herond_version_build",
+    "--brave_full_version=$chrome_version_major.$brave_version_major.$brave_version_minor.$brave_version_build",
   ]
 
   outputs = [
-    "$root_out_dir/$herond_stub_installer_exe",
-    "$root_out_dir/$herond_standalone_installer_exe",
-    "$root_out_dir/$herond_silent_installer_exe",
-    "$root_out_dir/$herond_untagged_installer_exe",
+    "$root_out_dir/$brave_stub_installer_exe",
+    "$root_out_dir/$brave_standalone_installer_exe",
+    "$root_out_dir/$brave_silent_installer_exe",
+    "$root_out_dir/$brave_untagged_installer_exe",
   ]
 
   deps = [
