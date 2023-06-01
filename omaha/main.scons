@@ -261,6 +261,22 @@ AddOption(
     default=None
 )
 
+AddOption(
+    '--sha1_csp',
+    action='store',
+    nargs=1,
+    type='string',
+    default=None
+)
+
+AddOption(
+    '--sha2_csp',
+    action='store',
+    nargs=1,
+    type='string',
+    default=None
+)
+
 # Declare option for specifying path to new official build files
 AddOption(
     '--official_build_path',
@@ -392,6 +408,8 @@ if not win_env.Bit('build_server'):
   _sha2_authenticode_file = GetOption('sha2_authenticode_file')
   _sha1_authenticode_password = GetOption('sha1_authenticode_password')
   _sha2_authenticode_password = GetOption('sha2_authenticode_password')
+  _sha1_csp = GetOption('sha1_csp')
+  _sha2_csp = GetOption('sha2_csp')
   if not _sha1_authenticode_hash and not _sha2_authenticode_hash \
     and not _sha1_authenticode_file and not _sha2_authenticode_file:
     assert not _sha1_authenticode_password and not _sha2_authenticode_password
@@ -412,6 +430,8 @@ if not win_env.Bit('build_server'):
     SHA2_CERTIFICATE_PASSWORD=_sha2_authenticode_password,
     SHA1_CERTIFICATE_PATH=_sha1_authenticode_file,
     SHA2_CERTIFICATE_PATH=_sha2_authenticode_file,
+    SHA1_CSP=_sha1_csp,
+    SHA2_CSP=_sha2_csp
   )
 
 # Build the 64 bit version of the code.

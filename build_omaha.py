@@ -20,15 +20,17 @@ def build(omaha_dir, standalone_installers_dir, debug):
   key_cer_path = os.environ.get('KEY_CER_PATH', '')
   authenticode_password = os.environ.get('AUTHENTICODE_PASSWORD', '')
   authenticode_hash = os.environ.get('AUTHENTICODE_HASH', '')
+  csp = os.environ.get('CER_SCP', '')
 
   mode = 'opt-win'
   if debug:
     mode = 'dbg-win'
   command = ['hammer.bat', 'MODE=' + mode, '--all', '--standalone_installers_dir=' + standalone_installers_dir]
-  if key_pfx_path:
-    command.append('--authenticode_file=' + key_pfx_path)
-    command.append('--sha1_authenticode_file=' + key_pfx_path)
-    command.append('--sha2_authenticode_file=' + key_pfx_path)
+  # update sign flag following: https://stackoverflow.com/questions/17927895/automate-extended-validation-ev-code-signing-with-safenet-etoken
+  if key_cer_path:
+    command.append('--authenticode_file=' + key_cer_path)
+    command.append('--sha1_authenticode_file=' + key_cer_path)
+    command.append('--sha2_authenticode_file=' + key_cer_path)
   if authenticode_password:
     command.append('--authenticode_password=' + authenticode_password)
     command.append('--sha1_authenticode_password=' + authenticode_password)
@@ -39,6 +41,10 @@ def build(omaha_dir, standalone_installers_dir, debug):
     command.append('--sha2_authenticode_hash=' + authenticode_hash)
     # Our certs identified by hash are always in the machine store:
     command.append('--use_authenticode_machine_store')
+
+  if csp:
+    command.append('--sha1_csp=' + csp)
+    command.append('--sha2_csp=' + csp)
 
   # Pick signtool.exe from PATH. This in particular ensures that we use the same
   # signtool as Chromium, which is 64 bit and thus has access to the same certs.
