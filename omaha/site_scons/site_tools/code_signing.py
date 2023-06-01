@@ -114,9 +114,12 @@ def SignedBinaryGenerator(source, target, env, for_signature):
     # Add in certificate file if any.
     if env.subst('$CERTIFICATE_PATH'):
       signing_cmd += ' /f "$CERTIFICATE_PATH"'
+      # Add csp if any.
+      if env.subst('$SHA1_CSP'):
+        signing_cmd += ' /csp "$SHA1_CSP"'
       # Add certificate password if any.
       if env.subst('$CERTIFICATE_PASSWORD'):
-        signing_cmd += ' /p "$CERTIFICATE_PASSWORD"'
+        signing_cmd += ' /k "$CERTIFICATE_PASSWORD"'
     # Add certificate store if any.
     if env.subst('$CERTIFICATE_NAME'):
       # The command used to do signing (target added on below).
