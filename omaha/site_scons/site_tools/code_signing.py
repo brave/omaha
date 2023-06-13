@@ -83,7 +83,7 @@ def generate(env):
       generator=SignedBinaryGenerator,
       emitter=SignedBinaryEmitter)
   env['BUILDERS']['DualSignedBinary'] = SCons.Script.Builder(
-      generator=DualSignedBinaryGenerator,
+      generator=DigicertSignedBinaryGenerator,
       emitter=SignedBinaryEmitter)
 
 
@@ -114,9 +114,12 @@ def SignedBinaryGenerator(source, target, env, for_signature):
     # Add in certificate file if any.
     if env.subst('$CERTIFICATE_PATH'):
       signing_cmd += ' /f "$CERTIFICATE_PATH"'
+      # Add csp if any.
+      if env.subst('$SHA1_CSP'):
+        signing_cmd += ' /csp "$SHA1_CSP"'
       # Add certificate password if any.
       if env.subst('$CERTIFICATE_PASSWORD'):
-        signing_cmd += ' /p "$CERTIFICATE_PASSWORD"'
+        signing_cmd += ' /k "$CERTIFICATE_PASSWORD"'
     # Add certificate store if any.
     if env.subst('$CERTIFICATE_NAME'):
       # The command used to do signing (target added on below).
@@ -200,6 +203,96 @@ def DualSignedBinaryGenerator(source, target, env, for_signature):
       # Add certificate password if any.
       if env.subst('$SHA2_CERTIFICATE_PASSWORD'):
         sha2_signing_cmd += ' /p "$SHA2_CERTIFICATE_PASSWORD"'
+    # Add timestamp server if any.
+    if env.subst('$SHA2_TIMESTAMP_SERVER'):
+      sha2_signing_cmd += ' /tr "$SHA2_TIMESTAMP_SERVER" /td "SHA256"'
+    # Add issuer if any.
+    if env.subst('$SHA2_CERTIFICATE_ISSUER'):
+      sha2_signing_cmd += ' /i "$SHA2_CERTIFICATE_ISSUER"'
+    # Add cert hash if any.
+    if env.subst('$SHA2_CERTIFICATE_HASH'):
+      sha2_signing_cmd += ' /sha1 "$SHA2_CERTIFICATE_HASH"'
+    if env.Bit('use_authenticode_machine_store'):
+      sha2_signing_cmd += ' /sm'
+    # Other options needed when adding a second, sha2 signature.
+    sha2_signing_cmd += ' /as /fd "SHA256"'
+    # Add in target name
+    sha2_signing_cmd += ' "$TARGET"'
+    # Add the SHA2 signing to the list of commands to perform.
+    commands.append(sha2_signing_cmd)
+
+  return commands
+
+def DigicertSignedBinaryGenerator(source, target, env, for_signature):
+  """A builder generator for code signing with two certs."""
+  source = source                # Silence gpylint.
+  target = target                # Silence gpylint.
+  for_signature = for_signature  # Silence gpylint.
+
+  # Alway copy and make writable.
+  commands = [
+      SCons.Script.Copy('$TARGET', '$SOURCE'),
+      SCons.Script.Chmod('$TARGET', 0755),
+  ]
+
+  # Only do signing if there are certificate files or a certificate name. The
+  # CERTIFICATE_NAME is expected to be the same for both SHA1 and SHA2.
+  if (env.subst('$SHA1_CERTIFICATE_PATH') and
+      env.subst('$SHA2_CERTIFICATE_PATH')) or \
+     (env.subst('$SHA1_CERTIFICATE_HASH') and
+      env.subst('$SHA2_CERTIFICATE_HASH')) or env.subst('$CERTIFICATE_NAME'):
+    # Setup common signing command options (same as single signing).
+    base_signing_cmd = '$SIGNTOOL sign /v '
+    # Add certificate store if any.
+    if env.subst('$CERTIFICATE_NAME'):
+      # The command used to do signing (target added on below).
+      base_signing_cmd += ' /s "$CERTIFICATE_STORE" /n "$CERTIFICATE_NAME"'
+
+    # SHA1-specific options, e.g.:
+    # "signtool.exe" sign /v /n "Google Inc"
+    #   /t http://timestamp.globalsign.com/scripts/timstamp.dll
+    #   /i "Verisign" someFile.exe
+    sha1_signing_cmd = base_signing_cmd
+    sha1_signing_cmd += ' /fd sha1'
+    # Add in certificate file if any.
+    if env.subst('$SHA1_CERTIFICATE_PATH'):
+      sha1_signing_cmd += ' /f "$SHA1_CERTIFICATE_PATH"'
+      # Add csp if any.
+      if env.subst('$SHA1_CSP'):
+        sha1_signing_cmd += ' /csp "$SHA1_CSP"'
+      # Add certificate password if any.
+      if env.subst('$SHA1_CERTIFICATE_PASSWORD'):
+        sha1_signing_cmd += ' /k "$SHA1_CERTIFICATE_PASSWORD"'
+    # Add timestamp server if any.
+    if env.subst('$SHA1_TIMESTAMP_SERVER'):
+      sha1_signing_cmd += ' /t "$SHA1_TIMESTAMP_SERVER"'
+    # Add issuer if any.
+    if env.subst('$SHA1_CERTIFICATE_ISSUER'):
+      sha1_signing_cmd += ' /i "$SHA1_CERTIFICATE_ISSUER"'
+    # Add cert hash if any.
+    if env.subst('$SHA1_CERTIFICATE_HASH'):
+      sha1_signing_cmd += ' /sha1 "$SHA1_CERTIFICATE_HASH"'
+    if env.Bit('use_authenticode_machine_store'):
+      sha1_signing_cmd += ' /sm'
+    # Add in target name
+    sha1_signing_cmd += ' "$TARGET"'
+    # Add the SHA1 signing to the list of commands to perform.
+    commands.append(sha1_signing_cmd)
+
+    # SHA2-specific options, e.g.:
+    # "signtool.exe" sign /v /n "Google Inc"
+    #   /tr http://timestamp.globalsign.com/?signature=sha2 /td "SHA256"
+    #   /i "Symantec" /as /fd "SHA256" someFile.exe
+    sha2_signing_cmd = base_signing_cmd
+    # Add in certificate file if any.
+    if env.subst('$SHA2_CERTIFICATE_PATH'):
+      sha2_signing_cmd += ' /f "$SHA2_CERTIFICATE_PATH"'
+      # Add csp if any.
+      if env.subst('$SHA2_CSP'):
+        sha2_signing_cmd += ' /csp "$SHA2_CSP"'
+      # Add certificate password if any.
+      if env.subst('$SHA2_CERTIFICATE_PASSWORD'):
+        sha2_signing_cmd += ' /k "$SHA2_CERTIFICATE_PASSWORD"'
     # Add timestamp server if any.
     if env.subst('$SHA2_TIMESTAMP_SERVER'):
       sha2_signing_cmd += ' /tr "$SHA2_TIMESTAMP_SERVER" /td "SHA256"'
