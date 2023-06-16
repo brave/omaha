@@ -81,7 +81,15 @@ HRESULT RegisterOrUnregisterProxies64(bool is_machine, bool is_register) {
   ON_SCOPE_EXIT(goopdate_utils::RemoveRedirectHKCR);
 
   CPath ps_dll(app_util::GetCurrentModuleDirectory());
-  if (!ps_dll.Append(is_machine ? kPSFileNameMachine64 : kPSFileNameUser64)) {
+
+  const TCHAR* const psFileName =
+#ifdef ARCH_CPU_ARM64
+      is_machine ? kPSFileNameMachineArm64 : kPSFileNameUserArm64;
+#else
+      is_machine ? kPSFileNameMachine64 : kPSFileNameUser64;
+#endif
+
+  if (!ps_dll.Append(psFileName)) {
     return HRESULTFromLastError();
   }
 

@@ -26,6 +26,7 @@ typedef BOOL (WINAPI * Module32NextFunc)(HANDLE, LPMODULEENTRY32);
 typedef BOOL (WINAPI * Process32FirstFunc)(HANDLE, LPPROCESSENTRY32);
 typedef BOOL (WINAPI * Process32NextFunc)(HANDLE, LPPROCESSENTRY32);
 typedef BOOL (WINAPI * IsWow64ProcessFunc)(HANDLE, PBOOL);
+typedef BOOL (WINAPI * IsWow64Process2Func)(HANDLE, USHORT*, USHORT*);
 
 #define kKernel32Module L"kernel32"
 
@@ -102,6 +103,23 @@ BOOL WINAPI Kernel32::IsWow64Process(HANDLE hProcess, PBOOL Wow64Process) {
     return FALSE;
 
   return f(hProcess, Wow64Process);
+}
+
+BOOL WINAPI Kernel32::IsWow64Process2(HANDLE hProcess,
+                                      USHORT* pProcessMachine,
+                                      USHORT* pNativeMachine) {
+  static IsWow64Process2Func f = NULL;
+
+  if (f == NULL) {
+    HMODULE handle = GetModuleHandle(kKernel32Module);
+    ASSERT(handle, (L""));
+    f = (IsWow64Process2Func) GetProcAddress(handle, "IsWow64Process2");
+  }
+
+  if (f == NULL)
+    return FALSE;
+
+  return f(hProcess, pProcessMachine, pNativeMachine);
 }
 
 }  // namespace omaha

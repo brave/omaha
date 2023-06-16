@@ -367,47 +367,67 @@ def ConfigureEnvFor64Bit(env):
   Args:
     env: The environment.
   """
-  env.AppendUnique(ARFLAGS=['/MACHINE:x64'],
-                   LIBFLAGS=['/MACHINE:x64'],
-                   LINKFLAGS=['/MACHINE:x64'])
+  ConfigureEnvForNon32Bit(env, 'x64', '.obj64', '5.02', 'amd64')
+
+
+def ConfigureEnvForArm64Bit(env):
+  """Modifies the flags and compiler\library paths of an environment to
+     configure it to produce Arm64 binaries.
+
+  Args:
+    env: The environment.
+  """
+  ConfigureEnvForNon32Bit(env, 'arm64', '.objarm64', '6.02')
+  env.FilterOut(CPPDEFINES=['ARCH_CPU_X86_FAMILY'])
+  env.AppendUnique(CPPDEFINES=['ARCH_CPU_ARM_FAMILY', 'ARCH_CPU_ARM64'])
+
+
+def ConfigureEnvForNon32Bit(env, platform, objsuffix, subsystem,
+                            platform_legacy=None):
+  if platform_legacy is None:
+    platform_legacy = platform
+
+  env.AppendUnique(ARFLAGS=['/MACHINE:' + platform],
+                   LIBFLAGS=['/MACHINE:' + platform],
+                   LINKFLAGS=['/MACHINE:' + platform])
 
   platform_sdk_lib_dir = ('$WINDOWS_SDK_10_0_DIR/lib/' +
       '$WINDOWS_SDK_10_0_VERSION')
 
   lib_paths = {
-      omaha_version_utils.VC80: [ '$VC80_DIR/vc/lib/amd64',
-                                  '$ATLMFC_VC80_DIR/lib/amd64',
-                                  '$PLATFORM_SDK_VISTA_6_0_DIR/lib/x64' ],
-      omaha_version_utils.VC100: [ '$VC10_0_DIR/vc/lib/amd64',
-                                   '$ATLMFC_VC10_0_DIR/lib/amd64',
-                                   '$PLATFORM_SDK_VC10_0_DIR/lib/x64' ],
-      omaha_version_utils.VC120: [ '$VC12_0_DIR/vc/lib/amd64',
-                                   '$ATLMFC_VC12_0_DIR/lib/amd64',
-                                   '$WINDOWS_SDK_8_1_DIR/lib/winv6.3/um/x64' ],
-      omaha_version_utils.VC140: [ '$VC14_0_DIR/vc/lib/amd64',
-                                   '$ATLMFC_VC14_0_DIR/lib/amd64',
-                                   platform_sdk_lib_dir + '/um/x64',
-                                   platform_sdk_lib_dir + '/ucrt/x64',],
-      omaha_version_utils.VC150: [ '$VC15_0_DIR/lib/x64',
-                                   '$ATLMFC_VC15_0_DIR/lib/x64',
-                                   '$WINDOWS_SDK_10_0_LIB_DIR/um/x64',
-                                   '$WINDOWS_SDK_10_0_LIB_DIR/ucrt/x64',],
-      omaha_version_utils.VC160: [ '$VC16_0_DIR/lib/x64',
-                                   '$ATLMFC_VC16_0_DIR/lib/x64',
-                                   '$WINDOWS_SDK_10_0_LIB_DIR/um/x64',
-                                   '$WINDOWS_SDK_10_0_LIB_DIR/ucrt/x64',],
+      omaha_version_utils.VC80: [ '$VC80_DIR/vc/lib/' + platform_legacy,
+                                  '$ATLMFC_VC80_DIR/lib/' + platform_legacy,
+                                  '$PLATFORM_SDK_VISTA_6_0_DIR/lib' + platform ],
+      omaha_version_utils.VC100: [ '$VC10_0_DIR/vc/lib/' + platform_legacy,
+                                   '$ATLMFC_VC10_0_DIR/lib/' + platform_legacy,
+                                   '$PLATFORM_SDK_VC10_0_DIR/lib' + platform ],
+      omaha_version_utils.VC120: [ '$VC12_0_DIR/vc/lib/' + platform_legacy,
+                                   '$ATLMFC_VC12_0_DIR/lib/' + platform_legacy,
+                                   '$WINDOWS_SDK_8_1_DIR/lib/winv6.3/um' + platform ],
+      omaha_version_utils.VC140: [ '$VC14_0_DIR/vc/lib/' + platform_legacy,
+                                   '$ATLMFC_VC14_0_DIR/lib/' + platform_legacy,
+                                   platform_sdk_lib_dir + '/um' + platform,
+                                   platform_sdk_lib_dir + '/ucrt' + platform,],
+      omaha_version_utils.VC150: [ '$VC15_0_DIR/lib/' + platform,
+                                   '$ATLMFC_VC15_0_DIR/lib/' + platform,
+                                   '$WINDOWS_SDK_10_0_LIB_DIR/um/' + platform,
+                                   '$WINDOWS_SDK_10_0_LIB_DIR/ucrt/' + platform,],
+      omaha_version_utils.VC160: [ '$VC16_0_DIR/lib/' + platform,
+                                   '$ATLMFC_VC16_0_DIR/lib/' + platform,
+                                   '$WINDOWS_SDK_10_0_LIB_DIR/um/' + platform,
+                                   '$WINDOWS_SDK_10_0_LIB_DIR/ucrt/' + platform,],
       }[env['msc_ver']]
 
   env.Prepend(LIBPATH=lib_paths)
 
   # Override the build tools to be the x86-64 version.
   env.PrependENVPath('PATH', env.Dir(
-      {omaha_version_utils.VC80  : '$VC80_DIR/vc/bin/x86_amd64',
-       omaha_version_utils.VC100 : '$VC10_0_DIR/vc/bin/x86_amd64',
-       omaha_version_utils.VC120 : '$VC12_0_DIR/vc/bin/x86_amd64',
-       omaha_version_utils.VC140 : '$VC14_0_DIR/vc/bin/x86_amd64',
-       omaha_version_utils.VC150 : '$VC15_0_DIR/bin/HostX64/x64',
-       omaha_version_utils.VC160 : '$VC16_0_DIR/bin/HostX64/x64'}
+      {omaha_version_utils.VC80  : '$VC80_DIR/vc/bin/x86_' + platform_legacy,
+       omaha_version_utils.VC100 : '$VC10_0_DIR/vc/bin/x86_' + platform_legacy,
+       omaha_version_utils.VC120 : '$VC12_0_DIR/vc/bin/x86_' + platform_legacy,
+       omaha_version_utils.VC140 : '$VC14_0_DIR/vc/bin/x86_' + platform_legacy,
+       omaha_version_utils.VC150 : '$VC15_0_DIR/bin/HostX64/' + platform,
+       omaha_version_utils.VC160 : '$VC16_0_DIR/bin/HostX64/' + platform}
       [env['msc_ver']]))
 
   # Filter x86 options that are not supported or conflict with x86-x64 options.
@@ -421,21 +441,22 @@ def ConfigureEnvFor64Bit(env):
 
   # x86-64 has a different minimum requirements for the Windows subsystem.
   env.FilterOut(LINKFLAGS=['/SUBSYSTEM:WINDOWS,5.01'])
-  env.AppendUnique(LINKFLAGS=['/SUBSYSTEM:WINDOWS,5.02'])
+  env.AppendUnique(LINKFLAGS=['/SUBSYSTEM:WINDOWS,' + subsystem])
 
   # Modify output filenames such that .obj becomes .obj64.  (We can't modify
   # LIBPREFIX in the same way, unfortunately, because the 64-bit compilers
   # supply the base libraries as .lib.)
-  env['OBJSUFFIX'] = '.obj64'
+  env['OBJSUFFIX'] = objsuffix
 
   # Set the bit to denote that this environment generates 64-bit targets.
   # (This is used by several .scons files to adjust target names.)
-  env.SetBits('x64')
+  env.SetBits(platform)
 
   # If this is a coverage build, skip instrumentation for 64-bit binaries,
   # as VSInstr doesn't currently support those.
   if env.IsCoverageBuild():
     env['INSTALL'] = env['PRECOVERAGE_INSTALL']
+
 
 def CloneAndMake64Bit(env):
   """Clones the supplied environment and calls ConfigureEnvFor64Bit()
@@ -452,6 +473,12 @@ def CloneAndMake64Bit(env):
   return env64
 
 
+def CloneAndMakeArm64Bit(env):
+  env_arm64 = env.Clone()
+  ConfigureEnvForArm64Bit(env_arm64)
+  return env_arm64
+
+
 def GetMultiarchLibName(env, lib_name):
   """Decorates the lib name based on whether or not the environment is intended
   to produce 64-bit binaries.
@@ -463,7 +490,13 @@ def GetMultiarchLibName(env, lib_name):
   Returns:
     The appropriate library name.
   """
-  filename = (lib_name, '%s_64' % lib_name)[env.Bit('x64')]
+  if env.Bit('x64'):
+    suffix = '_64'
+  elif env.Bit('arm64'):
+    suffix = '_arm64'
+  else:
+    suffix = ''
+  filename = lib_name + suffix
   return '$LIB_DIR/' + filename + '.lib'
 
 
@@ -492,7 +525,14 @@ def ComponentStaticLibraryMultiarch(env, lib_name, *args, **kwargs):
   nodes64 = ComponentStaticLibrary(CloneAndMake64Bit(env),
                                    '%s_64' % lib_name,
                                    *args64, **kwargs64)
-  return nodes32 + nodes64
+  # As above, make a copy of the input arg lists because ComponentStaticLibrary
+  # modifies them.
+  args_arm64 = [copy(arg) for arg in args]
+  kwargs_arm64 = deepcopy(kwargs)
+  nodesarm64 = ComponentStaticLibrary(CloneAndMakeArm64Bit(env),
+                                      '%s_arm64' % lib_name,
+                                      *args_arm64, **kwargs64)
+  return nodes32 + nodes64 + nodesarm64
 
 
 # os.path.relpath is not available in Python 2.4, so make our own.
@@ -577,6 +617,7 @@ def generate(env):  # pylint: disable=C6409
   env.AddMethod(CopyFileToDirectory)
   env.AddMethod(ConfigureEnvFor64Bit)
   env.AddMethod(CloneAndMake64Bit)
+  env.AddMethod(CloneAndMakeArm64Bit)
   env.AddMethod(GetMultiarchLibName)
   env.AddMethod(ComponentStaticLibraryMultiarch)
   env.AddMethod(CompileProtoBuf)

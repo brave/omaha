@@ -119,7 +119,16 @@ class Timer {
 };
 
 // lint -e{31}   Redefinition of symbol
-__forceinline time64 Timer::GetRdtscCounter() { return __rdtsc(); }
+__forceinline time64 Timer::GetRdtscCounter() {
+#ifdef ARCH_CPU_ARM64
+  // Note: This simple implementation likely has the limitations described in
+  // https://chromium.googlesource.com/chromium/src/+/
+  // a98d8582f91cf62b463d1bca585476726496ce2a%5E%21/.
+  return _ReadStatusReg(ARM64_PMCCNTR_EL0);
+#else
+  return __rdtsc();
+#endif
+}
 
 inline double Timer::PerfCountToNanoSeconds(time64 perf_count) const {
   return (static_cast<double>(perf_count) / static_cast<double>(count_freq_)) *

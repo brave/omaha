@@ -20,6 +20,7 @@ def BuildCommonLib(env):
 
   inputs = [
       'app_registry_utils.cc',
+      'brave_referral_code_utils.cc',
       'command_line.cc',
       'command_line_builder.cc',
       'config_manager.cc',
@@ -50,10 +51,17 @@ def BuildCommonLib(env):
       local_env.GetMultiarchLibName('statsreport'),   # Required by common
       ]
 
-  lib_name = 'common%s' % ('', '_64')[local_env.Bit('x64')]
+  if local_env.Bit('x64'):
+    suffix = '_64'
+  elif local_env.Bit('arm64'):
+    suffix = '_arm64'
+  else:
+    suffix = ''
+  lib_name = 'common' + suffix
 
   # Build these into a library.
   local_env.ComponentLibrary(lib_name, inputs)
 
 BuildCommonLib(env)
 BuildCommonLib(env.CloneAndMake64Bit())
+BuildCommonLib(env.CloneAndMakeArm64Bit())

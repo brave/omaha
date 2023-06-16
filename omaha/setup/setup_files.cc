@@ -307,7 +307,9 @@ HRESULT SetupFiles::BuildFileLists() {
   core_program_files_.push_back(kOmahaCoreFileName);
   core_program_files_.push_back(kCrashHandlerFileName);
   core_program_files_.push_back(kCrashHandler64FileName);
+  core_program_files_.push_back(kCrashHandlerArm64FileName);
   core_program_files_.push_back(kOmahaCOMRegisterShell64);
+  core_program_files_.push_back(kOmahaCOMRegisterShellArm64);
 
   // TODO(omaha3): Try to not depend on ResourceManager. Maybe just find the
   // files using wildcards.
@@ -315,8 +317,10 @@ HRESULT SetupFiles::BuildFileLists() {
 
   core_program_files_.push_back(kPSFileNameUser);
   core_program_files_.push_back(kPSFileNameUser64);
+  core_program_files_.push_back(kPSFileNameUserArm64);
   core_program_files_.push_back(kPSFileNameMachine);
   core_program_files_.push_back(kPSFileNameMachine64);
+  core_program_files_.push_back(kPSFileNameMachineArm64);
 
   metainstaller_files_.clear();
   metainstaller_files_.push_back(kOmahaMetainstallerFileName);

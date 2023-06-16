@@ -36,6 +36,9 @@ class Kernel32 {
   // Is process running under WOW64?
   // WOW64 is the emulator for win32 applications running on win64.
   static BOOL WINAPI IsWow64Process(HANDLE hProcess, PBOOL Wow64Process);
+  static BOOL WINAPI IsWow64Process2(HANDLE hProcess,
+                                     USHORT *pProcessMachine,
+                                     USHORT *pNativeMachine);
 
  private:
   DISALLOW_COPY_AND_ASSIGN(Kernel32);

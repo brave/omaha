@@ -120,17 +120,22 @@ const TCHAR* const kOmahaBrokerFileName        =
     MAIN_EXE_BASE_NAME _T("Broker.exe");
 const TCHAR* const kOmahaOnDemandFileName      =
     MAIN_EXE_BASE_NAME _T("OnDemand.exe");
-const TCHAR* const kCrashHandlerFileName   = CRASH_HANDLER_NAME _T(".exe");
-const TCHAR* const kCrashHandler64FileName = CRASH_HANDLER_NAME _T("64.exe");
+const TCHAR* const kCrashHandlerFileName       = CRASH_HANDLER_NAME _T(".exe");
+const TCHAR* const kCrashHandler64FileName     = CRASH_HANDLER_NAME _T("64.exe");
+const TCHAR* const kCrashHandlerArm64FileName  = CRASH_HANDLER_NAME _T("Arm64.exe");
 const TCHAR* const kOmahaMetainstallerFileName =
     MAIN_EXE_BASE_NAME _T("Setup.exe");
 const TCHAR* const kOmahaCOMRegisterShell64    =
     MAIN_EXE_BASE_NAME _T("ComRegisterShell64.exe");
-const TCHAR* const kOmahaCoreFileName  = MAIN_EXE_BASE_NAME _T("Core.exe");
-const TCHAR* const kPSFileNameMachine  = _T("psmachine.dll");
-const TCHAR* const kPSFileNameMachine64= _T("psmachine_64.dll");
-const TCHAR* const kPSFileNameUser     = _T("psuser.dll");
-const TCHAR* const kPSFileNameUser64   = _T("psuser_64.dll");
+const TCHAR* const kOmahaCOMRegisterShellArm64    =
+    MAIN_EXE_BASE_NAME _T("ComRegisterShellArm64.exe");
+const TCHAR* const kOmahaCoreFileName      = MAIN_EXE_BASE_NAME _T("Core.exe");
+const TCHAR* const kPSFileNameMachine      = _T("psmachine.dll");
+const TCHAR* const kPSFileNameMachine64    = _T("psmachine_64.dll");
+const TCHAR* const kPSFileNameMachineArm64 = _T("psmachine_arm64.dll");
+const TCHAR* const kPSFileNameUser         = _T("psuser.dll");
+const TCHAR* const kPSFileNameUser64       = _T("psuser_64.dll");
+const TCHAR* const kPSFileNameUserArm64    = _T("psuser_arm64.dll");
 
 // TODO(omaha): Replace the following literal in clickonce\build.scons.
 // '%s/GoogleUpdateSetup.exe'
@@ -153,10 +158,10 @@ const TCHAR* const kTemporaryFilenamePrefix = _T("gup");
 // Omaha's app ID
 //
 // TODO(omaha): Rename all of these "Omaha".
-#define GOOPDATE_APP_ID _T("{430FD4D0-B729-4F61-AA34-91526481799D}")
+#define GOOPDATE_APP_ID _T("{B131C935-9BE6-41DA-9599-1F776BEB8019}")
 const TCHAR* const kGoogleUpdateAppId = GOOPDATE_APP_ID;
-const GUID kGoopdateGuid = {0x430FD4D0, 0xB729, 0x4F61,
-                            {0xAA, 0x34, 0x91, 0x52, 0x64, 0x81, 0x79, 0x9D}};
+const GUID kGoopdateGuid = {0xB131C935, 0x9BE6, 0x41DA,
+                            {0x95, 0x99, 0x1F, 0x77, 0x6B, 0xEB, 0x80, 0x19}};
 
 // Chrome AppIDs
 #define CHROME_APP_ID _T("{8A69D345-D564-463C-AFF1-A69D9E530F96}")

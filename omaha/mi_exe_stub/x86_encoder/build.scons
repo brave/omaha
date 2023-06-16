@@ -18,18 +18,33 @@ Import('env')
 local_env = env.Clone()
 local_env.FilterOut(CPPDEFINES=['_ATL_DEBUG_INTERFACES'])
 
-bcj2_lib = local_env.ComponentLibrary(
+inputs = [
+    'bcj2_encoder.cc',
+    'range_encoder.cc'
+]
+
+# We need the x86 library for unit tests:
+
+local_env.ComponentLibrary(
     lib_name='bcj2_lib',
-    source=[
-        'bcj2_encoder.cc',
-        'range_encoder.cc',
-    ],
+    source=inputs,
 )
 
-bin_env = local_env.Clone()
-bin_env.FilterOut(LINKFLAGS=['/SUBSYSTEM:WINDOWS,5.01'])
+# We need 64 bit binaries to avoid memory-related errors when processing large
+# files. Specifically, to avoid error -1073740791 = 0xC0000409, which seems to
+# be STATUS_STACK_BUFFER_OVERRUN.
+
+x64_env = local_env.CloneAndMake64Bit()
+
+bcj2_lib = x64_env.ComponentLibrary(
+    lib_name='bcj2_lib_64',
+    source=inputs,
+)
+
+bin_env = x64_env.Clone()
+bin_env.FilterOut(LINKFLAGS=['/SUBSYSTEM:WINDOWS'])
 bin_env.Append(
-    LINKFLAGS=['/SUBSYSTEM:CONSOLE,5.01'],
+    LINKFLAGS=['/SUBSYSTEM:CONSOLE'],
     LIBS=[
         bin_env['atls_libs'][bin_env.Bit('debug')],
         bin_env['crt_libs'][bin_env.Bit('debug')],
@@ -40,15 +55,8 @@ bin_env.Append(
         'userenv.lib',
         'version.lib',
         'wtsapi32.lib',
-        '$LIB_DIR/base.lib',
-        '$LIB_DIR/lzma.lib',
-    ],
-)
-
-bin_env.ComponentProgram(
-    prog_name='bcj',
-    source=[
-        'bcj.cc',
+        '$LIB_DIR/base_64.lib',
+        '$LIB_DIR/lzma_64.lib',
     ],
 )
 

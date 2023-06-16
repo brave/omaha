@@ -36,7 +36,7 @@ namespace {
 // TODO(omaha3): Update the numbers in the else block as we build more files.
 // Eventually use the original values in the if block.
 const int kNumberOfLanguageDlls = 55;
-const int kNumberOfCoreFiles = 10;
+const int kNumberOfCoreFiles = 14;
 const int kNumberOfMetainstallerFiles = 1;
 const int kNumberOfOptionalFiles = 2;
 const int kNumberOfInstalledRequiredFiles =
@@ -464,7 +464,7 @@ TEST_F(SetupFilesUserTest,
        ShouldCopyShell_ExistingIsOlderButCompatible_1_2_131_7) {
   CString target_path = ConcatenatePath(
       ConcatenatePath(exe_parent_dir_, _T("omaha_1.2.131.7_shell")),
-      kOmahaShellFileName);
+      _T("GoogleUpdate.exe"));
   ASSERT_TRUE(File::Exists(target_path));
   bool should_copy = false;
   bool already_exists = false;
@@ -477,7 +477,7 @@ TEST_F(SetupFilesUserTest,
        ShouldCopyShell_ExistingIsOlderButCompatible_1_2_183_9) {
   CString target_path = ConcatenatePath(
       ConcatenatePath(exe_parent_dir_, _T("omaha_1.2.183.9_shell")),
-      kOmahaShellFileName);
+      _T("GoogleUpdate.exe"));
   ASSERT_TRUE(File::Exists(target_path));
   bool should_copy = false;
   bool already_exists = false;
@@ -489,7 +489,7 @@ TEST_F(SetupFilesUserTest,
 TEST_F(SetupFilesUserTest, ShouldCopyShell_ExistingIsOlderMinor) {
   CString target_path = ConcatenatePath(
       ConcatenatePath(exe_parent_dir_, _T("omaha_1.2.x")),
-      kOmahaShellFileName);
+      _T("GoogleUpdate.exe"));
   ASSERT_TRUE(File::Exists(target_path));
   bool should_copy = false;
   bool already_exists = false;
@@ -501,7 +501,7 @@ TEST_F(SetupFilesUserTest, ShouldCopyShell_ExistingIsOlderMinor) {
 TEST_F(SetupFilesUserTest, ShouldCopyShell_ExistingIsOlderSameMinor) {
   CString target_path = ConcatenatePath(
       ConcatenatePath(exe_parent_dir_, _T("omaha_1.3.x")),
-      kOmahaShellFileName);
+      _T("GoogleUpdate.exe"));
   ASSERT_TRUE(File::Exists(target_path));
   bool should_copy = false;
   bool already_exists = false;
@@ -514,7 +514,7 @@ TEST_F(SetupFilesUserTest, ShouldCopyShell_ExistingIsOlderSameMinor) {
 TEST_F(SetupFilesUserTest, ShouldCopyShell_ExistingHasNoVersion) {
   CString target_path = ConcatenatePath(
       ConcatenatePath(exe_parent_dir_, _T("does_not_shutdown")),
-      kOmahaShellFileName);
+      MAIN_EXE_BASE_NAME _T(".exe"));
   ASSERT_TRUE(File::Exists(target_path));
   bool should_copy = false;
   bool already_exists = false;
@@ -527,7 +527,7 @@ TEST_F(SetupFilesUserTest, ShouldCopyShell_ExistingHasNoVersion) {
 TEST_F(SetupFilesUserTest, ShouldCopyShell_NoExistingFile) {
   CString target_path = ConcatenatePath(
       ConcatenatePath(exe_parent_dir_, _T("no_such_dir")),
-      kOmahaShellFileName);
+      _T("GoogleUpdate.exe"));
   ASSERT_FALSE(File::Exists(target_path));
   bool should_copy = false;
   bool already_exists = false;
