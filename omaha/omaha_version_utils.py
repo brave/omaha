@@ -99,6 +99,7 @@ VC120 = 1800  # VC2013/VC12
 VC140 = 1900  # VC2015/VC14
 VC150 = 1910  # VC2017 version 15.0-15.9 / VC14.1-14.16
 VC160 = 1920  # VC2019 version 16.0 / VC14.2
+VC170 = 1930  # VC2022 version 17.0 / VC14.2
 
 def _IsSupportedOmaha2Version(omaha_version):
   """Returns true if omaha_version is an Omaha 2 version and is supported."""

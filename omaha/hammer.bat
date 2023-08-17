@@ -4,7 +4,7 @@ setlocal
 
 rem -- Set all environment variables used by Hammer and Omaha. --
 
-call "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64_x86 10.0.20348.0 || (SET ERRORLINE=8&& goto :error)
+call "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" amd64_x86 10.0.22621.0 || (SET ERRORLINE=8&& goto :error)
 
 :: VS2003/VC71 is 1310 (not supported by the current build).
 :: VS2005/VC80 is 1400 (not supported by the current build).
@@ -21,6 +21,7 @@ if "%VisualStudioVersion%"=="12.0" goto vc120
 if "%VisualStudioVersion%"=="14.0" goto vc140
 if "%VisualStudioVersion%"=="15.0" goto vc141
 if "%VisualStudioVersion%"=="16.0" goto vc160
+if "%VisualStudioVersion%"=="17.0" goto vc170
 goto error_vc_not_supported
 
 :vc120
@@ -37,6 +38,10 @@ goto set_env_variables
 
 :vc160
 set OMAHA_MSC_VER=1920
+goto set_env_variables
+
+:vc170
+set OMAHA_MSC_VER=1930
 goto set_env_variables
 
 :set_env_variables
