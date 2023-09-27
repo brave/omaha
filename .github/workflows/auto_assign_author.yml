@@ -1,0 +1,14 @@
+# [[DO NOT UPDATE]] THIS IS DEFAULT WORKFLOW, IT MAY BE OVERRIDE
+on:
+  pull_request:
+    types: [opened, reopened]
+
+name: Pull Request
+
+jobs:
+  assignAuthor:
+    name: Assign author to PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign author to PR
+        uses: technote-space/assign-author@v1

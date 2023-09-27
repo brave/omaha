@@ -1,0 +1,41 @@
+# [[DO NOT UPDATE]] THIS IS DEFAULT WORKFLOW, IT MAY BE OVERRIDE
+name: Auto add to Project
+
+on:
+  issues:
+    types: [opened, reopened]
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  add-to-project:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.DEFAULT_GITHUB_SETTINGS_PAT }}
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Use GitHub CLI to add PR to project
+      if: github.event_name == 'pull_request'
+      run: |
+        # Get variable DEFAULT_ORG_PROJECT_NAME from herondlabs/github-settings repo
+        DEFAULT_ORG_PROJECT_NAME=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/herondlabs/github-settings/actions/variables/DEFAULT_ORG_PROJECT_NAME | grep -o '"value":"[^"]*"' | cut -d '"' -f4)
+        
+        # Get project ID using DEFAULT_ORG_PROJECT_NAME and add the PR to project
+        gh project list --owner herondlabs --limit 2 | grep "$DEFAULT_ORG_PROJECT_NAME" | awk '{print $1}' | xargs -I {} gh project item-add {} --owner herondlabs --url ${{ github.event.pull_request.html_url }}
+      
+    - name: Use GitHub CLI to add issue to project
+      if: github.event_name == 'issues'
+      run: |
+        # Get variable DEFAULT_ORG_PROJECT_NAME from herondlabs/github-settings repo
+        DEFAULT_ORG_PROJECT_NAME=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/herondlabs/github-settings/actions/variables/DEFAULT_ORG_PROJECT_NAME | grep -o '"value":"[^"]*"' | cut -d '"' -f4)
+        
+        # Get project ID using DEFAULT_ORG_PROJECT_NAME and add the issue to project
+        gh project list --owner herondlabs --limit 2 | grep "$DEFAULT_ORG_PROJECT_NAME" | awk '{print $1}' | xargs -I {} gh project item-add {} --owner herondlabs --url ${{ github.event.issue.html_url }}
