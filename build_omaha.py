@@ -146,6 +146,9 @@ def tag_standalone(args, omaha_dir):
   tag = tag.replace("TAG_APP_NAME", args.tag_app_name[0])
   tag = tag.replace("TAG_AP", args.tag_ap[0])
 
+  if args.install_data_index:
+    tag += '&installdataindex=' + args.install_data_index
+
   apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], tag, args.root_out_dir[0])
   apply_tag(omaha_dir, args.debug, 'staging/BraveUpdateSetup.exe', args.stub_installer_exe[0], tag, args.root_out_dir[0])
 
@@ -195,6 +198,7 @@ def parse_args():
                       nargs=1)
   parser.add_argument('--brave_full_version',
                       nargs=1)
+  parser.add_argument('--install_data_index')
   parser.add_argument('--debug', action='store_true')
   return parser.parse_args()
 
