@@ -20,7 +20,7 @@
 
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
-IDI_APP            ICON               "mi.ico"
+IDI_APP            ICON               "logo.ico"
 
 VS_VERSION_INFO VERSIONINFO
 // Resource Editor does not handle constants from main.scons.
