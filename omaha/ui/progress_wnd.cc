@@ -124,7 +124,7 @@ LRESULT InstallStoppedWnd::OnInitDialog(UINT,
       0);
 
   CreateOwnerDrawTitleBar(m_hWnd, GetDlgItem(IDC_TITLE_BAR_SPACER), kBkColor);
-  SetCustomDlgColors(kTextColor, kBkColor);
+  SetCustomDlgColors(m_hWnd, kTextColor, kBkColor);
 
   (EnableFlatButtons(m_hWnd));
 
@@ -196,6 +196,17 @@ LRESULT ProgressWnd::OnInitDialog(UINT message,
   CString state_text;
   VERIFY1(state_text.LoadString(IDS_INITIALIZING));
   DisplayNewState(state_text);
+  VERIFY_SUCCEEDED(ChangeControlState());
+
+  CString slogan_text;
+  const TCHAR* const kNewLine1 = _T("<b>");
+  const TCHAR* const kNewLine2 = _T("</b>");
+
+  slogan_text.FormatMessage(IDS_SLOGAN,
+                                  kNewLine1,
+                                  kNewLine2);
+
+  VERIFY1(::SetWindowText(GetDlgItem(IDC_SUBTITLE_TEXT), slogan_text));
   VERIFY_SUCCEEDED(ChangeControlState());
 
   metrics_timer_.reset(new HighresTimer);
@@ -856,7 +867,42 @@ HRESULT ProgressWnd::SetMarqueeMode(bool is_marquee) {
   return S_OK;
 }
 
+bool Crop(HBITMAP& m_Handle, RECT cropArea)
+{
+  HDC hSrc = CreateCompatibleDC(NULL);
+  SelectObject(hSrc, m_Handle);
+
+  HDC hNew = CreateCompatibleDC(hSrc);
+  HBITMAP hBmp = CreateCompatibleBitmap(hSrc, cropArea.right - cropArea.left, cropArea.bottom - cropArea.top); 
+  HBITMAP hOld = (HBITMAP)SelectObject(hNew, hBmp);
+
+  bool retVal = (BitBlt(hNew, 0, 0, cropArea.right - cropArea.left, cropArea.bottom - cropArea.top, hSrc, cropArea.left, cropArea.top, SRCCOPY))?true:false;
+
+  SelectObject(hNew, hOld);
+
+  DeleteDC(hSrc);
+  DeleteDC(hNew);
+
+  DeleteObject(m_Handle);
+
+  m_Handle = hBmp;
+
+  return retVal;
+}
+
 void ProgressWnd::DisplayNewState(const CString& state) {
+  HBITMAP bmp = (HBITMAP)LoadImage(NULL, L"D:\\bg.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+  VERIFY1(Crop(bmp, CRect(23, 705 - 45 - 34 - 33, 650, 705)));
+
+  HDC dc = GetDlgItem(IDC_INSTALLER_STATE_TEXT).GetDC();
+  // HWND wnd = WindowFromDC(dc);
+  // CRect rect(15, 365, 418, 410);
+  CRect rect;
+  VERIFY1(GetClientRect(&rect));
+  HBRUSH brush = CreatePatternBrush(bmp);
+  FillRect(dc, &rect, brush);
+  DeleteObject(brush);
+
   VERIFY1(::SetWindowText(GetDlgItem(IDC_INSTALLER_STATE_TEXT), state));
 
   CString title;

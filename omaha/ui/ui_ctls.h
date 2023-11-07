@@ -91,6 +91,22 @@ const ProgressWnd::ControlState ProgressWnd::ctls_[] = {
       { false, false, false, false, false },  // STATE_END
     },
   },
+  { IDC_SUBTITLE_TEXT,
+    { { false, true,  true,  false, false },  // STATE_INIT
+      { false, true,  true,  false, false },  // STATE_CHECKING_FOR_UPDATE
+      { false, true,  true,  false, false },  // STATE_WAITING_TO_DOWNLOAD
+      { false, true,  true,  false, false },  // STATE_DOWNLOADING
+      { false, true,  true,  false, false },  // STATE_WAITING_TO_INSTALL
+      { false, true,  true,  false, false },  // STATE_INSTALLING
+      { false, true,  true,  false, false },  // STATE_PAUSED
+      { false, true,  true,  false, false },  // STATE_COMPLETE_SUCCESS
+      { false, false, false, false, false },  // STATE_COMPLETE_ERROR
+      { false, false, false, false, false },  // STATE_COMPLETE_RESTART_BROWSER
+      { false, false, false, false, false },  // COMPLETE_RESTART_ALL_BROWSERS
+      { false, false, false, false, false },  // STATE_COMPLETE_REBOOT
+      { false, false, false, false, false },  // STATE_END
+    },
+  },
   { IDC_COMPLETE_TEXT,
     { { false, false, false, false, false },  // STATE_INIT
       { false, false, false, false, false },  // STATE_CHECKING_FOR_UPDATE

@@ -176,7 +176,11 @@ void CaptionButton::DrawItem(LPDRAWITEMSTRUCT draw_item_struct) {
   COLORREF bk_color(is_mouse_hovering_ ? GetColor(kCaptionBkHover,
                                                   COLOR_ACTIVECAPTION) :
                                          GetColor(bk_color_, COLOR_WINDOW));
-  dc.FillSolidRect(&button_rect, bk_color);
+  
+  HBRUSH brush = (HBRUSH)::GetStockObject(NULL_BRUSH);
+  FillRect(dc, &button_rect, brush);
+  SetTextColor(dc, GetColor(RGB(0xFF, 0xFF, 0xFF), COLOR_WINDOW));
+  // dc.FillSolidRect(&button_rect, bk_color);
 
   int rgn_width = button_rect.Width() * 12 / 31;
   int rgn_height = button_rect.Height() * 12 / 31;
@@ -364,8 +368,10 @@ LRESULT OwnerDrawTitleBarWindow::OnEraseBkgnd(UINT,
   CDC dc(reinterpret_cast<HDC>(wparam));
   CRect rect;
   VERIFY1(GetClientRect(&rect));
-
-  dc.FillSolidRect(&rect, GetColor(bk_color_, COLOR_WINDOW));
+  HBRUSH brush = CreatePatternBrush((HBITMAP)LoadImage(NULL, L"D:\\bg.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE));
+  FillRect(dc, &rect, brush);
+  DeleteObject(brush);
+  // dc.FillSolidRect(&rect, GetColor(bk_color_, COLOR_WINDOW));
   return 1;
 }
 
@@ -580,33 +586,67 @@ CRect OwnerDrawTitleBar::ComputeTitleBarClientRect(HWND parent_hwnd,
 }
 
 CustomDlgColors::CustomDlgColors()
-    : text_color_(RGB(0xFF, 0xFF, 0xFF)),
+    : text_color_(RGB(0, 0, 0)),
       bk_color_(RGB(0, 0, 0)) {
 }
 
 CustomDlgColors::~CustomDlgColors() {
 }
 
-void CustomDlgColors::SetCustomDlgColors(COLORREF text_color,
+void CustomDlgColors::SetCustomDlgColors(HWND parent_hwnd,
+                                         COLORREF text_color,
                                          COLORREF bk_color) {
   text_color_ = text_color;
   bk_color_ = bk_color;
+  parent_ = parent_hwnd;
 
   ASSERT1(bk_brush_.IsNull());
   VERIFY1(bk_brush_.CreateSolidBrush(bk_color_));
+  trans_brush_ =  (HBRUSH)::GetStockObject(NULL_BRUSH);
 }
 
 LRESULT CustomDlgColors::OnCtrlColor(UINT,
                                      WPARAM wparam,
-                                     LPARAM,
+                                     LPARAM lparam,
                                      BOOL& handled) {  // NOLINT
   handled = TRUE;
 
   CDCHandle dc(reinterpret_cast<HDC>(wparam));
+  SetBkMode(dc, TRANSPARENT);
   SetBkColor(dc, GetColor(bk_color_, COLOR_WINDOW));
   SetTextColor(dc, GetColor(text_color_, COLOR_WINDOWTEXT));
 
+  HWND hwndDlg(reinterpret_cast<HWND>(lparam));
+  int ctrlID = GetDlgCtrlID(hwndDlg);
+
+  if (ctrlID == IDC_INSTALLER_STATE_TEXT || 
+                IDC_SUBTITLE_TEXT || 
+                IDC_BUTTON1 || 
+                IDC_BUTTON2 ||
+                IDC_ERROR_TEXT ||
+                IDC_COMPLETE_TEXT ||
+                IDC_CLOSE ||
+                IDC_CROSS) {
+    return reinterpret_cast<LRESULT>(GetColorBrush(trans_brush_, COLOR_WINDOW));
+  }
+
   return reinterpret_cast<LRESULT>(GetColorBrush(bk_brush_, COLOR_WINDOW));
+}
+
+LRESULT CustomDlgColors::OnEraseBkgnd(UINT,
+                                      WPARAM wparam,
+                                      LPARAM,
+                                      BOOL& handled) {  // NOLINT
+  handled = TRUE;
+
+  CDC dc(reinterpret_cast<HDC>(wparam));
+  CRect rect;
+  ASSERT1(parent_);
+  VERIFY1(GetClientRect(parent_, &rect));
+  HBRUSH brush = CreatePatternBrush((HBITMAP)LoadImage(NULL, L"D:\\bg.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE));
+  FillRect(dc, &rect, brush);
+  DeleteObject(brush);
+  return 1;
 }
 
 CustomProgressBarCtrl::CustomProgressBarCtrl()

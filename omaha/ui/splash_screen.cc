@@ -155,7 +155,7 @@ HRESULT SplashScreen::Initialize() {
   GetDlgItem(IDC_ERROR_TEXT).SetFont(font_);
 
   CreateOwnerDrawTitleBar(m_hWnd, GetDlgItem(IDC_TITLE_BAR_SPACER), kBkColor);
-  SetCustomDlgColors(kTextColor, kBkColor);
+  SetCustomDlgColors(m_hWnd, kTextColor, kBkColor);
 
   (EnableFlatButtons(m_hWnd));
 

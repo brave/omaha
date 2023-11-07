@@ -548,6 +548,11 @@
                desc="Displayed in a dialog requesting proxy login information when Omaha needs to connect through a proxy server that requires authentication. The message prompts the user to type in a username and password to authenticate against the proxy server.">
         Enter username and password for proxy server <ph name="PROXY_SERVER">%1!s!<ex>proxy.example.com:3128</ex></ph>
       </message>
+
+      <message name="IDS_SLOGAN"
+               desc="Slogan of Herond Browser">
+        A Gateway to the Web3 Era <ph name="NEW_LINE">%1!s!<ex>&lt;b&gt;</ex></ph> <ph name="NEW_LINE">%2!s!<ex>&lt;/br&gt;</ex></ph> Discover and Thrive
+      </message>
     </messages>
 
     <!--

@@ -504,19 +504,19 @@ const TCHAR* const kCustomClientInfoGroup = _T("ClientCustomData");
 // ***                                            ***
 // *** UI constants.                              ***
 // ***                                            ***
-const COLORREF kTextColor = RGB(0x29, 0x29, 0x29);
-const COLORREF kBkColor = RGB(0XFB, 0XFB, 0XFB);
+const COLORREF kTextColor = RGB(0xFF, 0xFF, 0xFF);
+const COLORREF kBkColor = RGB(0x0, 0x0, 0x0);
 
-const COLORREF kCaptionForegroundColor = RGB(0x00, 0x00, 0x00);
+const COLORREF kCaptionForegroundColor = RGB(0xFF, 0xFF, 0xFF);
 const COLORREF kCaptionBkHover = RGB(0xE9, 0xE9, 0xE9);
 const COLORREF kCaptionFrameColor = RGB(0xC1, 0xC1, 0xC1);
 
-const COLORREF kProgressOuterFrameLight = RGB(0x3c, 0x86, 0xf0);
-const COLORREF kProgressOuterFrameDark = RGB(0x23, 0x6d, 0xd6);
-const COLORREF kProgressInnerFrameLight = RGB(0x6e, 0xc2, 0xfe);
-const COLORREF kProgressInnerFrameDark = RGB(0x44, 0x90, 0xfc);
-const COLORREF kProgressBarLightColor = RGB(0x4d, 0xa4, 0xfd);
-const COLORREF kProgressBarDarkColor = RGB(0x40, 0x86, 0xfd);
+const COLORREF kProgressOuterFrameLight = RGB(0xe2, 0x4e, 0x00);
+const COLORREF kProgressOuterFrameDark = RGB(0xc8, 0x45, 0x00);
+const COLORREF kProgressInnerFrameLight = RGB(0xff, 0x91, 0x57);
+const COLORREF kProgressInnerFrameDark = RGB(0xe4, 0x82, 0x4f);
+const COLORREF kProgressBarLightColor = RGB(0xd5, 0x5e, 0x20);
+const COLORREF kProgressBarDarkColor = RGB(0xff, 0xac, 0x53);
 const COLORREF kProgressEmptyFillColor = RGB(0xb6, 0xb6, 0xb6);
 const COLORREF kProgressEmptyFrameColor = RGB(0xad, 0xad, 0xad);
 const COLORREF kProgressShadowLightColor = RGB(0xbd, 0xbd, 0xbd);

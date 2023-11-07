@@ -334,6 +334,150 @@ CString GetBundleDisplayName(IAppBundle* app_bundle) {
       CString(bundle_name) : client_utils::GetDefaultBundleName();
 }
 
+HBITMAP CreateBitmapMask(HBITMAP hbmColour, COLORREF crTransparent)
+{
+    HDC hdcMem, hdcMem2;
+    HBITMAP hbmMask;
+    BITMAP bm;
+
+    // Create monochrome (1 bit) mask bitmap.  
+
+    GetObject(hbmColour, sizeof(BITMAP), &bm);
+    hbmMask = CreateBitmap(bm.bmWidth, bm.bmHeight, 1, 1, NULL);
+
+    // Get some HDCs that are compatible with the display driver
+
+    hdcMem = CreateCompatibleDC(0);
+    hdcMem2 = CreateCompatibleDC(0);
+
+    SelectObject(hdcMem, hbmColour);
+    SelectObject(hdcMem2, hbmMask);
+
+    // Set the background colour of the colour image to the colour
+    // you want to be transparent.
+    SetBkColor(hdcMem, crTransparent);
+
+    // Copy the bits from the colour image to the B+W mask... everything
+    // with the background colour ends up white while everythig else ends up
+    // black...Just what we wanted.
+
+    BitBlt(hdcMem2, 0, 0, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
+
+    // Take our new mask and use it to turn the transparent colour in our
+    // original colour image to black so the transparency effect will
+    // work right.
+    BitBlt(hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, hdcMem2, 0, 0, SRCINVERT);
+
+    // Clean up.
+
+    DeleteDC(hdcMem);
+    DeleteDC(hdcMem2);
+
+    return hbmMask;
+}
+
+// The app logo is expected to be hosted at `{kUrlAppLogo}{url escaped
+// app_id}.bmp`. If `{url escaped app_id}.bmp` exists, a logo is shown in
+// the updater UI for that app install.
+//
+// For example, if `app_id` is `{8A69D345-D564-463C-AFF1-A69D9E530F96}`,
+// the `{url escaped app_id}.bmp` is
+// `%7b8A69D345-D564-463C-AFF1-A69D9E530F96%7d.bmp`.
+//
+// `kUrlAppLogo` is specified in omaha/base/const_addresses.h.
+void LoadLogo(LoadLogoParameters params) {
+  CString escaped_app_id;
+  HRESULT hr = StringEscape(params.app_id, false, &escaped_app_id);
+  if (FAILED(hr)) {
+    CORE_LOG(LW, (_T("[StringEscape failed][%#x]"), hr));
+    return;
+  }
+
+  CString app_logo_url;
+  hr = ConfigManager::Instance()->GetAppLogoUrl(&app_logo_url);
+  if (FAILED(hr)) {
+    CORE_LOG(LW, (_T("[GetAppLogoUrl failed][%#x]"), hr));
+    return;
+  }
+
+  CString url;
+  SafeCStringFormat(&url, _T("%s%s.bmp"), app_logo_url, escaped_app_id);
+  CORE_LOG(L1, (_T("[Attempting to load logo from][%s]"), url));
+
+  // Load the logo in BMP format if it exists at the provided `url`, and set the
+  // resultant image onto the app bitmap for the logo window.
+  CComPtr<IPicture> picture;
+  hr = ::OleLoadPicturePath(const_cast<TCHAR*>(url.GetString()), nullptr, 0, 0,
+                            IID_PPV_ARGS(&picture));
+  if (FAILED(hr)) {
+    CORE_LOG(LW, (_T("[::OleLoadPicturePath failed][%#x]"), hr));
+    return;
+  }
+
+  HBITMAP bitmap = nullptr;
+  hr = picture->get_Handle(reinterpret_cast<UINT*>(&bitmap));
+  if (FAILED(hr)) {
+    CORE_LOG(LW, (_T("[picture->get_Handle failed][%#x]"), hr));
+    return;
+  }
+
+  if (!::IsWindow(params.logo_wnd)) {
+    CORE_LOG(LW, (_T("[logo_wnd not valid anymore][%d]"), params.logo_wnd));
+    return;
+  }
+
+  CDC hdc             = GetDC(params.logo_wnd);
+  HDC tempHdc         = CreateCompatibleDC(hdc);
+  // BLENDFUNCTION blend = {AC_SRC_OVER, 0, 127, 0};
+  HBITMAP g_hbmMask = CreateBitmapMask(bitmap, RGB(0, 0, 0));
+
+  SelectObject(tempHdc, g_hbmMask);
+  BitBlt(hdc, 0, 0, 89, 90, tempHdc, 0, 0, SRCAND);
+
+  SelectObject(tempHdc, bitmap);
+  BitBlt(hdc, 0, 90, 89, 90, tempHdc, 0, 0, SRCPAINT);
+  ::SendDlgItemMessage(params.logo_wnd, IDC_APP_BITMAP, STM_SETIMAGE,
+                       IMAGE_BITMAP,
+                       reinterpret_cast<LPARAM>(::CopyImage(
+                           bitmap, IMAGE_BITMAP, 0, 0, LR_COPYRETURNORG)));
+
+  // AlphaBlend(hdc, 0, 0, 89, 90, tempHdc, 0, 0, 89, 90, blend);
+}
+
+// Loads the logo for the first app in `app_bundle`, and shows it in `logo_wnd`.
+HRESULT LoadLogoAsync(IAppBundle* app_bundle, HWND logo_wnd) {
+  ASSERT1(app_bundle);
+  ASSERT1(logo_wnd);
+
+  CComPtr<IApp> app;
+  HRESULT hr = update3_utils::GetApp(app_bundle, 0, &app);
+  if (FAILED(hr)) {
+    CORE_LOG(LE, (_T("[update3_utils::GetApp failed][%#x]"), hr));
+    return hr;
+  }
+
+  CComBSTR primary_app_id;
+  hr = app->get_appId(&primary_app_id);
+  if (FAILED(hr)) {
+    CORE_LOG(LE, (_T("[app->get_appId failed][%#x]"), hr));
+    return hr;
+  }
+
+  // Create a thread pool work item for deferred execution of loading the logo.
+  // The thread pool owns this call back object.
+  using Callback = StaticThreadPoolCallBack1<LoadLogoParameters>;
+  hr = Goopdate::Instance().QueueUserWorkItem(
+      std::make_unique<Callback>(
+          &LoadLogo, LoadLogoParameters(CString(primary_app_id), logo_wnd)),
+      COINIT_APARTMENTTHREADED, WT_EXECUTELONGFUNCTION);
+  if (FAILED(hr)) {
+    CORE_LOG(LE, (_T("[QueueUserWorkItem failed][0x%x]"), hr));
+    return hr;
+  }
+
+  return S_OK;
+}
+
 HRESULT CreateClientUI(bool is_machine,
                        BrowserType browser_type,
                        BundleInstaller* installer,

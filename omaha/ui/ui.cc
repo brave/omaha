@@ -107,12 +107,16 @@ void OmahaWnd::InitializeDialog() {    // NOLINT
   GetDlgItem(IDC_INFO_TEXT).SetFont(font_);
   GetDlgItem(IDC_COMPLETE_TEXT).SetFont(font_);
 
+  // 18-pixel-high "Segoe UI Bold"
+  VERIFY1(subtitle_font_.CreatePointFont(180, _T("Segoe UI Bold")));
+  GetDlgItem(IDC_SUBTITLE_TEXT).SetFont(subtitle_font_);
+
   // 11-pixel-high "Segoe UI".
   VERIFY1(error_font_.CreatePointFont(110, _T("Segoe UI")));
   GetDlgItem(IDC_ERROR_TEXT).SetFont(error_font_);
 
   CreateOwnerDrawTitleBar(m_hWnd, GetDlgItem(IDC_TITLE_BAR_SPACER), kBkColor);
-  SetCustomDlgColors(kTextColor, kBkColor);
+  SetCustomDlgColors(m_hWnd, kTextColor, kBkColor);
 
   (EnableFlatButtons(m_hWnd));
 }
