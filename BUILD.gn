@@ -47,7 +47,7 @@ action("build_omaha_installer") {
     "--tag_ap=$tag_ap",
     "--tag_app_name=$_tag_app_name",
     "--brave_full_version=$chrome_version_major.$brave_version_major.$brave_version_minor.$brave_version_build",
-    "--install_data_index=$install_data_index",
+    "--tag_installdataindex=$tag_installdataindex",
   ]
 
   outputs = [
