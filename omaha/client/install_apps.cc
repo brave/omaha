@@ -26,6 +26,7 @@
 #include "omaha/base/shutdown_callback.h"
 #include "omaha/base/shutdown_handler.h"
 #include "omaha/base/string.h"
+#include "omaha/base/thread_pool_callback.h"
 #include "omaha/base/time.h"
 #include "omaha/base/utils.h"
 #include "omaha/base/vista_utils.h"
@@ -45,6 +46,7 @@
 #include "omaha/common/ping.h"
 #include "omaha/common/update3_utils.h"
 #include "goopdate/omaha3_idl.h"
+#include "omaha/goopdate/goopdate.h"
 #include "omaha/ui/progress_wnd.h"
 
 namespace omaha {
@@ -218,6 +220,16 @@ class BundleAtlModule : public CAtlExeModuleT<BundleAtlModule> {
 }  // namespace
 
 namespace internal {
+
+struct LoadLogoParameters {
+ public:
+  LoadLogoParameters(const CString& appid, HWND wnd)
+      : app_id(appid), logo_wnd(wnd) {}
+
+  CString app_id;
+  HWND logo_wnd;
+};
+
 
 bool IsBrowserRestartSupported(BrowserType browser_type) {
   return (browser_type != BROWSER_UNKNOWN &&
