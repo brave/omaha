@@ -123,7 +123,7 @@ LRESULT InstallStoppedWnd::OnInitDialog(UINT,
       reinterpret_cast<WPARAM>(static_cast<HFONT>(default_font_)),
       0);
 
-  CreateOwnerDrawTitleBar(m_hWnd, GetDlgItem(IDC_TITLE_BAR_SPACER), kBkColor);
+  // CreateOwnerDrawTitleBar(m_hWnd, GetDlgItem(IDC_TITLE_BAR_SPACER), kBkColor);
   SetCustomDlgColors(m_hWnd, kTextColor, kBkColor);
 
   (EnableFlatButtons(m_hWnd));
@@ -233,6 +233,7 @@ bool ProgressWnd::MaybeCloseWindow() {
     // communicate the user decision.
     install_stopped_wnd_.reset(new InstallStoppedWnd(message_loop(), *this));
     HWND hwnd = install_stopped_wnd_->Create(*this);
+
     ASSERT1(hwnd);
     if (hwnd) {
       CString title;
@@ -899,7 +900,7 @@ void ProgressWnd::DisplayNewState(const CString& state) {
   // CRect rect(15, 365, 418, 410);
   CRect rect;
   VERIFY1(GetClientRect(&rect));
-  HBRUSH brush = CreatePatternBrush(bmp);
+  HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255));
   FillRect(dc, &rect, brush);
   DeleteObject(brush);
 

@@ -550,9 +550,9 @@ void OwnerDrawTitleBar::CreateOwnerDrawTitleBar(HWND parent_hwnd,
   // dialog box window. DS_MODALFRAME and WS_BORDER are incompatible with this
   // title bar. WS_DLGFRAME is recommended as well.
   LONG parent_style = ::GetWindowLong(parent_hwnd, GWL_STYLE);
-  ASSERT1(!(parent_style & DS_MODALFRAME));
-  ASSERT1(!(parent_style & WS_BORDER));
-  ASSERT1(parent_style & WS_DLGFRAME);
+  // ASSERT1(!(parent_style & DS_MODALFRAME));
+  // ASSERT1(!(parent_style & WS_BORDER));
+  // ASSERT1(parent_style & WS_DLGFRAME);
 
   title_bar_window_.set_bk_color(bk_color);
   VERIFY1(title_bar_window_.Create(parent_hwnd,
@@ -643,7 +643,22 @@ LRESULT CustomDlgColors::OnEraseBkgnd(UINT,
   CRect rect;
   ASSERT1(parent_);
   VERIFY1(GetClientRect(parent_, &rect));
-  HBRUSH brush = CreatePatternBrush((HBITMAP)LoadImage(NULL, L"D:\\bg.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE));
+
+  HWND hwndDlg = WindowFromDC(dc);
+  CString wnd_text;
+  GetWindowText(hwndDlg, CStrBuf(wnd_text, 256), 256);
+
+  CString title;
+  VERIFY1(title.LoadString(IDS_INSTALLATION_STOPPED_WINDOW_TITLE));
+  HBRUSH brush;
+
+  if (wnd_text == title){
+    brush = CreateSolidBrush(RGB(255, 255, 255));
+  }
+  else {
+    brush = CreatePatternBrush((HBITMAP)LoadImage(NULL, L"D:\\bg.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE));
+  }
+  // HBRUSH brush = CreatePatternBrush((HBITMAP)LoadImage(NULL, L"D:\\bg.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE));
   FillRect(dc, &rect, brush);
   DeleteObject(brush);
   return 1;
@@ -699,7 +714,7 @@ void CustomProgressBarCtrl::GradientFill(HDC dc,
 
   GRADIENT_RECT gradient_rect = {0, 1};
 
-  ::GradientFill(dc, tri_vertex, 2 , &gradient_rect, 1, GRADIENT_FILL_RECT_V);
+  ::GradientFill(dc, tri_vertex, 2 , &gradient_rect, 1, GRADIENT_FILL_RECT_H);
 }
 
 LRESULT CustomProgressBarCtrl::OnPaint(UINT,
@@ -747,10 +762,6 @@ LRESULT CustomProgressBarCtrl::OnPaint(UINT,
       CRect r(reinterpret_cast<RECT*>(rgndata.Buffer + count * sizeof(RECT)));
       CRect bottom_edge_rect(r);
 
-      // Have a 2-pixel bottom edge.
-      r.DeflateRect(0, 0, 0, 2);
-      bottom_edge_rect.top = r.bottom;
-
       CBrushHandle bottom_edge_brush(
         reinterpret_cast<HBRUSH>(GetParent().SendMessage(
           WM_CTLCOLORSTATIC,
@@ -768,34 +779,11 @@ LRESULT CustomProgressBarCtrl::OnPaint(UINT,
     return 0;
   }
 
-  // Have a 2-pixel bottom shadow with a gradient fill.
-  CRect shadow_rect(progress_bar_rect);
-  shadow_rect.top = shadow_rect.bottom - 2;
-  GradientFill(dc,
-               shadow_rect,
-               kProgressShadowDarkColor,
-               kProgressShadowLightColor);
-
   // Have a 1-pixel left highlight.
   CRect left_highlight_rect(progress_bar_rect);
   left_highlight_rect.right = left_highlight_rect.left + 1;
   dc.FillSolidRect(left_highlight_rect, kProgressLeftHighlightColor);
 
-  // Adjust progress bar rectangle to accommodate the highlight and shadow.
-  // Then draw the outer and inner frames. Then fill in the bar.
-  progress_bar_rect.DeflateRect(1, 0, 0, 2);
-  GradientFill(dc,
-               progress_bar_rect,
-               kProgressOuterFrameLight,
-               kProgressOuterFrameDark);
-
-  progress_bar_rect.DeflateRect(1, 1);
-  GradientFill(dc,
-               progress_bar_rect,
-               kProgressInnerFrameLight,
-               kProgressInnerFrameDark);
-
-  progress_bar_rect.DeflateRect(1, 1);
   GradientFill(dc,
                progress_bar_rect,
                GetColor(bar_color_light_, COLOR_WINDOW),

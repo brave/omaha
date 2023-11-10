@@ -89,7 +89,7 @@ class InstallStoppedWnd
     COMMAND_ID_HANDLER(IDOK, OnClickButton)
     COMMAND_ID_HANDLER(IDCANCEL, OnClickButton)
     CHAIN_MSG_MAP(Base)
-    CHAIN_MSG_MAP(OwnerDrawTitleBar)
+    // CHAIN_MSG_MAP(OwnerDrawTitleBar)
     CHAIN_MSG_MAP(CustomDlgColors)
   END_MSG_MAP()
 

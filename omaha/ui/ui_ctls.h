@@ -100,11 +100,11 @@ const ProgressWnd::ControlState ProgressWnd::ctls_[] = {
       { false, true,  true,  false, false },  // STATE_INSTALLING
       { false, true,  true,  false, false },  // STATE_PAUSED
       { false, true,  true,  false, false },  // STATE_COMPLETE_SUCCESS
-      { false, false, false, false, false },  // STATE_COMPLETE_ERROR
-      { false, false, false, false, false },  // STATE_COMPLETE_RESTART_BROWSER
-      { false, false, false, false, false },  // COMPLETE_RESTART_ALL_BROWSERS
-      { false, false, false, false, false },  // STATE_COMPLETE_REBOOT
-      { false, false, false, false, false },  // STATE_END
+      { false, true,  true,  false, false },  // STATE_COMPLETE_ERROR
+      { false, true,  true,  false, false },  // STATE_COMPLETE_RESTART_BROWSER
+      { false, true,  true,  false, false },  // COMPLETE_RESTART_ALL_BROWSERS
+      { false, true,  true,  false, false },  // STATE_COMPLETE_REBOOT
+      { false, true,  true,  false, false },  // STATE_END
     },
   },
   { IDC_COMPLETE_TEXT,
