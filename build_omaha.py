@@ -146,10 +146,14 @@ def tag_standalone(args, omaha_dir):
   tag = tag.replace("TAG_APP_NAME", args.tag_app_name[0])
   tag = tag.replace("TAG_AP", args.tag_ap[0])
 
+  apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], tag, args.root_out_dir[0])
+
   if args.tag_installdataindex:
+    # This current implementation doesn't have the install data value. But it
+    # exists on the update server. So we only apply the index to the online
+    # ("stub") installer.
     tag += '&installdataindex=' + args.tag_installdataindex
 
-  apply_tag(omaha_dir, args.debug, 'Test_Installers/UNOFFICIAL_' + args.standalone_installer_exe[0], args.standalone_installer_exe[0], tag, args.root_out_dir[0])
   apply_tag(omaha_dir, args.debug, 'staging/BraveUpdateSetup.exe', args.stub_installer_exe[0], tag, args.root_out_dir[0])
 
 def tag_silent(args, omaha_dir):
