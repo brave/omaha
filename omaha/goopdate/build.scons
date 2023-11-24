@@ -128,9 +128,17 @@ def BuildCOMRegisterShellNon32Bit(com_register_shell_env, suffix):
 
   unsigned_exe = com_register_shell_env.ComponentProgram(
       prog_name='BraveUpdateComRegisterShell%s_unsigned' % suffix.title(),
-      source= [
+      source=[
           'com_register_shell.cc',
-          ]
+          # Windows 11 started to require elevation for
+          # BraveUpdateComRegisterShellArm64.exe in per-user installations on
+          # Arm64. This broke on-demand updates because the COM classes were
+          # not registered. The problem usually - but not always - only affected
+          # self-updates of Omaha, not initial installs. Removing the word
+          # "Update" from the binary name seems to resolve the problem. But the
+          # proper solution, which also works, is to supply a manifest:
+          env.RES('run_as_invoker.res', '$MAIN_DIR/base/run_as_invoker.rc')
+      ]
   )
   signed_exe = com_register_shell_env.DualSignedBinary(
       target='BraveUpdateComRegisterShell%s.exe' % suffix.title(),
