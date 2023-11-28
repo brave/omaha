@@ -22,6 +22,8 @@
 #include "omaha/base/constants.h"
 #include "omaha/base/debug.h"
 #include "omaha/client/resource.h"
+#include "omaha/base/app_util.h"
+#include "omaha/goopdate/non_localized_resource.h"
 
 namespace omaha {
 
@@ -368,7 +370,11 @@ LRESULT OwnerDrawTitleBarWindow::OnEraseBkgnd(UINT,
   CDC dc(reinterpret_cast<HDC>(wparam));
   CRect rect;
   VERIFY1(GetClientRect(&rect));
-  HBRUSH brush = CreatePatternBrush((HBITMAP)LoadImage(NULL, L"D:\\bg.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE));
+  HINSTANCE wnd = (HINSTANCE)GetWindowLong(GWL_HINSTANCE);
+  HBRUSH brush = CreatePatternBrush((HBITMAP)LoadImage(
+      wnd, 
+      MAKEINTRESOURCE(IDB_BG),
+      IMAGE_BITMAP, 0, 0, LR_SHARED));
   FillRect(dc, &rect, brush);
   DeleteObject(brush);
   // dc.FillSolidRect(&rect, GetColor(bk_color_, COLOR_WINDOW));
@@ -656,7 +662,10 @@ LRESULT CustomDlgColors::OnEraseBkgnd(UINT,
     brush = CreateSolidBrush(RGB(255, 255, 255));
   }
   else {
-    brush = CreatePatternBrush((HBITMAP)LoadImage(NULL, L"D:\\bg.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE));
+    brush = CreatePatternBrush((HBITMAP)LoadImage(
+        (HINSTANCE)GetWindowLong(hwndDlg, GWL_HINSTANCE), 
+        MAKEINTRESOURCE(IDB_BACKGROUND),
+        IMAGE_BITMAP, 0, 0, LR_SHARED));
   }
   // HBRUSH brush = CreatePatternBrush((HBITMAP)LoadImage(NULL, L"D:\\bg.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE));
   FillRect(dc, &rect, brush);

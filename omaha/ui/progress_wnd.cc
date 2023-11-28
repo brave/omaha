@@ -892,12 +892,7 @@ bool Crop(HBITMAP& m_Handle, RECT cropArea)
 }
 
 void ProgressWnd::DisplayNewState(const CString& state) {
-  HBITMAP bmp = (HBITMAP)LoadImage(NULL, L"D:\\bg.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-  VERIFY1(Crop(bmp, CRect(23, 705 - 45 - 34 - 33, 650, 705)));
-
   HDC dc = GetDlgItem(IDC_INSTALLER_STATE_TEXT).GetDC();
-  // HWND wnd = WindowFromDC(dc);
-  // CRect rect(15, 365, 418, 410);
   CRect rect;
   VERIFY1(GetClientRect(&rect));
   HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255));

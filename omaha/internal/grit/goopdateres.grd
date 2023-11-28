@@ -561,6 +561,9 @@
     <includes first_id="1000">
       <include name="IDB_ERROR_ILLUSTRATION" file="../../goopdate/resources/error_illustration.bmp" type="BITMAP" relativepath="true" translateable="false" />
     </includes>
+    <includes first_id="1001">
+      <include name="IDB_BACKGROUND" file="../../goopdate/resources/bg.bmp" type="BITMAP" relativepath="true" translateable="false" />
+    </includes>
     <structures first_id="2000">
       <structure name="IDD_PROGRESS" file="goopdateres_ui.rc" type="dialog">
         <skeleton expr="lang == 'ar' or lang == 'fa' or lang == 'iw' or lang == 'ur'" file="goopdateres_ui_bidi.rc" variant_of_revision="2" />
