@@ -22,6 +22,8 @@
 #include "omaha/base/constants.h"
 #include "omaha/base/debug.h"
 #include "omaha/client/resource.h"
+#include "omaha/base/app_util.h"
+#include "omaha/goopdate/non_localized_resource.h"
 
 namespace omaha {
 
@@ -176,7 +178,11 @@ void CaptionButton::DrawItem(LPDRAWITEMSTRUCT draw_item_struct) {
   COLORREF bk_color(is_mouse_hovering_ ? GetColor(kCaptionBkHover,
                                                   COLOR_ACTIVECAPTION) :
                                          GetColor(bk_color_, COLOR_WINDOW));
-  dc.FillSolidRect(&button_rect, bk_color);
+  
+  HBRUSH brush = (HBRUSH)::GetStockObject(NULL_BRUSH);
+  FillRect(dc, &button_rect, brush);
+  SetTextColor(dc, GetColor(RGB(0xFF, 0xFF, 0xFF), COLOR_WINDOW));
+  // dc.FillSolidRect(&button_rect, bk_color);
 
   int rgn_width = button_rect.Width() * 12 / 31;
   int rgn_height = button_rect.Height() * 12 / 31;
@@ -364,8 +370,14 @@ LRESULT OwnerDrawTitleBarWindow::OnEraseBkgnd(UINT,
   CDC dc(reinterpret_cast<HDC>(wparam));
   CRect rect;
   VERIFY1(GetClientRect(&rect));
-
-  dc.FillSolidRect(&rect, GetColor(bk_color_, COLOR_WINDOW));
+  HINSTANCE wnd = (HINSTANCE)GetWindowLong(GWL_HINSTANCE);
+  HBRUSH brush = CreatePatternBrush((HBITMAP)LoadImage(
+      wnd, 
+      MAKEINTRESOURCE(IDB_BG),
+      IMAGE_BITMAP, 0, 0, LR_SHARED));
+  FillRect(dc, &rect, brush);
+  DeleteObject(brush);
+  // dc.FillSolidRect(&rect, GetColor(bk_color_, COLOR_WINDOW));
   return 1;
 }
 
@@ -544,9 +556,9 @@ void OwnerDrawTitleBar::CreateOwnerDrawTitleBar(HWND parent_hwnd,
   // dialog box window. DS_MODALFRAME and WS_BORDER are incompatible with this
   // title bar. WS_DLGFRAME is recommended as well.
   LONG parent_style = ::GetWindowLong(parent_hwnd, GWL_STYLE);
-  ASSERT1(!(parent_style & DS_MODALFRAME));
-  ASSERT1(!(parent_style & WS_BORDER));
-  ASSERT1(parent_style & WS_DLGFRAME);
+  // ASSERT1(!(parent_style & DS_MODALFRAME));
+  // ASSERT1(!(parent_style & WS_BORDER));
+  // ASSERT1(parent_style & WS_DLGFRAME);
 
   title_bar_window_.set_bk_color(bk_color);
   VERIFY1(title_bar_window_.Create(parent_hwnd,
@@ -580,33 +592,85 @@ CRect OwnerDrawTitleBar::ComputeTitleBarClientRect(HWND parent_hwnd,
 }
 
 CustomDlgColors::CustomDlgColors()
-    : text_color_(RGB(0xFF, 0xFF, 0xFF)),
+    : text_color_(RGB(0, 0, 0)),
       bk_color_(RGB(0, 0, 0)) {
 }
 
 CustomDlgColors::~CustomDlgColors() {
 }
 
-void CustomDlgColors::SetCustomDlgColors(COLORREF text_color,
+void CustomDlgColors::SetCustomDlgColors(HWND parent_hwnd,
+                                         COLORREF text_color,
                                          COLORREF bk_color) {
   text_color_ = text_color;
   bk_color_ = bk_color;
+  parent_ = parent_hwnd;
 
   ASSERT1(bk_brush_.IsNull());
   VERIFY1(bk_brush_.CreateSolidBrush(bk_color_));
+  trans_brush_ =  (HBRUSH)::GetStockObject(NULL_BRUSH);
 }
 
 LRESULT CustomDlgColors::OnCtrlColor(UINT,
                                      WPARAM wparam,
-                                     LPARAM,
+                                     LPARAM lparam,
                                      BOOL& handled) {  // NOLINT
   handled = TRUE;
 
   CDCHandle dc(reinterpret_cast<HDC>(wparam));
+  SetBkMode(dc, TRANSPARENT);
   SetBkColor(dc, GetColor(bk_color_, COLOR_WINDOW));
   SetTextColor(dc, GetColor(text_color_, COLOR_WINDOWTEXT));
 
+  HWND hwndDlg(reinterpret_cast<HWND>(lparam));
+  int ctrlID = GetDlgCtrlID(hwndDlg);
+
+  if (ctrlID == IDC_INSTALLER_STATE_TEXT || 
+                IDC_SUBTITLE_TEXT || 
+                IDC_BUTTON1 || 
+                IDC_BUTTON2 ||
+                IDC_ERROR_TEXT ||
+                IDC_COMPLETE_TEXT ||
+                IDC_CLOSE ||
+                IDC_CROSS) {
+    return reinterpret_cast<LRESULT>(GetColorBrush(trans_brush_, COLOR_WINDOW));
+  }
+
   return reinterpret_cast<LRESULT>(GetColorBrush(bk_brush_, COLOR_WINDOW));
+}
+
+LRESULT CustomDlgColors::OnEraseBkgnd(UINT,
+                                      WPARAM wparam,
+                                      LPARAM,
+                                      BOOL& handled) {  // NOLINT
+  handled = TRUE;
+
+  CDC dc(reinterpret_cast<HDC>(wparam));
+  CRect rect;
+  ASSERT1(parent_);
+  VERIFY1(GetClientRect(parent_, &rect));
+
+  HWND hwndDlg = WindowFromDC(dc);
+  CString wnd_text;
+  GetWindowText(hwndDlg, CStrBuf(wnd_text, 256), 256);
+
+  CString title;
+  VERIFY1(title.LoadString(IDS_INSTALLATION_STOPPED_WINDOW_TITLE));
+  HBRUSH brush;
+
+  if (wnd_text == title){
+    brush = CreateSolidBrush(RGB(255, 255, 255));
+  }
+  else {
+    brush = CreatePatternBrush((HBITMAP)LoadImage(
+        (HINSTANCE)GetWindowLong(hwndDlg, GWL_HINSTANCE), 
+        MAKEINTRESOURCE(IDB_BACKGROUND),
+        IMAGE_BITMAP, 0, 0, LR_SHARED));
+  }
+  // HBRUSH brush = CreatePatternBrush((HBITMAP)LoadImage(NULL, L"D:\\bg.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE));
+  FillRect(dc, &rect, brush);
+  DeleteObject(brush);
+  return 1;
 }
 
 CustomProgressBarCtrl::CustomProgressBarCtrl()
@@ -659,7 +723,7 @@ void CustomProgressBarCtrl::GradientFill(HDC dc,
 
   GRADIENT_RECT gradient_rect = {0, 1};
 
-  ::GradientFill(dc, tri_vertex, 2 , &gradient_rect, 1, GRADIENT_FILL_RECT_V);
+  ::GradientFill(dc, tri_vertex, 2 , &gradient_rect, 1, GRADIENT_FILL_RECT_H);
 }
 
 LRESULT CustomProgressBarCtrl::OnPaint(UINT,
@@ -707,10 +771,6 @@ LRESULT CustomProgressBarCtrl::OnPaint(UINT,
       CRect r(reinterpret_cast<RECT*>(rgndata.Buffer + count * sizeof(RECT)));
       CRect bottom_edge_rect(r);
 
-      // Have a 2-pixel bottom edge.
-      r.DeflateRect(0, 0, 0, 2);
-      bottom_edge_rect.top = r.bottom;
-
       CBrushHandle bottom_edge_brush(
         reinterpret_cast<HBRUSH>(GetParent().SendMessage(
           WM_CTLCOLORSTATIC,
@@ -728,34 +788,11 @@ LRESULT CustomProgressBarCtrl::OnPaint(UINT,
     return 0;
   }
 
-  // Have a 2-pixel bottom shadow with a gradient fill.
-  CRect shadow_rect(progress_bar_rect);
-  shadow_rect.top = shadow_rect.bottom - 2;
-  GradientFill(dc,
-               shadow_rect,
-               kProgressShadowDarkColor,
-               kProgressShadowLightColor);
-
   // Have a 1-pixel left highlight.
   CRect left_highlight_rect(progress_bar_rect);
   left_highlight_rect.right = left_highlight_rect.left + 1;
   dc.FillSolidRect(left_highlight_rect, kProgressLeftHighlightColor);
 
-  // Adjust progress bar rectangle to accommodate the highlight and shadow.
-  // Then draw the outer and inner frames. Then fill in the bar.
-  progress_bar_rect.DeflateRect(1, 0, 0, 2);
-  GradientFill(dc,
-               progress_bar_rect,
-               kProgressOuterFrameLight,
-               kProgressOuterFrameDark);
-
-  progress_bar_rect.DeflateRect(1, 1);
-  GradientFill(dc,
-               progress_bar_rect,
-               kProgressInnerFrameLight,
-               kProgressInnerFrameDark);
-
-  progress_bar_rect.DeflateRect(1, 1);
   GradientFill(dc,
                progress_bar_rect,
                GetColor(bar_color_light_, COLOR_WINDOW),

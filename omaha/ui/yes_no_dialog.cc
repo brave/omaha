@@ -74,7 +74,7 @@ HRESULT YesNoDialog::Initialize(const CString& yes_no_title,
       0);
 
   CreateOwnerDrawTitleBar(m_hWnd, GetDlgItem(IDC_TITLE_BAR_SPACER), kBkColor);
-  SetCustomDlgColors(kTextColor, kBkColor);
+  // SetCustomDlgColors(m_hWnd, kTextColor, kBkColor);
 
   (EnableFlatButtons(m_hWnd));
 

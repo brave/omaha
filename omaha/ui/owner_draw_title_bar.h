@@ -267,28 +267,36 @@ class OwnerDrawTitleBar {
 // * Add a CHAIN_MSG_MAP in your ATL message map to CustomDlgColors.
 //   CustomDlgColors will handle WM_CTLCOLOR{XXX} in the chained msg map.
 // * Call SetCustomDlgColors() from OnInitDialog.
-class CustomDlgColors {
+class CustomDlgColors  {
  public:
   BEGIN_MSG_MAP(CustomDlgColors)
     MESSAGE_HANDLER(WM_CTLCOLORDLG, OnCtrlColor)
     MESSAGE_HANDLER(WM_CTLCOLORSTATIC, OnCtrlColor)
+    MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBkgnd)
   END_MSG_MAP()
 
   CustomDlgColors();
   virtual ~CustomDlgColors();
 
-  void SetCustomDlgColors(COLORREF text_color, COLORREF bk_color);
+  void SetCustomDlgColors(HWND parent_hwnd, COLORREF text_color, COLORREF bk_color);
 
   LRESULT OnCtrlColor(UINT msg,
                       WPARAM wparam,
                       LPARAM lparam,
                       BOOL& handled);  // NOLINT
+  
+  LRESULT OnEraseBkgnd(UINT msg,
+                       WPARAM wparam,
+                       LPARAM lparam,
+                       BOOL& handled);  // NOLINT
+
 
  private:
   COLORREF text_color_;
   COLORREF bk_color_;
   CBrush bk_brush_;
-
+  CBrush trans_brush_;
+  HWND parent_;
   DISALLOW_COPY_AND_ASSIGN(CustomDlgColors);
 };
 

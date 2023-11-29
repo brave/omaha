@@ -28,7 +28,7 @@ namespace omaha {
 class YesNoDialog
     : public CAxDialogImpl<YesNoDialog>,
       public OwnerDrawTitleBar,
-      public CustomDlgColors,
+      // public CustomDlgColors,
       public CMessageFilter {
   typedef CAxDialogImpl<YesNoDialog> Base;
 
@@ -58,7 +58,7 @@ class YesNoDialog
     MESSAGE_HANDLER(WM_NCDESTROY, OnNCDestroy)
     CHAIN_MSG_MAP(Base)
     CHAIN_MSG_MAP(OwnerDrawTitleBar)
-    CHAIN_MSG_MAP(CustomDlgColors)
+    // CHAIN_MSG_MAP(CustomDlgColors)
   END_MSG_MAP()
 
  private:

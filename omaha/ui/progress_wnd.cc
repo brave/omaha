@@ -123,8 +123,8 @@ LRESULT InstallStoppedWnd::OnInitDialog(UINT,
       reinterpret_cast<WPARAM>(static_cast<HFONT>(default_font_)),
       0);
 
-  CreateOwnerDrawTitleBar(m_hWnd, GetDlgItem(IDC_TITLE_BAR_SPACER), kBkColor);
-  SetCustomDlgColors(kTextColor, kBkColor);
+  // CreateOwnerDrawTitleBar(m_hWnd, GetDlgItem(IDC_TITLE_BAR_SPACER), kBkColor);
+  SetCustomDlgColors(m_hWnd, kTextColor, kBkColor);
 
   (EnableFlatButtons(m_hWnd));
 
@@ -198,6 +198,17 @@ LRESULT ProgressWnd::OnInitDialog(UINT message,
   DisplayNewState(state_text);
   VERIFY_SUCCEEDED(ChangeControlState());
 
+  CString slogan_text;
+  const TCHAR* const kNewLine1 = _T("<b>");
+  const TCHAR* const kNewLine2 = _T("</b>");
+
+  slogan_text.FormatMessage(IDS_SLOGAN,
+                                  kNewLine1,
+                                  kNewLine2);
+
+  VERIFY1(::SetWindowText(GetDlgItem(IDC_SUBTITLE_TEXT), slogan_text));
+  VERIFY_SUCCEEDED(ChangeControlState());
+
   metrics_timer_.reset(new HighresTimer);
 
   return 1;  // Let the system set the focus.
@@ -222,6 +233,7 @@ bool ProgressWnd::MaybeCloseWindow() {
     // communicate the user decision.
     install_stopped_wnd_.reset(new InstallStoppedWnd(message_loop(), *this));
     HWND hwnd = install_stopped_wnd_->Create(*this);
+
     ASSERT1(hwnd);
     if (hwnd) {
       CString title;
@@ -856,7 +868,37 @@ HRESULT ProgressWnd::SetMarqueeMode(bool is_marquee) {
   return S_OK;
 }
 
+bool Crop(HBITMAP& m_Handle, RECT cropArea)
+{
+  HDC hSrc = CreateCompatibleDC(NULL);
+  SelectObject(hSrc, m_Handle);
+
+  HDC hNew = CreateCompatibleDC(hSrc);
+  HBITMAP hBmp = CreateCompatibleBitmap(hSrc, cropArea.right - cropArea.left, cropArea.bottom - cropArea.top); 
+  HBITMAP hOld = (HBITMAP)SelectObject(hNew, hBmp);
+
+  bool retVal = (BitBlt(hNew, 0, 0, cropArea.right - cropArea.left, cropArea.bottom - cropArea.top, hSrc, cropArea.left, cropArea.top, SRCCOPY))?true:false;
+
+  SelectObject(hNew, hOld);
+
+  DeleteDC(hSrc);
+  DeleteDC(hNew);
+
+  DeleteObject(m_Handle);
+
+  m_Handle = hBmp;
+
+  return retVal;
+}
+
 void ProgressWnd::DisplayNewState(const CString& state) {
+  HDC dc = GetDlgItem(IDC_INSTALLER_STATE_TEXT).GetDC();
+  CRect rect;
+  VERIFY1(GetClientRect(&rect));
+  HBRUSH brush = CreateSolidBrush(RGB(255, 255, 255));
+  FillRect(dc, &rect, brush);
+  DeleteObject(brush);
+
   VERIFY1(::SetWindowText(GetDlgItem(IDC_INSTALLER_STATE_TEXT), state));
 
   CString title;

@@ -171,6 +171,7 @@ class OmahaWnd
   CFont default_font_;
   CFont font_;
   CFont error_font_;
+  CFont subtitle_font_;
 
   CustomProgressBarCtrl progress_bar_;
 
