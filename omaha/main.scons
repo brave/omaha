@@ -712,6 +712,7 @@ win_env.AppendUnique(
         'oleaut32',
         'shell32',
         'user32',
+        'shcore',
         'uuid',
         'winspool',
         ],

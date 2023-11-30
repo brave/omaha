@@ -46,6 +46,7 @@ core_env.Append(
         'psapi.lib',
         'shlwapi.lib',
         'user32.lib',
+        'shcore.lib',
         'userenv.lib',
         'version.lib',
         'wintrust.lib',

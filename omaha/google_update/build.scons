@@ -54,6 +54,7 @@ exe_env.Append(
         'shell32.lib',
         'shlwapi.lib',
         'user32.lib',
+        'shcore.lib',
         'wintrust.lib',
         exe_env['atls_libs'][exe_env.Bit('debug')],
         exe_env['crt_libs'][exe_env.Bit('debug')],
