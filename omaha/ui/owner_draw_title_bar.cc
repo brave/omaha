@@ -364,59 +364,10 @@ LRESULT OwnerDrawTitleBarWindow::OnLButtonUp(UINT,
 }
 
 LRESULT OwnerDrawTitleBarWindow::OnEraseBkgnd(UINT,
-                                              WPARAM wparam,
+                                              WPARAM,
                                               LPARAM,
                                               BOOL& handled) {  // NOLINT
   handled = TRUE;
-
-  CDC dc(reinterpret_cast<HDC>(wparam));
-  CRect rect;
-  VERIFY1(GetClientRect(&rect));
-  HBRUSH brush;
-  HWND hwnd = WindowFromDC(dc);
-  HMONITOR hMon = MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY);
-  DEVICE_SCALE_FACTOR scale;
-  ::GetScaleFactorForMonitor(hMon, &scale);
-
-  HBITMAP hbmp = (HBITMAP)LoadImage(
-      (HINSTANCE)GetWindowLong(GWL_HINSTANCE),
-      MAKEINTRESOURCE(IDB_BG), IMAGE_BITMAP, 0, 0, LR_SHARED);
-
-  if (scale != SCALE_100_PERCENT) {
-    BITMAP bm{};
-    // Get current size of bitmap
-    GetObject(hbmp, sizeof(BITMAP), &bm);
-
-    float scaleFactor = static_cast<float>(scale) / 100.0f;
-    int destWidth = static_cast<int>(originalWidth * scaleFactor);
-    int destHeight = static_cast<int>(originalHeight * scaleFactor);
-
-    // Create device context handler
-    HDC srcDC = CreateCompatibleDC(NULL);
-    HDC destDC = CreateCompatibleDC(dc);
-
-    // Create new dest bitmap
-    HBITMAP destBmp = CreateCompatibleBitmap(dc, destWidth, destHeight);
-
-    SelectObject(srcDC, hbmp);
-    SelectObject(destDC, destBmp);
-
-    StretchBlt(destDC, 0, 0, destWidth, destHeight, srcDC, 0, 0, bm.bmWidth,
-               bm.bmHeight,
-               SRCCOPY);
-
-    DeleteDC(srcDC);
-    DeleteDC(destDC);
-
-    brush = CreatePatternBrush(destBmp);
-  } else {
-    brush = CreatePatternBrush(hbmp);
-  }
-
-
-  FillRect(dc, &rect, brush);
-  DeleteObject(brush);
-  // dc.FillSolidRect(&rect, GetColor(bk_color_, COLOR_WINDOW));
   return 1;
 }
 
@@ -701,48 +652,37 @@ LRESULT CustomDlgColors::OnEraseBkgnd(UINT,
     brush = CreateSolidBrush(RGB(255, 255, 255));
   }
   else {
-    HMONITOR hMon = MonitorFromWindow(hwndDlg, MONITOR_DEFAULTTOPRIMARY);
-    DEVICE_SCALE_FACTOR scale;
-    ::GetScaleFactorForMonitor(hMon, &scale);
-
     HBITMAP hbmp = (HBITMAP)LoadImage(
         (HINSTANCE)GetWindowLong(hwndDlg, GWL_HINSTANCE), 
         MAKEINTRESOURCE(IDB_BACKGROUND),
         IMAGE_BITMAP, 0, 0, LR_SHARED);
 
-    if (scale != SCALE_100_PERCENT){
-      double ratio = (double)(scale / 100.0);
+    BITMAP bm{};
+    // Get current size of bitmap
+    GetObject(hbmp, sizeof(BITMAP), &bm);
 
-      BITMAP bm{};
-      // Get current size of bitmap
-      GetObject(hbmp, sizeof(BITMAP), &bm);
+    int destWidth = static_cast<int>(rect.Width());
+    int destHeight = static_cast<int>(rect.Height());
 
-      float scaleFactor = static_cast<float>(scale) / 100.0f;
-      int destWidth = static_cast<int>(originalWidth * scaleFactor);
-      int destHeight = static_cast<int>(originalHeight * scaleFactor);
+    // Create device context handler
+    HDC srcDC = CreateCompatibleDC(NULL);
+    HDC destDC = CreateCompatibleDC(dc);
 
-      // Create device context handler
-      HDC srcDC = CreateCompatibleDC(NULL);
-      HDC destDC = CreateCompatibleDC(dc);
+    // Create new dest bitmap
+    HBITMAP destBmp = CreateCompatibleBitmap(dc, destWidth, destHeight);
 
-      // Create new dest bitmap
-      HBITMAP destBmp = CreateCompatibleBitmap(dc, destWidth, destHeight);
+    SelectObject(srcDC, hbmp);
+    SelectObject(destDC, destBmp);
+    SetStretchBltMode(destDC, HALFTONE);
+    StretchBlt(destDC, 0, 0, destWidth, destHeight, srcDC, 0, 0, bm.bmWidth,
+                bm.bmHeight, SRCCOPY);
 
-      SelectObject(srcDC, hbmp);
-      SelectObject(destDC, destBmp);
-
-      StretchBlt(destDC, 0, 0, destWidth, destHeight, srcDC, 0, 0, bm.bmWidth,
-                 bm.bmHeight, SRCCOPY);
-
-      DeleteDC(srcDC);
-      DeleteDC(destDC);
-
-      brush = CreatePatternBrush(destBmp);
-    } else {
-      brush = CreatePatternBrush(hbmp);
-    }
+    DeleteDC(srcDC);
+    DeleteDC(destDC);
+    DeleteObject(hbmp);
+    brush = CreatePatternBrush(destBmp);
   }
-  // HBRUSH brush = CreatePatternBrush((HBITMAP)LoadImage(NULL, L"D:\\bg.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE));
+
   FillRect(dc, &rect, brush);
   DeleteObject(brush);
   return 1;
