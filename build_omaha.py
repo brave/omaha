@@ -11,6 +11,22 @@ import sys
 
 SUPPORTED_LANGUAGE = ["en", "vi"]
 
+def config_address(debug):
+  '''
+  Replaces all instances of "OMAHA_URL" in the const_addresses.h file with the url
+  given by the environment variable OMAHA_URL
+  '''
+  omaha_dir = os.path.dirname(os.path.abspath(__file__))
+  omaha_addresses_path = os.path.join(omaha_dir, 'omaha/base/const_addresses.h')
+  omaha_url = os.environ.get('OMAHA_URL', 'https://updates.herond.org')
+  with open(omaha_addresses_path, 'r', encoding='utf-8') as file_to_update:
+    const_addresses = file_to_update.read()
+
+  const_addresses = const_addresses.replace('OMAHA_URL', omaha_url)
+
+  with open(omaha_addresses_path, 'w', encoding='utf-8') as updated_file:
+    updated_file.write(const_addresses)
+
 def build(omaha_dir, standalone_installers_dir, debug):
   # move to omaha/omaha and start build.
   os.chdir(os.path.join(omaha_dir, 'omaha'))
@@ -224,22 +240,31 @@ def parse_args():
                       nargs=1)
   parser.add_argument('--brave_full_version',
                       nargs=1)
-  parser.add_argument('--debug', action='store_true')
+  parser.add_argument(
+    '--config_address',
+    help=('Replaces all instances of "OMAHA_URL" in the const_addresses.h file with the url '
+          'given by the environment variable OMAHA_URL'),
+    action='store_true',
+    default=False)
+  parser.add_argument('--debug', action='store_true', default=False)
   return parser.parse_args()
 
 def main():
   args = parse_args()
-  omaha_dir = os.path.join(args.root_out_dir[0], '..', '..', 'brave', 'vendor', 'omaha')
 
-  installer_metadata_dir = prepare_untagged_standalone(args, omaha_dir)
-  build(omaha_dir, installer_metadata_dir, args.debug)
-  tag_standalone(args, omaha_dir)
+  if args.config_address:
+    config_address(args)
+  else:
+    omaha_dir = os.path.join(args.root_out_dir[0], '..', '..', 'brave', 'vendor', 'omaha')
+    installer_metadata_dir = prepare_untagged_standalone(args, omaha_dir)
+    build(omaha_dir, installer_metadata_dir, args.debug)
+    tag_standalone(args, omaha_dir)
 
-  installer_metadata_dir = prepare_untagged_silent(args, omaha_dir)
-  build(omaha_dir, installer_metadata_dir, args.debug)
-  tag_silent(args, omaha_dir)
+    installer_metadata_dir = prepare_untagged_silent(args, omaha_dir)
+    build(omaha_dir, installer_metadata_dir, args.debug)
+    tag_silent(args, omaha_dir)
 
-  copy_untagged_installers(args, omaha_dir)
+    copy_untagged_installers(args, omaha_dir)
 
   return 0
 
