@@ -562,13 +562,13 @@ HRESULT CommandParsing::Remove(const TCHAR* option_name) {
       if (i == -1) {
         return E_FAIL;
       }
-      args_.erase(it);
+      it = args_.erase(it);
       if (!as_name_value_pair_) {
         if (options_[i].type != COMMAND_OPTION_BOOL) {
           if (it == args_.end()) {
             return E_FAIL;
           }
-          args_.erase(it);
+          it = args_.erase(it);
         }
       }
 
