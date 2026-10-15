@@ -36,6 +36,10 @@ def build(omaha_dir, standalone_installers_dir, debug):
     # Our certs identified by hash are always in the machine store:
     command.append('--use_authenticode_machine_store')
 
+  # depot_tools sets this variable. It prevents Windows from finding hammer.bat
+  # in the current directory.
+  os.environ.pop('NoDefaultCurrentDirectoryInExePath', None)
+
   # Pick signtool.exe from PATH. This in particular ensures that we use the same
   # signtool as Chromium, which is 64 bit and thus has access to the same certs.
   env = dict(os.environ)
